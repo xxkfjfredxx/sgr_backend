@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
-from config.views_api import router  # 👈 el router central
+from django.conf import settings                     # 👈 Importación para archivos media
+from django.conf.urls.static import static           # 👈 Importación para archivos media
+from config.views_api import router                  # 👈 el router central
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -14,3 +16,7 @@ urlpatterns = [
     path('api/', include('catalogos.urls')),
     path('api/', include('empresa.urls')),
 ]
+
+# 👇 Esto sirve los archivos subidos (PDF, Word, Excel, imágenes)
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,32 +1,61 @@
 from django.db import models
 from django.conf import settings
+import os
+from datetime import datetime
 
-class Employee(models.Model):  # "Tabla de Trabajadores"
-    user = user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,  # ESTA ES LA CLAVE CORRECTA
+
+class Employee(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
         null=True,
         blank=True
-    )  # "Usuario relacionado"  # "Usuario relacionado"
-    document = models.CharField(max_length=20, unique=True)  # "Documento de identidad"
-    first_name = models.CharField(max_length=100)  # "Nombres"
-    last_name = models.CharField(max_length=100)  # "Apellidos"
-    gender = models.CharField(max_length=10, blank=True, null=True)  # "Género"
-    birth_date = models.DateField(blank=True, null=True)  # "Fecha de nacimiento"
+    )
+    document = models.CharField(max_length=20, unique=True)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    gender = models.CharField(max_length=10, blank=True, null=True)
+    birth_date = models.DateField(blank=True, null=True)
     eps = models.CharField(max_length=100, blank=True, null=True)
     afp = models.CharField(max_length=100, blank=True, null=True)
-    education = models.CharField(max_length=100, blank=True, null=True)  # "Escolaridad"
-    marital_status = models.CharField(max_length=50, blank=True, null=True)  # "Estado civil"
-    emergency_contact = models.CharField(max_length=100, blank=True, null=True)  # "Contacto de emergencia"
-    phone_contact = models.CharField(max_length=20, blank=True, null=True)  # "Teléfono de contacto"
-    address = models.CharField(max_length=100, blank=True, null=True)  # "Dirección de residencia"
-    ethnicity = models.CharField(max_length=50, blank=True, null=True)  # "Grupo étnico"
-    socioeconomic_stratum = models.IntegerField(blank=True, null=True)  # "Estrato socioeconómico"
+    education = models.CharField(max_length=100, blank=True, null=True)
+    marital_status = models.CharField(max_length=50, blank=True, null=True)
+    emergency_contact = models.CharField(max_length=100, blank=True, null=True)
+    phone_contact = models.CharField(max_length=20, blank=True, null=True)
+    address = models.CharField(max_length=100, blank=True, null=True)
+    ethnicity = models.CharField(max_length=50, blank=True, null=True)
+    socioeconomic_stratum = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = 'employees'  # "Tabla en base de datos: Trabajadores"
+        db_table = 'employees'
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
+
+
+class DocumentType(models.Model):
+    name = models.CharField(max_length=100)
+    required = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
+
+
+def document_upload_path(instance, filename):
+    ext = filename.split('.')[-1]
+    doc_type = instance.document_type.name.lower().replace(' ', '_')
+    date_path = datetime.now().strftime('%Y/%m/%d')
+    filename = f"{doc_type}-emp{instance.employee.id}-{datetime.now().strftime('%Y%m%d%H%M%S')}.{ext}"
+    return os.path.join('documents', doc_type, date_path, filename)
+
+
+class EmployeeDocument(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='documents')
+    document_type = models.ForeignKey(DocumentType, on_delete=models.PROTECT)
+    file = models.FileField(upload_to=document_upload_path)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.employee} - {self.document_type}"
