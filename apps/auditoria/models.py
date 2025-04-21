@@ -1,5 +1,5 @@
 from django.db import models
-from usuarios.models import User
+from apps.usuarios.models import User
 
 class SystemAudit(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)

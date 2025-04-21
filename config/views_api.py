@@ -1,16 +1,16 @@
 from rest_framework.routers import DefaultRouter
 
 # Importa todos los ViewSets
-from empresa.views import CompanyViewSet
-from empleados.views import EmployeeViewSet
-from vinculaciones.views import EmploymentLinkViewSet
-from documentos.views import PersonalDocumentViewSet
-from historial.views import WorkHistoryViewSet
-from auditoria.views import SystemAuditViewSet
-from catalogos.views import (
+from apps.empresa.views import CompanyViewSet
+from apps.empleados.views import EmployeeViewSet
+from apps.vinculaciones.views import EmploymentLinkViewSet
+from apps.documentos.views import PersonalDocumentViewSet
+from apps.historial.views import WorkHistoryViewSet
+from apps.auditoria.views import SystemAuditViewSet
+from apps.catalogos.views import (
     BranchViewSet, PositionViewSet, WorkAreaViewSet, DocumentTypeViewSet
 )
-from usuarios.views import UserViewSet, UserRoleViewSet
+from apps.usuarios.views import UserViewSet, UserRoleViewSet
 
 router = DefaultRouter()
 

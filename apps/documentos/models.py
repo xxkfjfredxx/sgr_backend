@@ -1,7 +1,7 @@
 from django.db import models
-from empleados.models import Employee
-from usuarios.models import User  # quien subió el documento
-from catalogos.models import DocumentType
+from apps.empleados.models import Employee
+from apps.usuarios.models import User  # quien subió el documento
+from apps.catalogos.models import DocumentType
  # si ya lo migraste a otra app
 
 class PersonalDocument(models.Model):

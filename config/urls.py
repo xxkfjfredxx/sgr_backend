@@ -7,14 +7,14 @@ from config.views_api import router                  # 👈 el router central
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('api/', include('usuarios.urls')),
-    path('api/', include('documentos.urls')),
-    path('api/', include('empleados.urls')),
-    path('api/', include('vinculaciones.urls')),
-    path('api/', include('historial.urls')),
-    path('api/', include('auditoria.urls')),
-    path('api/', include('catalogos.urls')),
-    path('api/', include('empresa.urls')),
+    path('api/', include('apps.usuarios.urls')),
+    path('api/', include('apps.documentos.urls')),
+    path('api/', include('apps.empleados.urls')),
+    path('api/', include('apps.vinculaciones.urls')),
+    path('api/', include('apps.historial.urls')),
+    path('api/', include('apps.auditoria.urls')),
+    path('api/', include('apps.catalogos.urls')),
+    path('api/', include('apps.empresa.urls')),
 ]
 
 # 👇 Esto sirve los archivos subidos (PDF, Word, Excel, imágenes)

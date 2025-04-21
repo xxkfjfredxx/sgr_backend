@@ -1,6 +1,6 @@
 from django.db import models
-from empleados.models import Employee
-from empresa.models import Company
+from apps.empleados.models import Employee
+from apps.empresa.models import Company
 
 class EmploymentLink(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)

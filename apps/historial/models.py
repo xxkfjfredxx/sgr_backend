@@ -1,6 +1,6 @@
 from django.db import models
-from vinculaciones.models import EmploymentLink
-from usuarios.models import User  # quien hizo el cambio
+from apps.vinculaciones.models import EmploymentLink
+from apps.usuarios.models import User  # quien hizo el cambio
 
 class WorkHistory(models.Model):
     employment_link = models.ForeignKey(EmploymentLink, on_delete=models.CASCADE)
