@@ -8,7 +8,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     path('api/', include('apps.usuarios.urls')),
-    path('api/', include('apps.documentos.urls')),
     path('api/', include('apps.empleados.urls')),
     path('api/', include('apps.vinculaciones.urls')),
     path('api/', include('apps.historial.urls')),

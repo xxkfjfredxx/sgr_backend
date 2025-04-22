@@ -48,6 +48,8 @@ def document_upload_path(instance, filename):
     doc_type = instance.document_type.name.lower().replace(' ', '_')
     date_path = datetime.now().strftime('%Y/%m/%d')
     filename = f"{doc_type}-emp{instance.employee.id}-{datetime.now().strftime('%Y%m%d%H%M%S')}.{ext}"
+    print("DEBUG -> DocumentType ID:", instance.document_type.id)
+    print("DEBUG -> DocumentType Name:", instance.document_type.name)
     return os.path.join('documents', doc_type, date_path, filename)
 
 

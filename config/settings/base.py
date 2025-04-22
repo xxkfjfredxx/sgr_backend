@@ -58,7 +58,6 @@ INSTALLED_APPS = [
     'apps.catalogos',
     'apps.auditoria',
     'apps.empleados',
-    'apps.documentos',
     'apps.vinculaciones',
 ]
 

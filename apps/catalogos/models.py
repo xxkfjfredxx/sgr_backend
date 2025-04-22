@@ -37,15 +37,3 @@ class WorkArea(models.Model):  # Área
 
     def __str__(self):
         return self.name
-    
-    
-class DocumentType(models.Model):  # Tipo de Documento
-    name = models.CharField(max_length=100, unique=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        db_table = 'document_types'
-
-    def __str__(self):
-        return self.name

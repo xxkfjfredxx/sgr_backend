@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Branch, Position, WorkArea, DocumentType
+from .models import Branch, Position, WorkArea
 
 class BranchSerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,9 +14,4 @@ class PositionSerializer(serializers.ModelSerializer):
 class WorkAreaSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkArea
-        fields = '__all__'
-
-class DocumentTypeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DocumentType
         fields = '__all__'
