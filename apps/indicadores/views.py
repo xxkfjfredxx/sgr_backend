@@ -29,7 +29,6 @@ class IndicatorResultViewSet(viewsets.ModelViewSet):
 
 @api_view(['GET'])
 def indicator_summary(request):
-    print("💡 Entró al summary")
     from_date = request.GET.get('from')  # formato esperado: '2024-01'
     to_date = request.GET.get('to')      # formato esperado: '2024-12'
 
