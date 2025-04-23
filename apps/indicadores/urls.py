@@ -3,14 +3,13 @@ from django.urls import path
 from .views import (
     IndicatorViewSet,
     IndicatorResultViewSet,
-    indicator_summary  # 👈 importamos el resumen
+    indicator_summary
 )
 
 router = DefaultRouter()
-router.register(r'indicators', IndicatorViewSet, basename='indicator')
-router.register(r'indicator-results', IndicatorResultViewSet, basename='indicatorresult')
+router.register(r'', IndicatorViewSet, basename='indicator')
+router.register(r'results', IndicatorResultViewSet, basename='indicatorresult')
 
-# Agrega aquí tu endpoint adicional
-urlpatterns = router.urls + [
-    path('summary/', indicator_summary, name='indicator-summary'),
-]
+urlpatterns = [
+    path('summary/', indicator_summary, name='indicator-summary'),  # <--- ¡Esto primero!
+] + router.urls

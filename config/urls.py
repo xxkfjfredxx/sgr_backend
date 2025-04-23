@@ -6,7 +6,7 @@ from config.views_api import router                  # 👈 el router central
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),
+    # path('api/', include(router.urls)),   # ELIMINADA ESTA LÍNEA
     path('api/', include('apps.usuarios.urls')),
     path('api/', include('apps.empleados.urls')),
     path('api/', include('apps.vinculaciones.urls')),

@@ -9,4 +9,4 @@ router.register(r'Employee-Document', EmployeeDocumentViewSet, basename='Employe
 
 urlpatterns = [
     path('', include(router.urls)),
-]
+] 
