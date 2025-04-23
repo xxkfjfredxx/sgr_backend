@@ -14,6 +14,12 @@ urlpatterns = [
     path('api/', include('apps.auditoria.urls')),
     path('api/', include('apps.catalogos.urls')),
     path('api/', include('apps.empresa.urls')),
+    path('api/occupational-health/', include('apps.salud_ocupacional.urls')),
+    path('api/absences/', include('apps.ausentismo.urls')),
+    path('api/trainings/', include('apps.capacitaciones.urls')),
+    path('api/industrial-safety/', include('apps.seguridad_industrial.urls')),
+    path('api/indicators/', include('apps.indicadores.urls')),
+    path('api/alerts/', include('apps.alertas.urls')),
 ]
 
 # 👇 Esto sirve los archivos subidos (PDF, Word, Excel, imágenes)

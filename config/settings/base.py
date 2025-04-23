@@ -53,12 +53,18 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'apps.empresa',
+    'apps.alertas',
     'apps.usuarios',
     'apps.historial',
     'apps.catalogos',
     'apps.auditoria',
     'apps.empleados',
+    'apps.ausentismo',
+    'apps.indicadores',
     'apps.vinculaciones',
+    'apps.capacitaciones',
+    'apps.salud_ocupacional',
+    'apps.seguridad_industrial',
 ]
 
 MIDDLEWARE = [
