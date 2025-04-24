@@ -3,19 +3,20 @@ from rest_framework.permissions import AllowAny
 from rest_framework.parsers import MultiPartParser, FormParser
 from apps.empleados.models import Employee, DocumentType, EmployeeDocument
 from .serializers import EmployeeSerializer, DocumentTypeSerializer, EmployeeDocumentSerializer
+from apps.auditoria.utils import AuditLogMixin
 
 # 👇 AGREGADO: ViewSet para Employee
-class EmployeeViewSet(viewsets.ModelViewSet):
+class EmployeeViewSet(AuditLogMixin,viewsets.ModelViewSet):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
     permission_classes = [AllowAny]
 
-class DocumentTypeViewSet(viewsets.ModelViewSet):
+class DocumentTypeViewSet(AuditLogMixin,viewsets.ModelViewSet):
     queryset = DocumentType.objects.all().order_by('name')
     serializer_class = DocumentTypeSerializer
     permission_classes = [AllowAny]
 
-class EmployeeDocumentViewSet(viewsets.ModelViewSet):
+class EmployeeDocumentViewSet(AuditLogMixin,viewsets.ModelViewSet):
     queryset = EmployeeDocument.objects.all().order_by('-uploaded_at')
     serializer_class = EmployeeDocumentSerializer
     parser_classes = [MultiPartParser, FormParser]

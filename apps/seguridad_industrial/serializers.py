@@ -1,7 +1,27 @@
 from rest_framework import serializers
-from .models import WorkAccident
+from .models import WorkAccident, WorkAtHeightPermit
+from apps.empleados.serializers import EmployeeSerializer
 
 class WorkAccidentSerializer(serializers.ModelSerializer):
+    employee_data = EmployeeSerializer(source='employee', read_only=True)
+
     class Meta:
         model = WorkAccident
-        fields = '__all__'
+        fields = [
+            'id', 'employee', 'employee_data',
+            'incident_type', 'date', 'location', 'description',
+            'injury_type', 'severity', 'reported_to_arl', 'days_lost',
+            'training_valid', 'medical_exam_valid', 'corrective_actions',
+            'evidence_file', 'created_at'
+        ]
+
+class WorkAtHeightPermitSerializer(serializers.ModelSerializer):
+    employee_data = EmployeeSerializer(source='employee', read_only=True)
+
+    class Meta:
+        model = WorkAtHeightPermit
+        fields = [
+            'id', 'employee', 'employee_data',
+            'date', 'location', 'work_description', 'checklist',
+            'approved', 'supervisor', 'evidence_file', 'created_at'
+        ]

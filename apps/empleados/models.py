@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 import os
 from datetime import datetime
+from apps.contratistas.models import ContractorCompany
 
 
 class Employee(models.Model):
@@ -10,6 +11,10 @@ class Employee(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True
+    )
+    contractor = models.ForeignKey(
+        ContractorCompany, on_delete=models.SET_NULL, blank=True, null=True,
+        related_name='employees', help_text="Solo si es empleado de un contratista"
     )
     document = models.CharField(max_length=20, unique=True)
     first_name = models.CharField(max_length=100)
