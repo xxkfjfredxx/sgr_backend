@@ -9,7 +9,8 @@ from apps.empleados.views import (
 )
 from apps.vinculaciones.views import EmploymentLinkViewSet
 from apps.historial.views import WorkHistoryViewSet
-from apps.auditoria.views import SystemAuditViewSet
+from apps.auditoria.views import (SystemAuditViewSet, AuditChecklistViewSet, AuditItemViewSet, AuditExecutionViewSet, AuditResultViewSet, AuditFindingViewSet)
+
 from apps.catalogos.views import (
     BranchViewSet, PositionViewSet, WorkAreaViewSet
 )
@@ -59,6 +60,8 @@ from apps.stakeholders.views import StakeholderViewSet
 from apps.legal.views import LegalRequirementViewSet
 
 from apps.suggestions.views import SuggestionBoxViewSet
+from apps.contratos.views import ContractViewSet
+from apps.objectives.views import SSTObjectiveViewSet, SSTGoalViewSet 
 
 # Crear router
 router = DefaultRouter()
@@ -68,7 +71,6 @@ router.register(r'companies', CompanyViewSet)
 router.register(r'employees', EmployeeViewSet)
 router.register(r'employment-links', EmploymentLinkViewSet)
 router.register(r'work-history', WorkHistoryViewSet)
-router.register(r'audit', SystemAuditViewSet)
 router.register(r'branches', BranchViewSet)
 router.register(r'positions', PositionViewSet)
 router.register(r'work-areas', WorkAreaViewSet)
@@ -98,6 +100,16 @@ router.register(r'suggestions', SuggestionBoxViewSet)
 router.register(r'emergency-brigade', EmergencyBrigadeMemberViewSet)
 router.register(r'emergency-equipment', EmergencyEquipmentViewSet)
 router.register(r'emergency-drills', EmergencyDrillViewSet)
+router.register(r'contracts', ContractViewSet)
+router.register(r'sst-objectives', SSTObjectiveViewSet)
+router.register(r'sst-goals', SSTGoalViewSet)
+
+router.register(r'system-audit', SystemAuditViewSet)
+router.register(r'audit-checklists', AuditChecklistViewSet)
+router.register(r'audit-items', AuditItemViewSet)
+router.register(r'audit-executions', AuditExecutionViewSet)
+router.register(r'audit-results', AuditResultViewSet)
+router.register(r'audit-findings', AuditFindingViewSet)
 
 # Inspecciones
 router.register(r'inspection-templates', InspectionTemplateViewSet)
