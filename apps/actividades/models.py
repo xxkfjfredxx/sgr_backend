@@ -11,16 +11,13 @@ class Activity(models.Model):
 
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    date = models.DateField()
-    status = models.CharField(
-        max_length=20,
-        choices=STATUS_CHOICES,
-        default='pending'
-    )
+    start_date = models.DateField()
+    end_date = models.DateField(null=True, blank=True)  # Opcional para eventos de varios días
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     created_by = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True)
 
     class Meta:
-        ordering = ['date']
+        ordering = ['start_date']
 
     def __str__(self):
-        return f"{self.title} - {self.get_status_display()}"
+        return f"{self.title} ({self.get_status_display()})"
