@@ -55,6 +55,8 @@ INSTALLED_APPS = [
     'apps.ipvr',   
     'apps.epp',
     'apps.legal',
+    'apps.cambios',
+    'apps.soporte',
     'apps.empresa',
     'apps.alertas',
     'apps.riesgos',

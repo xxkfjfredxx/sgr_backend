@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Area, Hazard, RiskAssessment
+from .models import Area, Hazard, RiskAssessment,RiskControl,RiskReview
 
 class AreaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -23,3 +23,13 @@ class RiskAssessmentSerializer(serializers.ModelSerializer):
             'probability', 'severity', 'level', 'controls', 'evaluated_by',
             'evaluated_by_name', 'review_date', 'is_active'
         ]
+
+class RiskControlSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RiskControl
+        fields = '__all__'
+
+class RiskReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RiskReview
+        fields = '__all__'

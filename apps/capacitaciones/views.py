@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 from .models import TrainingSession, TrainingSessionAttendance
-from .serializers import TrainingSessionSerializer, TrainingSessionAttendanceSerializer
+from .serializers import TrainingSessionSerializer, TrainingSessionAttendanceSerializer,CertificationSerializer,Certification
 from rest_framework.permissions import AllowAny
 from apps.auditoria.utils import AuditLogMixin
 
@@ -12,4 +12,9 @@ class TrainingSessionViewSet(AuditLogMixin,viewsets.ModelViewSet):
 class TrainingSessionAttendanceViewSet(AuditLogMixin,viewsets.ModelViewSet):
     queryset = TrainingSessionAttendance.objects.all()
     serializer_class = TrainingSessionAttendanceSerializer
+    permission_classes = [AllowAny]
+
+class CertificationViewSet(viewsets.ModelViewSet):
+    queryset = Certification.objects.all().order_by('-issued_date')
+    serializer_class = CertificationSerializer
     permission_classes = [AllowAny]

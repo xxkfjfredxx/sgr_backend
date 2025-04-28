@@ -30,7 +30,7 @@ from apps.pausas_activas.views import (
 )
 from apps.indicadores.views import IndicatorViewSet, IndicatorResultViewSet
 from apps.alertas.views import DocumentAlertViewSet
-from apps.acciones_correctivas.views import ImprovementPlanViewSet, ActionItemViewSet
+from apps.acciones_correctivas.views import ImprovementPlanViewSet, ActionItemViewSet,RiskActionViewSet
 from apps.sst_policies.views import SSTPolicyViewSet, PolicyAcceptanceViewSet
 # NUEVAS APPS
 # Inspecciones y checklists
@@ -62,6 +62,14 @@ from apps.legal.views import LegalRequirementViewSet
 from apps.suggestions.views import SuggestionBoxViewSet
 from apps.contratos.views import ContractViewSet
 from apps.objectives.views import SSTObjectiveViewSet, SSTGoalViewSet 
+
+from apps.auditoria.views import (
+    AuditChecklistViewSet,
+    AuditItemViewSet,
+    AuditExecutionViewSet,
+    AuditResultViewSet,
+    AuditFindingViewSet,
+)
 
 # Crear router
 router = DefaultRouter()
@@ -103,8 +111,11 @@ router.register(r'emergency-drills', EmergencyDrillViewSet)
 router.register(r'contracts', ContractViewSet)
 router.register(r'sst-objectives', SSTObjectiveViewSet)
 router.register(r'sst-goals', SSTGoalViewSet)
+router.register(r'risk-actions', RiskActionViewSet)
 
 router.register(r'system-audit', SystemAuditViewSet)
+
+# Auditorías internas
 router.register(r'audit-checklists', AuditChecklistViewSet)
 router.register(r'audit-items', AuditItemViewSet)
 router.register(r'audit-executions', AuditExecutionViewSet)

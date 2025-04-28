@@ -16,3 +16,12 @@ class TrainingSessionAttendance(models.Model):
     attended = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+class Certification(models.Model):
+    participant = models.ForeignKey('TrainingSessionAttendance', on_delete=models.CASCADE)
+    certificate_file = models.FileField(upload_to='certifications/')
+    issued_date = models.DateField(auto_now_add=True)
+    expiration_date = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Certification for {self.participant}"
