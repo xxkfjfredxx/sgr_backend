@@ -7,6 +7,7 @@ from config.views_api import router  # Tu router central
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),   # 👈 SOLO ESTA línea para todos los endpoints
+    path('api/', include('apps.usuarios.urls')),  # 👈 LOGIN, LOGOUT, ME manualmente
 ]
 
 if settings.DEBUG:

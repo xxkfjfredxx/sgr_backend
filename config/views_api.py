@@ -71,6 +71,8 @@ from apps.auditoria.views import (
     AuditFindingViewSet,
 )
 
+from apps.actividades.views import ActivityViewSet
+
 # Crear router
 router = DefaultRouter()
 
@@ -114,6 +116,7 @@ router.register(r'sst-goals', SSTGoalViewSet)
 router.register(r'risk-actions', RiskActionViewSet)
 
 router.register(r'system-audit', SystemAuditViewSet)
+router.register(r'activities', ActivityViewSet)
 
 # Auditorías internas
 router.register(r'audit-checklists', AuditChecklistViewSet)

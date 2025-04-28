@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     'apps.reintegro',
     'apps.catalogos',
     'apps.objectives',
+    'apps.actividades',
     'apps.auditoria',
     'apps.empleados',
     'apps.emergencies',
