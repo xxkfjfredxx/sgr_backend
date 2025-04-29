@@ -1,5 +1,6 @@
 from django.db import models
 from apps.utils.mixins import AuditMixin
+from apps.empresa.models import Company  # 👈 Asegúrate de tener este modelo
 
 
 class Activity(AuditMixin, models.Model):
@@ -15,6 +16,7 @@ class Activity(AuditMixin, models.Model):
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)  # 👈 NUEVO
 
     class Meta:
         ordering = ["start_date"]

@@ -10,13 +10,13 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("legal", "0001_initial"),
+        ("actividades", "0002_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name="legalrequirement",
+            model_name="activity",
             name="created_by",
             field=models.ForeignKey(
                 blank=True,
@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AddField(
-            model_name="legalrequirement",
+            model_name="activity",
             name="deleted_by",
             field=models.ForeignKey(
                 blank=True,
@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AddField(
-            model_name="legalrequirement",
+            model_name="activity",
             name="updated_by",
             field=models.ForeignKey(
                 blank=True,
