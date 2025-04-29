@@ -4,6 +4,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from apps.utils.auditlogmimix import AuditLogMixin
+from django.db import models
 
 from .models import Employee, DocumentType, EmployeeDocument
 from .serializers import (
@@ -31,8 +32,9 @@ class EmployeeViewSet(BaseAuditViewSet):
     def get_queryset(self):
         qs = super().get_queryset()
         if name := self.request.query_params.get("name"):
-            qs = qs.filter(first_name__icontains=name) | qs.filter(
-                last_name__icontains=name
+            qs = qs.filter(
+                models.Q(first_name__icontains=name)
+                | models.Q(last_name__icontains=name)
             )
         if doc := self.request.query_params.get("document"):
             qs = qs.filter(document__icontains=doc)

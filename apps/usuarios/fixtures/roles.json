@@ -4,20 +4,53 @@
       "pk": 1,
       "fields": {
         "name": "Admin",
-        "description": "Super-Admin",
+        "description": "Super Admin Role",
         "permissions": {},
         "is_active": true
       }
     },
     {
-      "model": "usuarios.userrole",
-      "pk": 2,
+      "model": "empresa.company",
+      "pk": 1,
       "fields": {
-        "name": "RRHH",
-        "description": "Recursos Humanos",
-        "permissions": {},
+        "name": "Constructora XYZ",
+        "nit": "900123456",
+        "address": "Calle 123",
+        "phone": "123456789",
+        "email": "contacto@xyz.com"
+      }
+    },
+    {
+      "model": "usuarios.user",
+      "pk": 1,
+      "fields": {
+        "username": "admin",
+        "password": "'pbkdf2_sha256$870000$IUUBTc7xS8gfMz907VZxLj$1Yynsgw4ZrKMRFe2jhA7DVOYdDQ2RpfTRLoKnOm0qiM='", 
+        "email": "admin@gmain.com",
+        "first_name": "Fred",
+        "last_name": "Rueda",
         "is_active": true,
-        "_comment cargar este json para cargar la data": "python manage.py loaddata apps/usuarios/fixtures/roles.json"
+        "is_staff": true,
+        "is_superuser": true,
+        "role": 1
+      }
+    },
+    {
+      "model": "empleados.employee",
+      "pk": 1,
+      "fields": {
+        "user": 1,
+        "company": 1,
+        "document": "1098765432",
+        "first_name": "Carolina",
+        "last_name": "Rueda",
+        "gender": "Female",
+        "birth_date": "1992-01-01",
+        "phone_contact": "3123456789",
+        "address": "Barrio Nuevo",
+        "_comment cargar este json para cargar la data": "python manage.py loaddata apps/usuarios/fixtures/roles.json",
+        "socioeconomic_stratum": 4
       }
     }
   ]
+  

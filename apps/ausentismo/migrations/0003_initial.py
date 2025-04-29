@@ -10,14 +10,14 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("empleados", "0002_initial"),
-        ("reintegro", "0001_initial"),
+        ("ausentismo", "0002_initial"),
+        ("empleados", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name="reintegro",
+            model_name="absence",
             name="created_by",
             field=models.ForeignKey(
                 blank=True,
@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AddField(
-            model_name="reintegro",
+            model_name="absence",
             name="deleted_by",
             field=models.ForeignKey(
                 blank=True,
@@ -39,14 +39,14 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AddField(
-            model_name="reintegro",
+            model_name="absence",
             name="employee",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE, to="empleados.employee"
             ),
         ),
         migrations.AddField(
-            model_name="reintegro",
+            model_name="absence",
             name="updated_by",
             field=models.ForeignKey(
                 blank=True,

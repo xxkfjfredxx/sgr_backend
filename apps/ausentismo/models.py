@@ -1,6 +1,7 @@
 from django.db import models
 from apps.empleados.models import Employee
 from apps.utils.mixins import AuditMixin
+from apps.empresa.models import Company
 
 
 class Absence(AuditMixin, models.Model):
@@ -11,6 +12,7 @@ class Absence(AuditMixin, models.Model):
     ]
 
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)  # 👈 NUEVO
     absence_type = models.CharField(max_length=30, choices=ABSENCE_CHOICES)
     start_date = models.DateField()
     end_date = models.DateField()

@@ -1,6 +1,7 @@
 from django.db import models
 from apps.empleados.models import Employee
 from apps.utils.mixins import AuditMixin
+from apps.empresa.models import Company
 
 
 class MedicalExam(AuditMixin, models.Model):
@@ -11,6 +12,7 @@ class MedicalExam(AuditMixin, models.Model):
     ]
 
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     exam_type = models.CharField(max_length=20, choices=EXAM_CHOICES)
     date = models.DateField()
     entity = models.CharField(max_length=100)

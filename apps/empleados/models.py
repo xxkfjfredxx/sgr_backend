@@ -62,10 +62,18 @@ def document_upload_path(instance, filename):
 
 class EmployeeDocument(AuditMixin, models.Model):
     employee = models.ForeignKey(
-        Employee, on_delete=models.CASCADE, related_name="documents"
+        "empleados.Employee", on_delete=models.CASCADE, related_name="documents"
     )
-    document_type = models.ForeignKey(DocumentType, on_delete=models.PROTECT)
+    document_type = models.ForeignKey("DocumentType", on_delete=models.PROTECT)
     file = models.FileField(upload_to=document_upload_path)
+
+    company = models.ForeignKey(
+        "empresa.Company", null=True, blank=True, on_delete=models.SET_NULL
+    )
+    employment_link = models.ForeignKey(
+        "vinculaciones.EmploymentLink", null=True, blank=True, on_delete=models.SET_NULL
+    )
+    is_global = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["-created_at"]

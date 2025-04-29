@@ -1,9 +1,11 @@
 from django.db import models
 from apps.empleados.models import Employee
 from apps.utils.mixins import AuditMixin
+from apps.empresa.models import Company
 
 
 class TrainingSession(AuditMixin, models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     topic = models.CharField(max_length=150)
     date = models.DateField()
     instructor = models.CharField(max_length=100)

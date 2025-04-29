@@ -1,6 +1,7 @@
 from django.db import models
 from apps.empleados.models import Employee
 from apps.utils.mixins import AuditMixin
+from apps.empresa.models import Company
 
 
 class WorkAccident(AuditMixin, models.Model):
@@ -11,6 +12,7 @@ class WorkAccident(AuditMixin, models.Model):
     SEVERITY_CHOICES = [("Leve", "Leve"), ("Grave", "Grave"), ("Mortal", "Mortal")]
 
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, db_index=True)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     incident_type = models.CharField(
         max_length=20, choices=INCIDENT_CHOICES, default="Accidente", db_index=True
     )

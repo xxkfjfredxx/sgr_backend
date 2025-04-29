@@ -1,5 +1,4 @@
 from django.db import models
-from apps.empleados.models import Employee
 from apps.utils.mixins import AuditMixin
 
 
@@ -25,7 +24,7 @@ class EPPAssignment(AuditMixin, models.Model):
         ("Reposición programada", "Reposición programada"),
     ]
 
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    employee = models.ForeignKey("empleados.Employee", on_delete=models.CASCADE)
     epp_item = models.ForeignKey(EPPItem, on_delete=models.CASCADE)
     assigned_at = models.DateField(auto_now_add=True)
     returned_at = models.DateField(null=True, blank=True)
