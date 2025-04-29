@@ -7,8 +7,11 @@ from apps.utils.auditlogmimix import AuditLogMixin
 
 from .models import Area, Hazard, RiskAssessment, RiskControl, RiskReview
 from .serializers import (
-    AreaSerializer, HazardSerializer, RiskAssessmentSerializer,
-    RiskControlSerializer, RiskReviewSerializer
+    AreaSerializer,
+    HazardSerializer,
+    RiskAssessmentSerializer,
+    RiskControlSerializer,
+    RiskReviewSerializer,
 )
 
 
@@ -25,13 +28,13 @@ class BaseAuditViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
 # -------- Áreas ---------------------------------------------------------
 class AreaViewSet(BaseAuditViewSet):
-    queryset         = Area.objects.filter(is_deleted=False)
+    queryset = Area.objects.filter(is_deleted=False)
     serializer_class = AreaSerializer
 
 
 # -------- Peligros ------------------------------------------------------
 class HazardViewSet(BaseAuditViewSet):
-    queryset         = Hazard.objects.filter(is_deleted=False)
+    queryset = Hazard.objects.filter(is_deleted=False)
     serializer_class = HazardSerializer
 
     def get_queryset(self):
@@ -45,7 +48,7 @@ class HazardViewSet(BaseAuditViewSet):
 
 # -------- Evaluaciones de Riesgo ----------------------------------------
 class RiskAssessmentViewSet(BaseAuditViewSet):
-    queryset         = RiskAssessment.objects.filter(is_deleted=False)
+    queryset = RiskAssessment.objects.filter(is_deleted=False)
     serializer_class = RiskAssessmentSerializer
 
     def get_queryset(self):
@@ -53,14 +56,14 @@ class RiskAssessmentViewSet(BaseAuditViewSet):
         if haz := self.request.query_params.get("hazard"):
             qs = qs.filter(hazard_id=haz)
         if d1 := self.request.query_params.get("from"):
-            if (dt := parse_date(d1)):
+            if dt := parse_date(d1):
                 qs = qs.filter(date__gte=dt)
         return qs
 
 
 # -------- Controles ------------------------------------------------------
 class RiskControlViewSet(BaseAuditViewSet):
-    queryset         = RiskControl.objects.filter(is_deleted=False)
+    queryset = RiskControl.objects.filter(is_deleted=False)
     serializer_class = RiskControlSerializer
 
     def get_queryset(self):
@@ -72,7 +75,7 @@ class RiskControlViewSet(BaseAuditViewSet):
 
 # -------- Revisiones -----------------------------------------------------
 class RiskReviewViewSet(BaseAuditViewSet):
-    queryset         = RiskReview.objects.filter(is_deleted=False)
+    queryset = RiskReview.objects.filter(is_deleted=False)
     serializer_class = RiskReviewSerializer
 
     def get_queryset(self):

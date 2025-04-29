@@ -3,15 +3,14 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from apps.utils.auditlogmimix import AuditLogMixin
-from django.utils.dateparse import parse_date
 
 from .models import Absence
 from .serializers import AbsenceSerializer
 
 
 class AbsenceViewSet(AuditLogMixin, viewsets.ModelViewSet):
-    queryset           = Absence.objects.filter(is_deleted=False)
-    serializer_class   = AbsenceSerializer
+    queryset = Absence.objects.filter(is_deleted=False)
+    serializer_class = AbsenceSerializer
     permission_classes = [AllowAny]
 
     # -------- filtros rápidos ----------

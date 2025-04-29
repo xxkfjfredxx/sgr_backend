@@ -1,17 +1,22 @@
 from rest_framework import serializers
-from apps.empleados.models import Employee
-from .models import (
-    UserRole, User
-)
+from .models import UserRole, User
+
 
 class UserSerializer(serializers.ModelSerializer):
     employee_id = serializers.SerializerMethodField()
 
     class Meta:
-        model  = User
+        model = User
         fields = [
-            "id", "username", "first_name", "last_name", "email",
-            "is_superuser", "is_staff", "role", "employee_id",
+            "id",
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "is_superuser",
+            "is_staff",
+            "role",
+            "employee_id",
             "password",
         ]
         extra_kwargs = {
@@ -33,8 +38,9 @@ class UserSerializer(serializers.ModelSerializer):
             instance.set_password(validated_data.pop("password"))
         return super().update(instance, validated_data)
 
+
 class UserRoleSerializer(serializers.ModelSerializer):
     class Meta:
-        model  = UserRole
+        model = UserRole
         fields = "__all__"
         read_only_fields = ("created_at", "created_by")

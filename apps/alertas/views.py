@@ -12,8 +12,8 @@ from .serializers import DocumentAlertSerializer
 class DocumentAlertViewSet(AuditLogMixin, viewsets.ModelViewSet):
     """Alertas de vencimiento de documentos (con auditoría)."""
 
-    queryset          = DocumentAlert.objects.filter(is_deleted=False)
-    serializer_class  = DocumentAlertSerializer
+    queryset = DocumentAlert.objects.filter(is_deleted=False)
+    serializer_class = DocumentAlertSerializer
     permission_classes = [AllowAny]
 
     # ------------- filtros rápidos -----------------

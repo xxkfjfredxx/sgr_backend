@@ -6,14 +6,14 @@ class EmergencyBrigadeMemberSerializer(serializers.ModelSerializer):
     employee_name = serializers.CharField(source="employee.first_name", read_only=True)
 
     class Meta:
-        model  = EmergencyBrigadeMember
+        model = EmergencyBrigadeMember
         fields = "__all__"
         read_only_fields = ("created_at", "created_by")
 
 
 class EmergencyEquipmentSerializer(serializers.ModelSerializer):
     class Meta:
-        model  = EmergencyEquipment
+        model = EmergencyEquipment
         fields = "__all__"
         read_only_fields = ("created_at", "created_by")
 
@@ -24,6 +24,6 @@ class EmergencyDrillSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        model  = EmergencyDrill
+        model = EmergencyDrill
         fields = "__all__"
         read_only_fields = ("created_at", "created_by")

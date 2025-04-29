@@ -5,18 +5,18 @@ from apps.utils.mixins import AuditMixin
 
 class MedicalExam(AuditMixin, models.Model):
     EXAM_CHOICES = [
-        ("Ingreso",   "Ingreso"),
+        ("Ingreso", "Ingreso"),
         ("Periódico", "Periódico"),
-        ("Retiro",    "Retiro"),
+        ("Retiro", "Retiro"),
     ]
 
-    employee        = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    exam_type       = models.CharField(max_length=20, choices=EXAM_CHOICES)
-    date            = models.DateField()
-    entity          = models.CharField(max_length=100)
-    aptitude        = models.CharField(max_length=100)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    exam_type = models.CharField(max_length=20, choices=EXAM_CHOICES)
+    date = models.DateField()
+    entity = models.CharField(max_length=100)
+    aptitude = models.CharField(max_length=100)
     recommendations = models.TextField(blank=True)
-    file            = models.FileField(upload_to="medical-exams/", blank=True, null=True)
+    file = models.FileField(upload_to="medical-exams/", blank=True, null=True)
 
     class Meta:
         ordering = ["-date"]

@@ -1,11 +1,10 @@
-from datetime import datetime, date, timedelta
-from django.db.models import Count, Q, FloatField, F, ExpressionWrapper
+from datetime import datetime, timedelta
+from django.db.models import FloatField, F, ExpressionWrapper
 from django.db.models.functions import Cast
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action, api_view
 from rest_framework.permissions import AllowAny
-from django.utils.dateparse import parse_date
 
 from apps.utils.auditlogmimix import AuditLogMixin
 from .models import Indicator, IndicatorResult
@@ -17,6 +16,7 @@ from apps.capacitaciones.models import TrainingSession, TrainingSessionAttendanc
 from apps.seguridad_industrial.models import WorkAccident
 from apps.salud_ocupacional.models import MedicalExam
 from apps.empleados.models import Employee
+from django.db.models import Sum
 
 
 class BaseAuditViewSet(AuditLogMixin, viewsets.ModelViewSet):
@@ -31,7 +31,7 @@ class BaseAuditViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
 
 class IndicatorViewSet(BaseAuditViewSet):
-    queryset         = Indicator.objects.filter(is_deleted=False)
+    queryset = Indicator.objects.filter(is_deleted=False)
     serializer_class = IndicatorSerializer
 
     def get_queryset(self):
@@ -42,7 +42,7 @@ class IndicatorViewSet(BaseAuditViewSet):
 
 
 class IndicatorResultViewSet(BaseAuditViewSet):
-    queryset         = IndicatorResult.objects.filter(is_deleted=False)
+    queryset = IndicatorResult.objects.filter(is_deleted=False)
     serializer_class = IndicatorResultSerializer
 
     def get_queryset(self):
@@ -63,13 +63,22 @@ def indicator_summary(request):
     Ejemplo: /api/indicator-summary?from=2025-01&to=2025-03
     """
     try:
-        from_date = datetime.strptime(request.GET.get("from"), "%Y-%m").date().replace(day=1)
-        to_date   = datetime.strptime(request.GET.get("to"), "%Y-%m").date().replace(day=1)
+        from_date = (
+            datetime.strptime(request.GET.get("from"), "%Y-%m").date().replace(day=1)
+        )
+        to_date = (
+            datetime.strptime(request.GET.get("to"), "%Y-%m").date().replace(day=1)
+        )
     except Exception:
-        return Response({"error": "Formato inválido. Usa YYYY-MM en parámetros 'from' y 'to'."}, status=400)
+        return Response(
+            {"error": "Formato inválido. Usa YYYY-MM en parámetros 'from' y 'to'."},
+            status=400,
+        )
 
     # Rango hasta fin de mes final
-    last_day = (to_date.replace(day=28) + timedelta(days=4)).replace(day=1) - timedelta(days=1)
+    last_day = (to_date.replace(day=28) + timedelta(days=4)).replace(day=1) - timedelta(
+        days=1
+    )
 
     # --- AUSENTISMO ------------------------------------------------------
     absences = Absence.objects.filter(start_date__lte=last_day, end_date__gte=from_date)
@@ -78,37 +87,47 @@ def indicator_summary(request):
     absences = absences.annotate(
         days=ExpressionWrapper(
             Cast(F("end_date"), FloatField()) - Cast(F("start_date"), FloatField()) + 1,
-            output_field=FloatField()
+            output_field=FloatField(),
         )
     )
     total_days_absent = absences.aggregate(total=Sum("days"))["total"] or 0
 
-    total_employees   = Employee.objects.count()
+    total_employees = Employee.objects.count()
     total_days_worked = total_employees * ((last_day - from_date).days + 1)
-    absenteeism_percent = round((total_days_absent / total_days_worked) * 100, 2) if total_days_worked else 0
+    absenteeism_percent = (
+        round((total_days_absent / total_days_worked) * 100, 2)
+        if total_days_worked
+        else 0
+    )
 
     # --- CAPACITACIÓN ----------------------------------------------------
     sessions = TrainingSession.objects.filter(date__range=(from_date, last_day)).count()
-    attendances = TrainingSessionAttendance.objects.filter(session__date__range=(from_date, last_day), attended=True).count()
+    attendances = TrainingSessionAttendance.objects.filter(
+        session__date__range=(from_date, last_day), attended=True
+    ).count()
     training_completion_percent = round((attendances / (total_employees or 1)) * 100, 2)
 
     # --- ACCIDENTES ------------------------------------------------------
-    accident_count = WorkAccident.objects.filter(date__range=(from_date, last_day)).count()
-    accident_rate  = round((accident_count / (total_employees or 1)) * 100, 2)
+    accident_count = WorkAccident.objects.filter(
+        date__range=(from_date, last_day)
+    ).count()
+    accident_rate = round((accident_count / (total_employees or 1)) * 100, 2)
 
     # --- APTITUD MÉDICA --------------------------------------------------
     exams = MedicalExam.objects.filter(date__range=(from_date, last_day))
     evaluated = exams.count()
-    aptos     = exams.filter(aptitude__icontains="apto").count()
+    aptos = exams.filter(aptitude__icontains="apto").count()
     aptitude_percent = round((aptos / (evaluated or 1)) * 100, 2)
 
-    return Response({
-        "range": f"{from_date:%Y-%m} → {to_date:%Y-%m}",
-        "absenteeism_percent":          absenteeism_percent,
-        "training_completion_percent":  training_completion_percent,
-        "accident_rate":                accident_rate,
-        "aptitude_percent":             aptitude_percent,
-        "total_sessions":               sessions,
-        "total_accidents":              accident_count,
-        "total_medical_exams":          evaluated,
-    })
+    return Response(
+        {
+            "range": f"{from_date:%Y-%m} → {to_date:%Y-%m}",
+            "absenteeism_percent": absenteeism_percent,
+            "training_completion_percent": training_completion_percent,
+            "accident_rate": accident_rate,
+            "aptitude_percent": aptitude_percent,
+            "total_sessions": sessions,
+            "total_accidents": accident_count,
+            "total_medical_exams": evaluated,
+        }
+    )

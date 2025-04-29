@@ -20,7 +20,7 @@ class BaseAuditViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
 
 class SSTPolicyViewSet(BaseAuditViewSet):
-    queryset         = SSTPolicy.objects.filter(is_deleted=False)
+    queryset = SSTPolicy.objects.filter(is_deleted=False)
     serializer_class = SSTPolicySerializer
 
     def get_queryset(self):
@@ -31,7 +31,7 @@ class SSTPolicyViewSet(BaseAuditViewSet):
 
 
 class PolicyAcceptanceViewSet(BaseAuditViewSet):
-    queryset         = PolicyAcceptance.objects.filter(is_deleted=False)
+    queryset = PolicyAcceptance.objects.filter(is_deleted=False)
     serializer_class = PolicyAcceptanceSerializer
 
     def get_queryset(self):

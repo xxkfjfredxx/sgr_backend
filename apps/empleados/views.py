@@ -6,7 +6,11 @@ from rest_framework.response import Response
 from apps.utils.auditlogmimix import AuditLogMixin
 
 from .models import Employee, DocumentType, EmployeeDocument
-from .serializers import EmployeeSerializer, DocumentTypeSerializer, EmployeeDocumentSerializer
+from .serializers import (
+    EmployeeSerializer,
+    DocumentTypeSerializer,
+    EmployeeDocumentSerializer,
+)
 
 
 class BaseAuditViewSet(AuditLogMixin, viewsets.ModelViewSet):
@@ -21,27 +25,29 @@ class BaseAuditViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
 
 class EmployeeViewSet(BaseAuditViewSet):
-    queryset         = Employee.objects.filter(is_deleted=False)
+    queryset = Employee.objects.filter(is_deleted=False)
     serializer_class = EmployeeSerializer
 
     def get_queryset(self):
         qs = super().get_queryset()
         if name := self.request.query_params.get("name"):
-            qs = qs.filter(first_name__icontains=name) | qs.filter(last_name__icontains=name)
+            qs = qs.filter(first_name__icontains=name) | qs.filter(
+                last_name__icontains=name
+            )
         if doc := self.request.query_params.get("document"):
             qs = qs.filter(document__icontains=doc)
         return qs
 
 
 class DocumentTypeViewSet(BaseAuditViewSet):
-    queryset         = DocumentType.objects.filter(is_deleted=False)
+    queryset = DocumentType.objects.filter(is_deleted=False)
     serializer_class = DocumentTypeSerializer
 
 
 class EmployeeDocumentViewSet(BaseAuditViewSet):
-    queryset         = EmployeeDocument.objects.filter(is_deleted=False)
+    queryset = EmployeeDocument.objects.filter(is_deleted=False)
     serializer_class = EmployeeDocumentSerializer
-    parser_classes   = [MultiPartParser, FormParser]
+    parser_classes = [MultiPartParser, FormParser]
 
     def get_queryset(self):
         qs = super().get_queryset()

@@ -7,45 +7,60 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='ContractorCompany',
+            name="ContractorCompany",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_deleted', models.BooleanField(default=False)),
-                ('deleted_at', models.DateTimeField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('name', models.CharField(max_length=150)),
-                ('nit', models.CharField(max_length=50, unique=True)),
-                ('address', models.CharField(blank=True, max_length=150)),
-                ('phone', models.CharField(blank=True, max_length=30)),
-                ('email', models.EmailField(blank=True, max_length=254)),
-                ('contact_person', models.CharField(blank=True, max_length=100)),
-                ('active', models.BooleanField(default=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_deleted", models.BooleanField(default=False)),
+                ("deleted_at", models.DateTimeField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("name", models.CharField(max_length=150)),
+                ("nit", models.CharField(max_length=50, unique=True)),
+                ("address", models.CharField(blank=True, max_length=150)),
+                ("phone", models.CharField(blank=True, max_length=30)),
+                ("email", models.EmailField(blank=True, max_length=254)),
+                ("contact_person", models.CharField(blank=True, max_length=100)),
+                ("active", models.BooleanField(default=True)),
             ],
             options={
-                'ordering': ['name'],
+                "ordering": ["name"],
             },
         ),
         migrations.CreateModel(
-            name='ContractorContact',
+            name="ContractorContact",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_deleted', models.BooleanField(default=False)),
-                ('deleted_at', models.DateTimeField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('name', models.CharField(max_length=100)),
-                ('phone', models.CharField(blank=True, max_length=30)),
-                ('email', models.EmailField(blank=True, max_length=254)),
-                ('position', models.CharField(blank=True, max_length=50)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_deleted", models.BooleanField(default=False)),
+                ("deleted_at", models.DateTimeField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("name", models.CharField(max_length=100)),
+                ("phone", models.CharField(blank=True, max_length=30)),
+                ("email", models.EmailField(blank=True, max_length=254)),
+                ("position", models.CharField(blank=True, max_length=50)),
             ],
             options={
-                'ordering': ['name'],
+                "ordering": ["name"],
             },
         ),
     ]

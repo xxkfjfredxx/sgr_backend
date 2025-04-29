@@ -12,8 +12,8 @@ from .serializers import AccessLogSerializer, RiskAcceptanceFormSerializer
 class AccessLogViewSet(AuditLogMixin, viewsets.ModelViewSet):
     """CRUD + auditoría para registros de ingreso/egreso de empleados."""
 
-    queryset          = AccessLog.objects.filter(is_deleted=False)
-    serializer_class  = AccessLogSerializer
+    queryset = AccessLog.objects.filter(is_deleted=False)
+    serializer_class = AccessLogSerializer
     permission_classes = [AllowAny]
 
     # --- filtros rápidos opcionales -----------------
@@ -26,7 +26,7 @@ class AccessLogViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
         # ?date=YYYY-MM-DD
         if date_str := self.request.query_params.get("date"):
-            if (dt := parse_date(date_str)):
+            if dt := parse_date(date_str):
                 qs = qs.filter(timestamp__date=dt)
 
         return qs
@@ -43,8 +43,8 @@ class AccessLogViewSet(AuditLogMixin, viewsets.ModelViewSet):
 class RiskAcceptanceFormViewSet(AuditLogMixin, viewsets.ModelViewSet):
     """CRUD + auditoría para formularios de aceptación de riesgo."""
 
-    queryset          = RiskAcceptanceForm.objects.filter(is_deleted=False)
-    serializer_class  = RiskAcceptanceFormSerializer
+    queryset = RiskAcceptanceForm.objects.filter(is_deleted=False)
+    serializer_class = RiskAcceptanceFormSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):

@@ -4,7 +4,7 @@ from apps.utils.mixins import AuditMixin
 
 
 class InspectionTemplate(AuditMixin, models.Model):
-    name        = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
 
     class Meta:
@@ -15,7 +15,9 @@ class InspectionTemplate(AuditMixin, models.Model):
 
 
 class InspectionItem(AuditMixin, models.Model):
-    template = models.ForeignKey(InspectionTemplate, related_name="items", on_delete=models.CASCADE)
+    template = models.ForeignKey(
+        InspectionTemplate, related_name="items", on_delete=models.CASCADE
+    )
     question = models.CharField(max_length=255)
 
     class Meta:
@@ -26,11 +28,13 @@ class InspectionItem(AuditMixin, models.Model):
 
 
 class Inspection(AuditMixin, models.Model):
-    template      = models.ForeignKey(InspectionTemplate, on_delete=models.PROTECT)
-    performed_by  = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True)
-    date          = models.DateField()
-    location      = models.CharField(max_length=150)
-    comments      = models.TextField(blank=True)
+    template = models.ForeignKey(InspectionTemplate, on_delete=models.PROTECT)
+    performed_by = models.ForeignKey(
+        Employee, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    date = models.DateField()
+    location = models.CharField(max_length=150)
+    comments = models.TextField(blank=True)
 
     class Meta:
         ordering = ["-date"]
@@ -40,11 +44,13 @@ class Inspection(AuditMixin, models.Model):
 
 
 class InspectionResponse(AuditMixin, models.Model):
-    inspection   = models.ForeignKey(Inspection, related_name="responses", on_delete=models.CASCADE)
-    item         = models.ForeignKey(InspectionItem, on_delete=models.CASCADE)
-    value        = models.BooleanField()  # True = cumple
-    observation  = models.TextField(blank=True)
-    evidence     = models.FileField(upload_to="inspection_evidence/", blank=True, null=True)
+    inspection = models.ForeignKey(
+        Inspection, related_name="responses", on_delete=models.CASCADE
+    )
+    item = models.ForeignKey(InspectionItem, on_delete=models.CASCADE)
+    value = models.BooleanField()  # True = cumple
+    observation = models.TextField(blank=True)
+    evidence = models.FileField(upload_to="inspection_evidence/", blank=True, null=True)
 
     class Meta:
         ordering = ["item_id"]

@@ -7,28 +7,47 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='SuggestionBox',
+            name="SuggestionBox",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_deleted', models.BooleanField(default=False)),
-                ('deleted_at', models.DateTimeField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('type', models.CharField(choices=[('Sugerencia', 'Sugerencia'), ('Queja', 'Queja'), ('Reporte', 'Reporte de Condición Insegura'), ('Mejora', 'Propuesta de Mejora'), ('Otro', 'Otro')], max_length=30)),
-                ('title', models.CharField(max_length=150)),
-                ('description', models.TextField()),
-                ('anonymous', models.BooleanField(default=False)),
-                ('response', models.TextField(blank=True)),
-                ('responded', models.BooleanField(default=False)),
-                ('responded_at', models.DateTimeField(blank=True, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_deleted", models.BooleanField(default=False)),
+                ("deleted_at", models.DateTimeField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "type",
+                    models.CharField(
+                        choices=[
+                            ("Sugerencia", "Sugerencia"),
+                            ("Queja", "Queja"),
+                            ("Reporte", "Reporte de Condición Insegura"),
+                            ("Mejora", "Propuesta de Mejora"),
+                            ("Otro", "Otro"),
+                        ],
+                        max_length=30,
+                    ),
+                ),
+                ("title", models.CharField(max_length=150)),
+                ("description", models.TextField()),
+                ("anonymous", models.BooleanField(default=False)),
+                ("response", models.TextField(blank=True)),
+                ("responded", models.BooleanField(default=False)),
+                ("responded_at", models.DateTimeField(blank=True, null=True)),
             ],
             options={
-                'ordering': ['-created_at'],
+                "ordering": ["-created_at"],
             },
         ),
     ]

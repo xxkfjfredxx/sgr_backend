@@ -6,26 +6,34 @@ from django.utils.dateparse import parse_date
 from apps.utils.auditlogmimix import AuditLogMixin
 
 from .models import (
-    SystemAudit, AuditChecklist, AuditItem,
-    AuditExecution, AuditResult, AuditFinding,
+    SystemAudit,
+    AuditChecklist,
+    AuditItem,
+    AuditExecution,
+    AuditResult,
+    AuditFinding,
 )
 from .serializers import (
-    SystemAuditSerializer, AuditChecklistSerializer, AuditItemSerializer,
-    AuditExecutionSerializer, AuditResultSerializer, AuditFindingSerializer,
+    SystemAuditSerializer,
+    AuditChecklistSerializer,
+    AuditItemSerializer,
+    AuditExecutionSerializer,
+    AuditResultSerializer,
+    AuditFindingSerializer,
 )
 
 
 # --------- READ-ONLY LOGS ------------------------------------------------
 class SystemAuditViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset          = SystemAudit.objects.all()
-    serializer_class  = SystemAuditSerializer
-    permission_classes = [AllowAny]          # cambia a IsAdminUser cuando termines de depurar
+    queryset = SystemAudit.objects.all()
+    serializer_class = SystemAuditSerializer
+    permission_classes = [AllowAny]  # cambia a IsAdminUser cuando termines de depurar
 
 
 # --------- CRUD CON AUDITORÍA -------------------------------------------
 class AuditChecklistViewSet(AuditLogMixin, viewsets.ModelViewSet):
-    queryset          = AuditChecklist.objects.filter(is_deleted=False)
-    serializer_class  = AuditChecklistSerializer
+    queryset = AuditChecklist.objects.filter(is_deleted=False)
+    serializer_class = AuditChecklistSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
@@ -43,8 +51,8 @@ class AuditChecklistViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
 
 class AuditItemViewSet(AuditLogMixin, viewsets.ModelViewSet):
-    queryset          = AuditItem.objects.filter(is_deleted=False)
-    serializer_class  = AuditItemSerializer
+    queryset = AuditItem.objects.filter(is_deleted=False)
+    serializer_class = AuditItemSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
@@ -62,8 +70,8 @@ class AuditItemViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
 
 class AuditExecutionViewSet(AuditLogMixin, viewsets.ModelViewSet):
-    queryset          = AuditExecution.objects.filter(is_deleted=False)
-    serializer_class  = AuditExecutionSerializer
+    queryset = AuditExecution.objects.filter(is_deleted=False)
+    serializer_class = AuditExecutionSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
@@ -72,7 +80,7 @@ class AuditExecutionViewSet(AuditLogMixin, viewsets.ModelViewSet):
             qs = qs.filter(checklist_id=chk)
         # ?date=YYYY-MM-DD
         if d := self.request.query_params.get("date"):
-            if (dt := parse_date(d)):
+            if dt := parse_date(d):
                 qs = qs.filter(date=dt)
         return qs
 
@@ -85,8 +93,8 @@ class AuditExecutionViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
 
 class AuditResultViewSet(AuditLogMixin, viewsets.ModelViewSet):
-    queryset          = AuditResult.objects.filter(is_deleted=False)
-    serializer_class  = AuditResultSerializer
+    queryset = AuditResult.objects.filter(is_deleted=False)
+    serializer_class = AuditResultSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
@@ -104,8 +112,8 @@ class AuditResultViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
 
 class AuditFindingViewSet(AuditLogMixin, viewsets.ModelViewSet):
-    queryset          = AuditFinding.objects.filter(is_deleted=False)
-    serializer_class  = AuditFindingSerializer
+    queryset = AuditFinding.objects.filter(is_deleted=False)
+    serializer_class = AuditFindingSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):

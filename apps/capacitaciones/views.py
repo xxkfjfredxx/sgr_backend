@@ -14,8 +14,8 @@ from .serializers import (
 
 
 class TrainingSessionViewSet(AuditLogMixin, viewsets.ModelViewSet):
-    queryset           = TrainingSession.objects.filter(is_deleted=False)
-    serializer_class   = TrainingSessionSerializer
+    queryset = TrainingSession.objects.filter(is_deleted=False)
+    serializer_class = TrainingSessionSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
@@ -23,7 +23,7 @@ class TrainingSessionViewSet(AuditLogMixin, viewsets.ModelViewSet):
         if topic := self.request.query_params.get("topic"):
             qs = qs.filter(topic__icontains=topic)
         if date_str := self.request.query_params.get("date"):
-            if (d := parse_date(date_str)):
+            if d := parse_date(date_str):
                 qs = qs.filter(date=d)
         return qs
 
@@ -36,8 +36,8 @@ class TrainingSessionViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
 
 class TrainingSessionAttendanceViewSet(AuditLogMixin, viewsets.ModelViewSet):
-    queryset           = TrainingSessionAttendance.objects.filter(is_deleted=False)
-    serializer_class   = TrainingSessionAttendanceSerializer
+    queryset = TrainingSessionAttendance.objects.filter(is_deleted=False)
+    serializer_class = TrainingSessionAttendanceSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
@@ -57,8 +57,8 @@ class TrainingSessionAttendanceViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
 
 class CertificationViewSet(AuditLogMixin, viewsets.ModelViewSet):
-    queryset           = Certification.objects.filter(is_deleted=False)
-    serializer_class   = CertificationSerializer
+    queryset = Certification.objects.filter(is_deleted=False)
+    serializer_class = CertificationSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
@@ -67,7 +67,12 @@ class CertificationViewSet(AuditLogMixin, viewsets.ModelViewSet):
             qs = qs.filter(participant__employee_id=emp)
         if expired := self.request.query_params.get("expired"):
             if expired.lower() == "true":
-                qs = qs.filter(expiration_date__lt=parse_date(self.request.query_params.get("ref_date", "")) or None)
+                qs = qs.filter(
+                    expiration_date__lt=parse_date(
+                        self.request.query_params.get("ref_date", "")
+                    )
+                    or None
+                )
         return qs
 
     @action(detail=True, methods=["post"])
@@ -75,4 +80,6 @@ class CertificationViewSet(AuditLogMixin, viewsets.ModelViewSet):
         obj = self.get_object()
         obj.restore()
         self.log_audit("RESTORED", obj)
-        return Response({"detail": "Certificación restaurada."}, status=status.HTTP_200_OK)
+        return Response(
+            {"detail": "Certificación restaurada."}, status=status.HTTP_200_OK
+        )

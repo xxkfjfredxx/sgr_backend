@@ -21,14 +21,14 @@ class BaseAuditViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
 
 class ActivePauseSessionViewSet(BaseAuditViewSet):
-    queryset         = ActivePauseSession.objects.filter(is_deleted=False)
+    queryset = ActivePauseSession.objects.filter(is_deleted=False)
     serializer_class = ActivePauseSessionSerializer
 
     def get_queryset(self):
         qs = super().get_queryset()
         # ?date=YYYY-MM-DD
         if d := self.request.query_params.get("date"):
-            if (dt := parse_date(d)):
+            if dt := parse_date(d):
                 qs = qs.filter(date=dt)
         # ?topic=texto
         if topic := self.request.query_params.get("topic"):
@@ -37,7 +37,7 @@ class ActivePauseSessionViewSet(BaseAuditViewSet):
 
 
 class ActivePauseAttendanceViewSet(BaseAuditViewSet):
-    queryset         = ActivePauseAttendance.objects.filter(is_deleted=False)
+    queryset = ActivePauseAttendance.objects.filter(is_deleted=False)
     serializer_class = ActivePauseAttendanceSerializer
 
     def get_queryset(self):

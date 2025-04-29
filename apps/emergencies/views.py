@@ -32,7 +32,7 @@ class BaseAuditViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
 
 class EmergencyBrigadeMemberViewSet(BaseAuditViewSet):
-    queryset         = EmergencyBrigadeMember.objects.filter(is_deleted=False)
+    queryset = EmergencyBrigadeMember.objects.filter(is_deleted=False)
     serializer_class = EmergencyBrigadeMemberSerializer
 
     def get_queryset(self):
@@ -45,7 +45,7 @@ class EmergencyBrigadeMemberViewSet(BaseAuditViewSet):
 
 
 class EmergencyEquipmentViewSet(BaseAuditViewSet):
-    queryset         = EmergencyEquipment.objects.filter(is_deleted=False)
+    queryset = EmergencyEquipment.objects.filter(is_deleted=False)
     serializer_class = EmergencyEquipmentSerializer
 
     def get_queryset(self):
@@ -58,7 +58,7 @@ class EmergencyEquipmentViewSet(BaseAuditViewSet):
 
 
 class EmergencyDrillViewSet(BaseAuditViewSet):
-    queryset         = EmergencyDrill.objects.filter(is_deleted=False)
+    queryset = EmergencyDrill.objects.filter(is_deleted=False)
     serializer_class = EmergencyDrillSerializer
 
     def get_queryset(self):
@@ -66,6 +66,6 @@ class EmergencyDrillViewSet(BaseAuditViewSet):
         if dtype := self.request.query_params.get("drill_type"):
             qs = qs.filter(drill_type=dtype)
         if date_str := self.request.query_params.get("date"):
-            if (d := parse_date(date_str)):
+            if d := parse_date(date_str):
                 qs = qs.filter(date=d)
         return qs

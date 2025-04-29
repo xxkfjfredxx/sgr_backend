@@ -1,5 +1,6 @@
 from rest_framework import permissions
 
+
 class EsRolPermitido(permissions.BasePermission):
     def has_permission(self, request, view):
         user = request.user
@@ -10,4 +11,4 @@ class EsRolPermitido(permissions.BasePermission):
         if roles_permitidos is None:
             return True
 
-        return (user.role and user.role.name in roles_permitidos)
+        return user.role and user.role.name in roles_permitidos

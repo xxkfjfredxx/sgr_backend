@@ -3,10 +3,12 @@ from .models import Area, Hazard, RiskAssessment, RiskControl, RiskReview
 
 
 class AreaSerializer(serializers.ModelSerializer):
-    responsible_name = serializers.CharField(source="responsible.first_name", read_only=True)
+    responsible_name = serializers.CharField(
+        source="responsible.first_name", read_only=True
+    )
 
     class Meta:
-        model  = Area
+        model = Area
         fields = "__all__"
         read_only_fields = ("created_at", "created_by")
 
@@ -15,31 +17,35 @@ class HazardSerializer(serializers.ModelSerializer):
     area_name = serializers.CharField(source="area.name", read_only=True)
 
     class Meta:
-        model  = Hazard
+        model = Hazard
         fields = "__all__"
         read_only_fields = ("created_at", "created_by")
 
 
 class RiskAssessmentSerializer(serializers.ModelSerializer):
-    hazard_description = serializers.CharField(source="hazard.description", read_only=True)
-    area_name          = serializers.CharField(source="hazard.area.name", read_only=True)
-    evaluated_by_name  = serializers.CharField(source="evaluated_by.first_name", read_only=True)
+    hazard_description = serializers.CharField(
+        source="hazard.description", read_only=True
+    )
+    area_name = serializers.CharField(source="hazard.area.name", read_only=True)
+    evaluated_by_name = serializers.CharField(
+        source="evaluated_by.first_name", read_only=True
+    )
 
     class Meta:
-        model  = RiskAssessment
+        model = RiskAssessment
         fields = "__all__"
         read_only_fields = ("created_at", "created_by", "level")
 
 
 class RiskControlSerializer(serializers.ModelSerializer):
     class Meta:
-        model  = RiskControl
+        model = RiskControl
         fields = "__all__"
         read_only_fields = ("created_at", "created_by")
 
 
 class RiskReviewSerializer(serializers.ModelSerializer):
     class Meta:
-        model  = RiskReview
+        model = RiskReview
         fields = "__all__"
         read_only_fields = ("created_at", "created_by")

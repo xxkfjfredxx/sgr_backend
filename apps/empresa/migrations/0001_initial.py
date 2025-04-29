@@ -7,28 +7,35 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Company',
+            name="Company",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_deleted', models.BooleanField(default=False)),
-                ('deleted_at', models.DateTimeField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('name', models.CharField(max_length=150)),
-                ('nit', models.CharField(max_length=30, unique=True)),
-                ('address', models.CharField(blank=True, max_length=255, null=True)),
-                ('phone', models.CharField(blank=True, max_length=20, null=True)),
-                ('email', models.EmailField(blank=True, max_length=254, null=True)),
-                ('sector', models.CharField(blank=True, max_length=100, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_deleted", models.BooleanField(default=False)),
+                ("deleted_at", models.DateTimeField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("name", models.CharField(max_length=150)),
+                ("nit", models.CharField(max_length=30, unique=True)),
+                ("address", models.CharField(blank=True, max_length=255, null=True)),
+                ("phone", models.CharField(blank=True, max_length=20, null=True)),
+                ("email", models.EmailField(blank=True, max_length=254, null=True)),
+                ("sector", models.CharField(blank=True, max_length=100, null=True)),
             ],
             options={
-                'db_table': 'companies',
-                'ordering': ['name'],
+                "db_table": "companies",
+                "ordering": ["name"],
             },
         ),
     ]

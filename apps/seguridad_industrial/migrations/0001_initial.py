@@ -7,53 +7,100 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='WorkAccident',
+            name="WorkAccident",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_deleted', models.BooleanField(default=False)),
-                ('deleted_at', models.DateTimeField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('incident_type', models.CharField(choices=[('Accidente', 'Accidente de Trabajo'), ('Incidente', 'Incidente')], default='Accidente', max_length=20)),
-                ('date', models.DateField()),
-                ('location', models.CharField(max_length=150)),
-                ('description', models.TextField()),
-                ('injury_type', models.CharField(blank=True, max_length=100)),
-                ('severity', models.CharField(blank=True, choices=[('Leve', 'Leve'), ('Grave', 'Grave'), ('Mortal', 'Mortal')], default='Leve', max_length=30)),
-                ('reported_to_arl', models.BooleanField(default=False)),
-                ('days_lost', models.IntegerField(blank=True, default=0, null=True)),
-                ('training_valid', models.BooleanField(default=False)),
-                ('medical_exam_valid', models.BooleanField(default=False)),
-                ('corrective_actions', models.TextField(blank=True)),
-                ('evidence_file', models.FileField(blank=True, null=True, upload_to='accident_evidence/')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_deleted", models.BooleanField(default=False)),
+                ("deleted_at", models.DateTimeField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "incident_type",
+                    models.CharField(
+                        choices=[
+                            ("Accidente", "Accidente de Trabajo"),
+                            ("Incidente", "Incidente"),
+                        ],
+                        default="Accidente",
+                        max_length=20,
+                    ),
+                ),
+                ("date", models.DateField()),
+                ("location", models.CharField(max_length=150)),
+                ("description", models.TextField()),
+                ("injury_type", models.CharField(blank=True, max_length=100)),
+                (
+                    "severity",
+                    models.CharField(
+                        blank=True,
+                        choices=[
+                            ("Leve", "Leve"),
+                            ("Grave", "Grave"),
+                            ("Mortal", "Mortal"),
+                        ],
+                        default="Leve",
+                        max_length=30,
+                    ),
+                ),
+                ("reported_to_arl", models.BooleanField(default=False)),
+                ("days_lost", models.IntegerField(blank=True, default=0, null=True)),
+                ("training_valid", models.BooleanField(default=False)),
+                ("medical_exam_valid", models.BooleanField(default=False)),
+                ("corrective_actions", models.TextField(blank=True)),
+                (
+                    "evidence_file",
+                    models.FileField(
+                        blank=True, null=True, upload_to="accident_evidence/"
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-date'],
+                "ordering": ["-date"],
             },
         ),
         migrations.CreateModel(
-            name='WorkAtHeightPermit',
+            name="WorkAtHeightPermit",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_deleted', models.BooleanField(default=False)),
-                ('deleted_at', models.DateTimeField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('date', models.DateField()),
-                ('location', models.CharField(max_length=150)),
-                ('work_description', models.TextField()),
-                ('checklist', models.JSONField(blank=True, default=dict)),
-                ('approved', models.BooleanField(default=False)),
-                ('supervisor', models.CharField(blank=True, max_length=100)),
-                ('evidence_file', models.FileField(blank=True, null=True, upload_to='height_permits/')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_deleted", models.BooleanField(default=False)),
+                ("deleted_at", models.DateTimeField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("date", models.DateField()),
+                ("location", models.CharField(max_length=150)),
+                ("work_description", models.TextField()),
+                ("checklist", models.JSONField(blank=True, default=dict)),
+                ("approved", models.BooleanField(default=False)),
+                ("supervisor", models.CharField(blank=True, max_length=100)),
+                (
+                    "evidence_file",
+                    models.FileField(
+                        blank=True, null=True, upload_to="height_permits/"
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-date'],
+                "ordering": ["-date"],
             },
         ),
     ]

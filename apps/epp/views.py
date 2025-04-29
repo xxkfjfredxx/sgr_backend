@@ -20,7 +20,7 @@ class BaseAuditViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
 
 class EPPItemViewSet(BaseAuditViewSet):
-    queryset         = EPPItem.objects.filter(is_deleted=False)
+    queryset = EPPItem.objects.filter(is_deleted=False)
     serializer_class = EPPItemSerializer
 
     def get_queryset(self):
@@ -31,7 +31,7 @@ class EPPItemViewSet(BaseAuditViewSet):
 
 
 class EPPAssignmentViewSet(BaseAuditViewSet):
-    queryset         = EPPAssignment.objects.filter(is_deleted=False)
+    queryset = EPPAssignment.objects.filter(is_deleted=False)
     serializer_class = EPPAssignmentSerializer
 
     def get_queryset(self):

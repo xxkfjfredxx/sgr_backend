@@ -5,17 +5,24 @@ from apps.utils.mixins import AuditMixin
 
 class SupportTicket(AuditMixin, models.Model):
     STATUS_CHOICES = [
-        ("open",        "Abierto"),
+        ("open", "Abierto"),
         ("in_progress", "En progreso"),
-        ("closed",      "Cerrado"),
+        ("closed", "Cerrado"),
     ]
 
-    title        = models.CharField(max_length=150)
-    description  = models.TextField()
-    created_by   = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    assigned_to  = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
-                                     related_name="assigned_tickets")
-    status       = models.CharField(max_length=20, choices=STATUS_CHOICES, default="open")
+    title = models.CharField(max_length=150)
+    description = models.TextField()
+    created_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    assigned_to = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="assigned_tickets",
+    )
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="open")
 
     class Meta:
         ordering = ["-created_at"]
@@ -25,11 +32,13 @@ class SupportTicket(AuditMixin, models.Model):
 
 
 class MaintenanceSchedule(AuditMixin, models.Model):
-    title           = models.CharField(max_length=150)
-    description     = models.TextField(blank=True)
-    scheduled_date  = models.DateField()
-    responsible     = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    completed       = models.BooleanField(default=False)
+    title = models.CharField(max_length=150)
+    description = models.TextField(blank=True)
+    scheduled_date = models.DateField()
+    responsible = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    completed = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["scheduled_date"]
@@ -39,10 +48,14 @@ class MaintenanceSchedule(AuditMixin, models.Model):
 
 
 class MaintenanceRecord(AuditMixin, models.Model):
-    schedule       = models.ForeignKey(MaintenanceSchedule, on_delete=models.CASCADE, related_name="records")
-    performed_by   = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    schedule = models.ForeignKey(
+        MaintenanceSchedule, on_delete=models.CASCADE, related_name="records"
+    )
+    performed_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True
+    )
     performed_date = models.DateField()
-    comments       = models.TextField(blank=True)
+    comments = models.TextField(blank=True)
 
     class Meta:
         ordering = ["-performed_date"]

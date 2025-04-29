@@ -7,28 +7,54 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Absence',
+            name="Absence",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_deleted', models.BooleanField(default=False)),
-                ('deleted_at', models.DateTimeField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('absence_type', models.CharField(choices=[('Incapacidad', 'Incapacidad'), ('Licencia', 'Licencia'), ('Vacaciones', 'Vacaciones')], max_length=30)),
-                ('start_date', models.DateField()),
-                ('end_date', models.DateField()),
-                ('diagnosis_code', models.CharField(blank=True, max_length=20, null=True)),
-                ('diagnosis_description', models.CharField(blank=True, max_length=255, null=True)),
-                ('health_provider', models.CharField(blank=True, max_length=100, null=True)),
-                ('reintegrated', models.BooleanField(default=False)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_deleted", models.BooleanField(default=False)),
+                ("deleted_at", models.DateTimeField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "absence_type",
+                    models.CharField(
+                        choices=[
+                            ("Incapacidad", "Incapacidad"),
+                            ("Licencia", "Licencia"),
+                            ("Vacaciones", "Vacaciones"),
+                        ],
+                        max_length=30,
+                    ),
+                ),
+                ("start_date", models.DateField()),
+                ("end_date", models.DateField()),
+                (
+                    "diagnosis_code",
+                    models.CharField(blank=True, max_length=20, null=True),
+                ),
+                (
+                    "diagnosis_description",
+                    models.CharField(blank=True, max_length=255, null=True),
+                ),
+                (
+                    "health_provider",
+                    models.CharField(blank=True, max_length=100, null=True),
+                ),
+                ("reintegrated", models.BooleanField(default=False)),
             ],
             options={
-                'ordering': ['-start_date'],
+                "ordering": ["-start_date"],
             },
         ),
     ]

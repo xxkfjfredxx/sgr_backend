@@ -5,13 +5,12 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from apps.utils.auditlogmimix import AuditLogMixin
 
-from .models import (
-    InspectionTemplate, InspectionItem,
-    Inspection, InspectionResponse
-)
+from .models import InspectionTemplate, InspectionItem, Inspection, InspectionResponse
 from .serializers import (
-    InspectionTemplateSerializer, InspectionItemSerializer,
-    InspectionSerializer, InspectionResponseSerializer
+    InspectionTemplateSerializer,
+    InspectionItemSerializer,
+    InspectionSerializer,
+    InspectionResponseSerializer,
 )
 
 
@@ -28,12 +27,12 @@ class BaseAuditViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
 # ---------------- Templates & Items -----------------
 class InspectionTemplateViewSet(BaseAuditViewSet):
-    queryset         = InspectionTemplate.objects.filter(is_deleted=False)
+    queryset = InspectionTemplate.objects.filter(is_deleted=False)
     serializer_class = InspectionTemplateSerializer
 
 
 class InspectionItemViewSet(BaseAuditViewSet):
-    queryset         = InspectionItem.objects.filter(is_deleted=False)
+    queryset = InspectionItem.objects.filter(is_deleted=False)
     serializer_class = InspectionItemSerializer
 
     def get_queryset(self):
@@ -45,7 +44,7 @@ class InspectionItemViewSet(BaseAuditViewSet):
 
 # ---------------- Inspections -----------------------
 class InspectionViewSet(BaseAuditViewSet):
-    queryset         = Inspection.objects.filter(is_deleted=False)
+    queryset = Inspection.objects.filter(is_deleted=False)
     serializer_class = InspectionSerializer
 
     def get_queryset(self):
@@ -55,14 +54,14 @@ class InspectionViewSet(BaseAuditViewSet):
         if emp := self.request.query_params.get("performed_by"):
             qs = qs.filter(performed_by_id=emp)
         if d := self.request.query_params.get("date"):
-            if (dt := parse_date(d)):
+            if dt := parse_date(d):
                 qs = qs.filter(date=dt)
         return qs
 
 
 # ---------------- Responses -------------------------
 class InspectionResponseViewSet(BaseAuditViewSet):
-    queryset         = InspectionResponse.objects.filter(is_deleted=False)
+    queryset = InspectionResponse.objects.filter(is_deleted=False)
     serializer_class = InspectionResponseSerializer
 
     def get_queryset(self):

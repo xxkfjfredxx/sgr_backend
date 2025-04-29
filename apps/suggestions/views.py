@@ -10,8 +10,8 @@ from .serializers import SuggestionBoxSerializer
 
 
 class SuggestionBoxViewSet(AuditLogMixin, viewsets.ModelViewSet):
-    queryset           = SuggestionBox.objects.filter(is_deleted=False)
-    serializer_class   = SuggestionBoxSerializer
+    queryset = SuggestionBox.objects.filter(is_deleted=False)
+    serializer_class = SuggestionBoxSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
@@ -21,7 +21,7 @@ class SuggestionBoxViewSet(AuditLogMixin, viewsets.ModelViewSet):
         if resp := self.request.query_params.get("responded"):
             qs = qs.filter(responded=resp.lower() == "true")
         if d := self.request.query_params.get("from"):
-            if (dt := parse_date(d)):
+            if dt := parse_date(d):
                 qs = qs.filter(created_at__date__gte=dt)
         return qs
 

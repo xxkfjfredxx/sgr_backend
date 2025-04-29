@@ -7,6 +7,6 @@ class SuggestionBoxSerializer(serializers.ModelSerializer):
     employee_data = EmployeeSerializer(source="employee", read_only=True)
 
     class Meta:
-        model  = SuggestionBox
+        model = SuggestionBox
         fields = "__all__"
         read_only_fields = ("created_at", "created_by")

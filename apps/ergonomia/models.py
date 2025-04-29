@@ -3,14 +3,22 @@ from apps.utils.mixins import AuditMixin
 
 
 class ErgonomicAssessment(AuditMixin, models.Model):
-    employee        = models.ForeignKey("empleados.Employee", on_delete=models.CASCADE, related_name="ergonomic_assessments")
-    position        = models.ForeignKey("catalogos.Position", on_delete=models.SET_NULL, null=True, blank=True)
-    area            = models.CharField(max_length=100, blank=True)
-    date            = models.DateField()
-    evaluation_type = models.CharField(max_length=100, blank=True)  # Ej.: Postural, Manual handling
-    summary         = models.TextField(blank=True)
-    file            = models.FileField(upload_to="ergonomics/", blank=True, null=True)
-    responsible     = models.CharField(max_length=100, blank=True)
+    employee = models.ForeignKey(
+        "empleados.Employee",
+        on_delete=models.CASCADE,
+        related_name="ergonomic_assessments",
+    )
+    position = models.ForeignKey(
+        "catalogos.Position", on_delete=models.SET_NULL, null=True, blank=True
+    )
+    area = models.CharField(max_length=100, blank=True)
+    date = models.DateField()
+    evaluation_type = models.CharField(
+        max_length=100, blank=True
+    )  # Ej.: Postural, Manual handling
+    summary = models.TextField(blank=True)
+    file = models.FileField(upload_to="ergonomics/", blank=True, null=True)
+    responsible = models.CharField(max_length=100, blank=True)
 
     class Meta:
         ordering = ["-date"]
@@ -20,14 +28,18 @@ class ErgonomicAssessment(AuditMixin, models.Model):
 
 
 class ARO(AuditMixin, models.Model):
-    employee    = models.ForeignKey("empleados.Employee", on_delete=models.SET_NULL, null=True, blank=True)
-    position    = models.ForeignKey("catalogos.Position", on_delete=models.SET_NULL, null=True, blank=True)
-    date        = models.DateField()
+    employee = models.ForeignKey(
+        "empleados.Employee", on_delete=models.SET_NULL, null=True, blank=True
+    )
+    position = models.ForeignKey(
+        "catalogos.Position", on_delete=models.SET_NULL, null=True, blank=True
+    )
+    date = models.DateField()
     description = models.TextField()
-    hazard      = models.CharField(max_length=150)
-    risk        = models.CharField(max_length=150)
-    control     = models.TextField()
-    evidence    = models.FileField(upload_to="aro/", blank=True, null=True)
+    hazard = models.CharField(max_length=150)
+    risk = models.CharField(max_length=150)
+    control = models.TextField()
+    evidence = models.FileField(upload_to="aro/", blank=True, null=True)
 
     class Meta:
         ordering = ["-date"]
@@ -37,14 +49,18 @@ class ARO(AuditMixin, models.Model):
 
 
 class ATS(AuditMixin, models.Model):
-    employee  = models.ForeignKey("empleados.Employee", on_delete=models.SET_NULL, null=True, blank=True)
-    position  = models.ForeignKey("catalogos.Position", on_delete=models.SET_NULL, null=True, blank=True)
-    date      = models.DateField()
-    activity  = models.CharField(max_length=150)
-    hazard    = models.CharField(max_length=150)
-    risk      = models.CharField(max_length=150)
-    control   = models.TextField()
-    evidence  = models.FileField(upload_to="ats/", blank=True, null=True)
+    employee = models.ForeignKey(
+        "empleados.Employee", on_delete=models.SET_NULL, null=True, blank=True
+    )
+    position = models.ForeignKey(
+        "catalogos.Position", on_delete=models.SET_NULL, null=True, blank=True
+    )
+    date = models.DateField()
+    activity = models.CharField(max_length=150)
+    hazard = models.CharField(max_length=150)
+    risk = models.CharField(max_length=150)
+    control = models.TextField()
+    evidence = models.FileField(upload_to="ats/", blank=True, null=True)
 
     class Meta:
         ordering = ["-date"]

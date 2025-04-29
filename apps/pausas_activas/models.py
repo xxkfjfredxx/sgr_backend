@@ -3,10 +3,12 @@ from apps.utils.mixins import AuditMixin
 
 
 class ActivePauseSession(AuditMixin, models.Model):
-    date        = models.DateField()
-    topic       = models.CharField(max_length=120, blank=True)   # Ej.: “Estiramientos de cuello”
+    date = models.DateField()
+    topic = models.CharField(
+        max_length=120, blank=True
+    )  # Ej.: “Estiramientos de cuello”
     facilitator = models.CharField(max_length=100, blank=True)
-    comments    = models.TextField(blank=True)
+    comments = models.TextField(blank=True)
 
     class Meta:
         ordering = ["-date"]
@@ -16,9 +18,11 @@ class ActivePauseSession(AuditMixin, models.Model):
 
 
 class ActivePauseAttendance(AuditMixin, models.Model):
-    session   = models.ForeignKey(ActivePauseSession, on_delete=models.CASCADE, related_name="attendances")
-    employee  = models.ForeignKey("empleados.Employee", on_delete=models.CASCADE)
-    attended  = models.BooleanField(default=True)
+    session = models.ForeignKey(
+        ActivePauseSession, on_delete=models.CASCADE, related_name="attendances"
+    )
+    employee = models.ForeignKey("empleados.Employee", on_delete=models.CASCADE)
+    attended = models.BooleanField(default=True)
     signature = models.ImageField(upload_to="pausas_firmas/", blank=True, null=True)
 
     class Meta:

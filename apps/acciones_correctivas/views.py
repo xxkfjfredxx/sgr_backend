@@ -14,8 +14,9 @@ from .serializers import (
 
 class ImprovementPlanViewSet(AuditLogMixin, viewsets.ModelViewSet):
     """Planes de mejora (con auditoría)"""
-    queryset          = ImprovementPlan.objects.filter(is_deleted=False)
-    serializer_class  = ImprovementPlanSerializer
+
+    queryset = ImprovementPlan.objects.filter(is_deleted=False)
+    serializer_class = ImprovementPlanSerializer
     permission_classes = [AllowAny]
 
     # filtro rápido ?status=open
@@ -35,8 +36,9 @@ class ImprovementPlanViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
 class ActionItemViewSet(AuditLogMixin, viewsets.ModelViewSet):
     """Acciones específicas dentro de un plan"""
-    queryset          = ActionItem.objects.filter(is_deleted=False)
-    serializer_class  = ActionItemSerializer
+
+    queryset = ActionItem.objects.filter(is_deleted=False)
+    serializer_class = ActionItemSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
@@ -55,8 +57,9 @@ class ActionItemViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
 class RiskActionViewSet(AuditLogMixin, viewsets.ModelViewSet):
     """Acciones derivadas de evaluación de riesgos"""
-    queryset          = RiskAction.objects.filter(is_deleted=False)
-    serializer_class  = RiskActionSerializer
+
+    queryset = RiskAction.objects.filter(is_deleted=False)
+    serializer_class = RiskActionSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
@@ -70,4 +73,6 @@ class RiskActionViewSet(AuditLogMixin, viewsets.ModelViewSet):
         obj = self.get_object()
         obj.restore()
         self.log_audit("RESTORED", obj)
-        return Response({"detail": "Acción de riesgo restaurada."}, status=status.HTTP_200_OK)
+        return Response(
+            {"detail": "Acción de riesgo restaurada."}, status=status.HTTP_200_OK
+        )

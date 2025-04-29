@@ -7,47 +7,78 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='EPPAssignment',
+            name="EPPAssignment",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_deleted', models.BooleanField(default=False)),
-                ('deleted_at', models.DateTimeField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('assigned_at', models.DateField(auto_now_add=True)),
-                ('returned_at', models.DateField(blank=True, null=True)),
-                ('condition_on_return', models.TextField(blank=True)),
-                ('assigned_by', models.CharField(blank=True, max_length=100)),
-                ('evidence', models.FileField(blank=True, null=True, upload_to='epp_evidence/')),
-                ('is_active', models.BooleanField(default=True)),
-                ('return_reason', models.CharField(blank=True, choices=[('Desgaste', 'Desgaste'), ('Daño', 'Daño'), ('Vencimiento', 'Vencimiento'), ('Pérdida', 'Pérdida'), ('Reposición programada', 'Reposición programada')], max_length=30)),
-                ('confirmed', models.BooleanField(default=False)),
-                ('confirmation_date', models.DateTimeField(blank=True, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_deleted", models.BooleanField(default=False)),
+                ("deleted_at", models.DateTimeField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("assigned_at", models.DateField(auto_now_add=True)),
+                ("returned_at", models.DateField(blank=True, null=True)),
+                ("condition_on_return", models.TextField(blank=True)),
+                ("assigned_by", models.CharField(blank=True, max_length=100)),
+                (
+                    "evidence",
+                    models.FileField(blank=True, null=True, upload_to="epp_evidence/"),
+                ),
+                ("is_active", models.BooleanField(default=True)),
+                (
+                    "return_reason",
+                    models.CharField(
+                        blank=True,
+                        choices=[
+                            ("Desgaste", "Desgaste"),
+                            ("Daño", "Daño"),
+                            ("Vencimiento", "Vencimiento"),
+                            ("Pérdida", "Pérdida"),
+                            ("Reposición programada", "Reposición programada"),
+                        ],
+                        max_length=30,
+                    ),
+                ),
+                ("confirmed", models.BooleanField(default=False)),
+                ("confirmation_date", models.DateTimeField(blank=True, null=True)),
             ],
             options={
-                'ordering': ['-assigned_at'],
+                "ordering": ["-assigned_at"],
             },
         ),
         migrations.CreateModel(
-            name='EPPItem',
+            name="EPPItem",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_deleted', models.BooleanField(default=False)),
-                ('deleted_at', models.DateTimeField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('name', models.CharField(max_length=100)),
-                ('description', models.TextField(blank=True)),
-                ('stock', models.IntegerField(default=0)),
-                ('expiration_date', models.DateField(blank=True, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_deleted", models.BooleanField(default=False)),
+                ("deleted_at", models.DateTimeField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("name", models.CharField(max_length=100)),
+                ("description", models.TextField(blank=True)),
+                ("stock", models.IntegerField(default=0)),
+                ("expiration_date", models.DateField(blank=True, null=True)),
             ],
             options={
-                'ordering': ['name'],
+                "ordering": ["name"],
             },
         ),
     ]

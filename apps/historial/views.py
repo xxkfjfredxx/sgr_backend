@@ -1,5 +1,7 @@
 from rest_framework import viewsets
-from rest_framework.permissions import AllowAny          # cámbialo a IsAuthenticated cuando quieras
+from rest_framework.permissions import (
+    AllowAny,
+)  # cámbialo a IsAuthenticated cuando quieras
 from .models import WorkHistory
 from .serializers import WorkHistorySerializer
 
@@ -9,8 +11,9 @@ class WorkHistoryViewSet(viewsets.ReadOnlyModelViewSet):
     Histórico inmutable de cambios en EmploymentLink.
     Solo lectura (GET list / retrieve).
     """
-    queryset           = WorkHistory.objects.all()       # ya está ordenado desde Meta
-    serializer_class   = WorkHistorySerializer
+
+    queryset = WorkHistory.objects.all()  # ya está ordenado desde Meta
+    serializer_class = WorkHistorySerializer
     permission_classes = [AllowAny]
 
     # ----- filtros rápidos -----

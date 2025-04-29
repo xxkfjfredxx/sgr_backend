@@ -6,7 +6,9 @@ from apps.utils.auditlogmimix import AuditLogMixin
 
 from .models import SupportTicket, MaintenanceSchedule, MaintenanceRecord
 from .serializers import (
-    SupportTicketSerializer, MaintenanceScheduleSerializer, MaintenanceRecordSerializer
+    SupportTicketSerializer,
+    MaintenanceScheduleSerializer,
+    MaintenanceRecordSerializer,
 )
 
 
@@ -22,7 +24,7 @@ class BaseAuditViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
 
 class SupportTicketViewSet(BaseAuditViewSet):
-    queryset         = SupportTicket.objects.filter(is_deleted=False)
+    queryset = SupportTicket.objects.filter(is_deleted=False)
     serializer_class = SupportTicketSerializer
 
     def get_queryset(self):
@@ -35,12 +37,12 @@ class SupportTicketViewSet(BaseAuditViewSet):
 
 
 class MaintenanceScheduleViewSet(BaseAuditViewSet):
-    queryset         = MaintenanceSchedule.objects.filter(is_deleted=False)
+    queryset = MaintenanceSchedule.objects.filter(is_deleted=False)
     serializer_class = MaintenanceScheduleSerializer
 
 
 class MaintenanceRecordViewSet(BaseAuditViewSet):
-    queryset         = MaintenanceRecord.objects.filter(is_deleted=False)
+    queryset = MaintenanceRecord.objects.filter(is_deleted=False)
     serializer_class = MaintenanceRecordSerializer
 
     def get_queryset(self):

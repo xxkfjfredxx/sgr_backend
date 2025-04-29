@@ -7,36 +7,42 @@ from apps.utils.mixins import AuditMixin
 
 
 class Employee(AuditMixin, models.Model):
-    user        = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
-    contractor  = models.ForeignKey(
-        ContractorCompany, on_delete=models.SET_NULL, blank=True, null=True,
-        related_name="employees", help_text="Solo si es empleado de un contratista"
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True
     )
-    document           = models.CharField(max_length=20, unique=True)
-    first_name         = models.CharField(max_length=100)
-    last_name          = models.CharField(max_length=100)
-    gender             = models.CharField(max_length=10, blank=True, null=True)
-    birth_date         = models.DateField(blank=True, null=True)
-    eps                = models.CharField(max_length=100, blank=True, null=True)
-    afp                = models.CharField(max_length=100, blank=True, null=True)
-    education          = models.CharField(max_length=100, blank=True, null=True)
-    marital_status     = models.CharField(max_length=50, blank=True, null=True)
-    emergency_contact  = models.CharField(max_length=100, blank=True, null=True)
-    phone_contact      = models.CharField(max_length=20, blank=True, null=True)
-    address            = models.CharField(max_length=100, blank=True, null=True)
-    ethnicity          = models.CharField(max_length=50, blank=True, null=True)
+    contractor = models.ForeignKey(
+        ContractorCompany,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name="employees",
+        help_text="Solo si es empleado de un contratista",
+    )
+    document = models.CharField(max_length=20, unique=True)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    gender = models.CharField(max_length=10, blank=True, null=True)
+    birth_date = models.DateField(blank=True, null=True)
+    eps = models.CharField(max_length=100, blank=True, null=True)
+    afp = models.CharField(max_length=100, blank=True, null=True)
+    education = models.CharField(max_length=100, blank=True, null=True)
+    marital_status = models.CharField(max_length=50, blank=True, null=True)
+    emergency_contact = models.CharField(max_length=100, blank=True, null=True)
+    phone_contact = models.CharField(max_length=20, blank=True, null=True)
+    address = models.CharField(max_length=100, blank=True, null=True)
+    ethnicity = models.CharField(max_length=50, blank=True, null=True)
     socioeconomic_stratum = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        db_table  = "employees"
-        ordering  = ["first_name", "last_name"]
+        db_table = "employees"
+        ordering = ["first_name", "last_name"]
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
 
 class DocumentType(AuditMixin, models.Model):
-    name     = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
     required = models.BooleanField(default=False)
 
     class Meta:
@@ -47,17 +53,19 @@ class DocumentType(AuditMixin, models.Model):
 
 
 def document_upload_path(instance, filename):
-    ext       = filename.split(".")[-1]
-    doc_type  = instance.document_type.name.lower().replace(" ", "_")
+    ext = filename.split(".")[-1]
+    doc_type = instance.document_type.name.lower().replace(" ", "_")
     date_path = datetime.now().strftime("%Y/%m/%d")
-    filename  = f"{doc_type}-emp{instance.employee.id}-{datetime.now().strftime('%Y%m%d%H%M%S')}.{ext}"
+    filename = f"{doc_type}-emp{instance.employee.id}-{datetime.now().strftime('%Y%m%d%H%M%S')}.{ext}"
     return os.path.join("documents", doc_type, date_path, filename)
 
 
 class EmployeeDocument(AuditMixin, models.Model):
-    employee       = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name="documents")
-    document_type  = models.ForeignKey(DocumentType, on_delete=models.PROTECT)
-    file           = models.FileField(upload_to=document_upload_path)
+    employee = models.ForeignKey(
+        Employee, on_delete=models.CASCADE, related_name="documents"
+    )
+    document_type = models.ForeignKey(DocumentType, on_delete=models.PROTECT)
+    file = models.FileField(upload_to=document_upload_path)
 
     class Meta:
         ordering = ["-created_at"]

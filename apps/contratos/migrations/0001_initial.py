@@ -7,28 +7,62 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Contract',
+            name="Contract",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_deleted', models.BooleanField(default=False)),
-                ('deleted_at', models.DateTimeField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('contract_type', models.CharField(choices=[('Laboral', 'Laboral'), ('Servicios', 'Servicios'), ('Aprendizaje', 'Aprendizaje'), ('Temporal', 'Temporal'), ('Otro', 'Otro')], max_length=50)),
-                ('start_date', models.DateField()),
-                ('end_date', models.DateField(blank=True, null=True)),
-                ('renewal_count', models.IntegerField(default=0)),
-                ('contract_file', models.FileField(blank=True, null=True, upload_to='contracts/')),
-                ('status', models.CharField(choices=[('VIGENTE', 'Vigente'), ('TERMINADO', 'Terminado'), ('LIQUIDADO', 'Liquidado'), ('SUSPENDIDO', 'Suspendido')], default='VIGENTE', max_length=50)),
-                ('notes', models.TextField(blank=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_deleted", models.BooleanField(default=False)),
+                ("deleted_at", models.DateTimeField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "contract_type",
+                    models.CharField(
+                        choices=[
+                            ("Laboral", "Laboral"),
+                            ("Servicios", "Servicios"),
+                            ("Aprendizaje", "Aprendizaje"),
+                            ("Temporal", "Temporal"),
+                            ("Otro", "Otro"),
+                        ],
+                        max_length=50,
+                    ),
+                ),
+                ("start_date", models.DateField()),
+                ("end_date", models.DateField(blank=True, null=True)),
+                ("renewal_count", models.IntegerField(default=0)),
+                (
+                    "contract_file",
+                    models.FileField(blank=True, null=True, upload_to="contracts/"),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("VIGENTE", "Vigente"),
+                            ("TERMINADO", "Terminado"),
+                            ("LIQUIDADO", "Liquidado"),
+                            ("SUSPENDIDO", "Suspendido"),
+                        ],
+                        default="VIGENTE",
+                        max_length=50,
+                    ),
+                ),
+                ("notes", models.TextField(blank=True)),
             ],
             options={
-                'ordering': ['-created_at'],
+                "ordering": ["-created_at"],
             },
         ),
     ]

@@ -8,65 +8,102 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='DocumentType',
+            name="DocumentType",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_deleted', models.BooleanField(default=False)),
-                ('deleted_at', models.DateTimeField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('name', models.CharField(max_length=100)),
-                ('required', models.BooleanField(default=False)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_deleted", models.BooleanField(default=False)),
+                ("deleted_at", models.DateTimeField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("name", models.CharField(max_length=100)),
+                ("required", models.BooleanField(default=False)),
             ],
             options={
-                'ordering': ['name'],
+                "ordering": ["name"],
             },
         ),
         migrations.CreateModel(
-            name='Employee',
+            name="Employee",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_deleted', models.BooleanField(default=False)),
-                ('deleted_at', models.DateTimeField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('document', models.CharField(max_length=20, unique=True)),
-                ('first_name', models.CharField(max_length=100)),
-                ('last_name', models.CharField(max_length=100)),
-                ('gender', models.CharField(blank=True, max_length=10, null=True)),
-                ('birth_date', models.DateField(blank=True, null=True)),
-                ('eps', models.CharField(blank=True, max_length=100, null=True)),
-                ('afp', models.CharField(blank=True, max_length=100, null=True)),
-                ('education', models.CharField(blank=True, max_length=100, null=True)),
-                ('marital_status', models.CharField(blank=True, max_length=50, null=True)),
-                ('emergency_contact', models.CharField(blank=True, max_length=100, null=True)),
-                ('phone_contact', models.CharField(blank=True, max_length=20, null=True)),
-                ('address', models.CharField(blank=True, max_length=100, null=True)),
-                ('ethnicity', models.CharField(blank=True, max_length=50, null=True)),
-                ('socioeconomic_stratum', models.IntegerField(blank=True, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_deleted", models.BooleanField(default=False)),
+                ("deleted_at", models.DateTimeField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("document", models.CharField(max_length=20, unique=True)),
+                ("first_name", models.CharField(max_length=100)),
+                ("last_name", models.CharField(max_length=100)),
+                ("gender", models.CharField(blank=True, max_length=10, null=True)),
+                ("birth_date", models.DateField(blank=True, null=True)),
+                ("eps", models.CharField(blank=True, max_length=100, null=True)),
+                ("afp", models.CharField(blank=True, max_length=100, null=True)),
+                ("education", models.CharField(blank=True, max_length=100, null=True)),
+                (
+                    "marital_status",
+                    models.CharField(blank=True, max_length=50, null=True),
+                ),
+                (
+                    "emergency_contact",
+                    models.CharField(blank=True, max_length=100, null=True),
+                ),
+                (
+                    "phone_contact",
+                    models.CharField(blank=True, max_length=20, null=True),
+                ),
+                ("address", models.CharField(blank=True, max_length=100, null=True)),
+                ("ethnicity", models.CharField(blank=True, max_length=50, null=True)),
+                ("socioeconomic_stratum", models.IntegerField(blank=True, null=True)),
             ],
             options={
-                'db_table': 'employees',
-                'ordering': ['first_name', 'last_name'],
+                "db_table": "employees",
+                "ordering": ["first_name", "last_name"],
             },
         ),
         migrations.CreateModel(
-            name='EmployeeDocument',
+            name="EmployeeDocument",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_deleted', models.BooleanField(default=False)),
-                ('deleted_at', models.DateTimeField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('file', models.FileField(upload_to=apps.empleados.models.document_upload_path)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_deleted", models.BooleanField(default=False)),
+                ("deleted_at", models.DateTimeField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "file",
+                    models.FileField(
+                        upload_to=apps.empleados.models.document_upload_path
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-created_at'],
+                "ordering": ["-created_at"],
             },
         ),
     ]

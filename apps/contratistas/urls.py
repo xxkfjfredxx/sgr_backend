@@ -3,9 +3,11 @@ from rest_framework.routers import DefaultRouter
 from .views import ContractorCompanyViewSet, ContractorContactViewSet
 
 router = DefaultRouter()
-router.register(r'contractors', ContractorCompanyViewSet, basename='contractors')
-router.register(r'contractor-contacts', ContractorContactViewSet, basename='contractor-contacts')
+router.register(r"contractors", ContractorCompanyViewSet, basename="contractors")
+router.register(
+    r"contractor-contacts", ContractorContactViewSet, basename="contractor-contacts"
+)
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path("", include(router.urls)),
 ]

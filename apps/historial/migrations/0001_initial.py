@@ -7,26 +7,33 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='WorkHistory',
+            name="WorkHistory",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_deleted', models.BooleanField(default=False)),
-                ('deleted_at', models.DateTimeField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('modified_field', models.CharField(max_length=50)),
-                ('old_value', models.TextField(blank=True, null=True)),
-                ('new_value', models.TextField()),
-                ('change_date', models.DateTimeField(auto_now_add=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_deleted", models.BooleanField(default=False)),
+                ("deleted_at", models.DateTimeField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("modified_field", models.CharField(max_length=50)),
+                ("old_value", models.TextField(blank=True, null=True)),
+                ("new_value", models.TextField()),
+                ("change_date", models.DateTimeField(auto_now_add=True)),
             ],
             options={
-                'db_table': 'work_history',
-                'ordering': ['-change_date'],
+                "db_table": "work_history",
+                "ordering": ["-change_date"],
             },
         ),
     ]

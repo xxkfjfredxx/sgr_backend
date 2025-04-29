@@ -3,29 +3,32 @@ from django.db import models
 from django.utils import timezone
 
 # ⚠️  SIN get_user_model – usamos una referencia perezosa en string
-AUTH_USER = settings.AUTH_USER_MODEL   # e.g. "usuarios.User"
+AUTH_USER = settings.AUTH_USER_MODEL  # e.g. "usuarios.User"
 
 
 class AuditMixin(models.Model):
-    is_deleted   = models.BooleanField(default=False)
-    deleted_at   = models.DateTimeField(null=True, blank=True)
-    deleted_by   = models.ForeignKey(
+    is_deleted = models.BooleanField(default=False)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.ForeignKey(
         AUTH_USER,  # <- referencia como string evita import circular
-        null=True, blank=True,
+        null=True,
+        blank=True,
         on_delete=models.SET_NULL,
         related_name="deleted_%(class)s_set",
     )
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
         AUTH_USER,
-        null=True, blank=True,
+        null=True,
+        blank=True,
         on_delete=models.SET_NULL,
         related_name="created_%(class)s_set",
     )
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey(
         AUTH_USER,
-        null=True, blank=True,
+        null=True,
+        blank=True,
         on_delete=models.SET_NULL,
         related_name="updated_%(class)s_set",
     )

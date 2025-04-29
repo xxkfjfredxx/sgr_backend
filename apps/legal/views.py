@@ -13,8 +13,9 @@ class LegalRequirementViewSet(AuditLogMixin, viewsets.ModelViewSet):
     """
     CRUD de requisitos legales con auditoría y borrado lógico.
     """
-    queryset           = LegalRequirement.objects.filter(is_deleted=False)
-    serializer_class   = LegalRequirementSerializer
+
+    queryset = LegalRequirement.objects.filter(is_deleted=False)
+    serializer_class = LegalRequirementSerializer
     permission_classes = [AllowAny]
 
     # ------------- filtros rápidos --------------
@@ -31,7 +32,7 @@ class LegalRequirementViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
         # ?expires_before=YYYY-MM-DD
         if exp := self.request.query_params.get("expires_before"):
-            if (dt := parse_date(exp)):
+            if dt := parse_date(exp):
                 qs = qs.filter(expiration_date__lte=dt)
 
         return qs
@@ -42,4 +43,6 @@ class LegalRequirementViewSet(AuditLogMixin, viewsets.ModelViewSet):
         obj = self.get_object()
         obj.restore()
         self.log_audit("RESTORED", obj)
-        return Response({"detail": "Requisito legal restaurado."}, status=status.HTTP_200_OK)
+        return Response(
+            {"detail": "Requisito legal restaurado."}, status=status.HTTP_200_OK
+        )

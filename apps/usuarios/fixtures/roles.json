@@ -1,0 +1,23 @@
+[
+    {
+      "model": "usuarios.userrole",
+      "pk": 1,
+      "fields": {
+        "name": "Admin",
+        "description": "Super-Admin",
+        "permissions": {},
+        "is_active": true
+      }
+    },
+    {
+      "model": "usuarios.userrole",
+      "pk": 2,
+      "fields": {
+        "name": "RRHH",
+        "description": "Recursos Humanos",
+        "permissions": {},
+        "is_active": true,
+        "_comment cargar este json para cargar la data": "python manage.py loaddata apps/usuarios/fixtures/roles.json"
+      }
+    }
+  ]

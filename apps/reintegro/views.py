@@ -10,8 +10,8 @@ from .serializers import ReintegroSerializer
 
 
 class ReintegroViewSet(AuditLogMixin, viewsets.ModelViewSet):
-    queryset           = Reintegro.objects.filter(is_deleted=False)
-    serializer_class   = ReintegroSerializer
+    queryset = Reintegro.objects.filter(is_deleted=False)
+    serializer_class = ReintegroSerializer
     permission_classes = [AllowAny]
 
     # ---------- filtros rápidos ----------
@@ -28,10 +28,10 @@ class ReintegroViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
         # ?date_from=YYYY-MM-DD   &   ?date_to=YYYY-MM-DD
         if df := self.request.query_params.get("date_from"):
-            if (d1 := parse_date(df)):
+            if d1 := parse_date(df):
                 qs = qs.filter(start_date__gte=d1)
         if dt := self.request.query_params.get("date_to"):
-            if (d2 := parse_date(dt)):
+            if d2 := parse_date(dt):
                 qs = qs.filter(start_date__lte=d2)
 
         return qs

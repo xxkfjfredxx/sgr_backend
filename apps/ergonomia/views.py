@@ -22,7 +22,7 @@ class BaseAuditViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
 # --------- ErgonomicAssessment -------------
 class ErgonomicAssessmentViewSet(BaseAuditViewSet):
-    queryset         = ErgonomicAssessment.objects.filter(is_deleted=False)
+    queryset = ErgonomicAssessment.objects.filter(is_deleted=False)
     serializer_class = ErgonomicAssessmentSerializer
 
     def get_queryset(self):
@@ -30,14 +30,14 @@ class ErgonomicAssessmentViewSet(BaseAuditViewSet):
         if emp := self.request.query_params.get("employee"):
             qs = qs.filter(employee_id=emp)
         if date_str := self.request.query_params.get("date"):
-            if (d := parse_date(date_str)):
+            if d := parse_date(date_str):
                 qs = qs.filter(date=d)
         return qs
 
 
 # ---------------- ARO ----------------------
 class AROViewSet(BaseAuditViewSet):
-    queryset         = ARO.objects.filter(is_deleted=False)
+    queryset = ARO.objects.filter(is_deleted=False)
     serializer_class = AROSerializer
 
     def get_queryset(self):
@@ -51,7 +51,7 @@ class AROViewSet(BaseAuditViewSet):
 
 # ---------------- ATS ----------------------
 class ATSViewSet(BaseAuditViewSet):
-    queryset         = ATS.objects.filter(is_deleted=False)
+    queryset = ATS.objects.filter(is_deleted=False)
     serializer_class = ATSSerializer
 
     def get_queryset(self):

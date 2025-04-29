@@ -9,8 +9,8 @@ from .serializers import CompanySerializer
 
 
 class CompanyViewSet(AuditLogMixin, viewsets.ModelViewSet):
-    queryset           = Company.objects.filter(is_deleted=False)
-    serializer_class   = CompanySerializer
+    queryset = Company.objects.filter(is_deleted=False)
+    serializer_class = CompanySerializer
     permission_classes = [AllowAny]
 
     # -------- filtros rápidos ----------

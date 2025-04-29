@@ -3,10 +3,12 @@ from apps.utils.mixins import AuditMixin
 
 
 class Task(AuditMixin, models.Model):
-    name        = models.CharField(max_length=150)
+    name = models.CharField(max_length=150)
     description = models.TextField(blank=True)
-    position    = models.ForeignKey("catalogos.Position", on_delete=models.CASCADE, related_name="tasks")
-    active      = models.BooleanField(default=True)
+    position = models.ForeignKey(
+        "catalogos.Position", on_delete=models.CASCADE, related_name="tasks"
+    )
+    active = models.BooleanField(default=True)
 
     class Meta:
         ordering = ["name"]
@@ -16,13 +18,13 @@ class Task(AuditMixin, models.Model):
 
 
 class IPVRMatrix(AuditMixin, models.Model):
-    task        = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="ipvr")
-    hazard      = models.CharField(max_length=150)   # Peligro
-    risk        = models.CharField(max_length=150)   # Riesgo
-    control     = models.TextField()                 # Medidas de control
-    severity    = models.CharField(max_length=50, blank=True)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="ipvr")
+    hazard = models.CharField(max_length=150)  # Peligro
+    risk = models.CharField(max_length=150)  # Riesgo
+    control = models.TextField()  # Medidas de control
+    severity = models.CharField(max_length=50, blank=True)
     probability = models.CharField(max_length=50, blank=True)
-    evaluation  = models.CharField(max_length=50, blank=True)  # Bajo / Medio / Alto
+    evaluation = models.CharField(max_length=50, blank=True)  # Bajo / Medio / Alto
 
     class Meta:
         ordering = ["task__name", "hazard"]

@@ -3,8 +3,8 @@ from .views import AbsenceViewSet
 from django.urls import path, include
 
 router = DefaultRouter()
-router.register(r'absences', AbsenceViewSet, basename='absence')
+router.register(r"absences", AbsenceViewSet, basename="absence")
 
 urlpatterns = [
-    path('', include(router.urls)),
-] 
+    path("", include(router.urls)),
+]

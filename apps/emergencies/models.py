@@ -5,16 +5,16 @@ from apps.utils.mixins import AuditMixin
 
 class EmergencyBrigadeMember(AuditMixin, models.Model):
     ROLE_CHOICES = [
-        ("Jefe",             "Jefe de Brigada"),
+        ("Jefe", "Jefe de Brigada"),
         ("PrimerosAuxilios", "Primeros Auxilios"),
-        ("Evacuacion",       "Evacuación"),
-        ("Incendios",        "Control de Incendios"),
-        ("Comunicaciones",   "Comunicaciones"),
-        ("Otro",             "Otro"),
+        ("Evacuacion", "Evacuación"),
+        ("Incendios", "Control de Incendios"),
+        ("Comunicaciones", "Comunicaciones"),
+        ("Otro", "Otro"),
     ]
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    role     = models.CharField(max_length=50, choices=ROLE_CHOICES)
-    active   = models.BooleanField(default=True)
+    role = models.CharField(max_length=50, choices=ROLE_CHOICES)
+    active = models.BooleanField(default=True)
 
     class Meta:
         ordering = ["employee__first_name"]
@@ -25,17 +25,17 @@ class EmergencyBrigadeMember(AuditMixin, models.Model):
 
 class EmergencyEquipment(AuditMixin, models.Model):
     EQUIPMENT_TYPE_CHOICES = [
-        ("Extintor",  "Extintor"),
-        ("Botiquin",  "Botiquín"),
-        ("Alarma",    "Alarma"),
-        ("Camilla",   "Camilla"),
-        ("Otro",      "Otro"),
+        ("Extintor", "Extintor"),
+        ("Botiquin", "Botiquín"),
+        ("Alarma", "Alarma"),
+        ("Camilla", "Camilla"),
+        ("Otro", "Otro"),
     ]
-    type             = models.CharField(max_length=50, choices=EQUIPMENT_TYPE_CHOICES)
-    location         = models.CharField(max_length=100)
-    inspection_date  = models.DateField(null=True, blank=True)
-    next_inspection  = models.DateField(null=True, blank=True)
-    notes            = models.TextField(blank=True)
+    type = models.CharField(max_length=50, choices=EQUIPMENT_TYPE_CHOICES)
+    location = models.CharField(max_length=100)
+    inspection_date = models.DateField(null=True, blank=True)
+    next_inspection = models.DateField(null=True, blank=True)
+    notes = models.TextField(blank=True)
 
     class Meta:
         ordering = ["type", "location"]
@@ -46,19 +46,21 @@ class EmergencyEquipment(AuditMixin, models.Model):
 
 class EmergencyDrill(AuditMixin, models.Model):
     DRILL_TYPE_CHOICES = [
-        ("Evacuacion",       "Evacuación"),
-        ("Incendio",         "Incendio"),
-        ("Sismo",            "Sismo"),
+        ("Evacuacion", "Evacuación"),
+        ("Incendio", "Incendio"),
+        ("Sismo", "Sismo"),
         ("PrimerosAuxilios", "Primeros Auxilios"),
-        ("Otro",             "Otro"),
+        ("Otro", "Otro"),
     ]
-    drill_type          = models.CharField(max_length=50, choices=DRILL_TYPE_CHOICES)
-    date                = models.DateField()
-    objectives          = models.TextField()
-    participants        = models.ManyToManyField(Employee, related_name="drill_participations")
-    findings            = models.TextField(blank=True)
+    drill_type = models.CharField(max_length=50, choices=DRILL_TYPE_CHOICES)
+    date = models.DateField()
+    objectives = models.TextField()
+    participants = models.ManyToManyField(Employee, related_name="drill_participations")
+    findings = models.TextField(blank=True)
     improvement_actions = models.TextField(blank=True)
-    evidence_file       = models.FileField(upload_to="emergency_drills/", blank=True, null=True)
+    evidence_file = models.FileField(
+        upload_to="emergency_drills/", blank=True, null=True
+    )
 
     class Meta:
         ordering = ["-date"]

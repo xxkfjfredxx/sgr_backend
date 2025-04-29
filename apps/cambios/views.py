@@ -6,13 +6,15 @@ from apps.utils.auditlogmimix import AuditLogMixin
 
 from .models import ChangeRequest, ChangeEvaluation, ChangeImplementation
 from .serializers import (
-    ChangeRequestSerializer, ChangeEvaluationSerializer, ChangeImplementationSerializer
+    ChangeRequestSerializer,
+    ChangeEvaluationSerializer,
+    ChangeImplementationSerializer,
 )
 
 
 class ChangeRequestViewSet(AuditLogMixin, viewsets.ModelViewSet):
-    queryset           = ChangeRequest.objects.filter(is_deleted=False)
-    serializer_class   = ChangeRequestSerializer
+    queryset = ChangeRequest.objects.filter(is_deleted=False)
+    serializer_class = ChangeRequestSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
@@ -30,8 +32,8 @@ class ChangeRequestViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
 
 class ChangeEvaluationViewSet(AuditLogMixin, viewsets.ModelViewSet):
-    queryset           = ChangeEvaluation.objects.filter(is_deleted=False)
-    serializer_class   = ChangeEvaluationSerializer
+    queryset = ChangeEvaluation.objects.filter(is_deleted=False)
+    serializer_class = ChangeEvaluationSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
@@ -49,8 +51,8 @@ class ChangeEvaluationViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
 
 class ChangeImplementationViewSet(AuditLogMixin, viewsets.ModelViewSet):
-    queryset           = ChangeImplementation.objects.filter(is_deleted=False)
-    serializer_class   = ChangeImplementationSerializer
+    queryset = ChangeImplementation.objects.filter(is_deleted=False)
+    serializer_class = ChangeImplementationSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
@@ -64,4 +66,6 @@ class ChangeImplementationViewSet(AuditLogMixin, viewsets.ModelViewSet):
         obj = self.get_object()
         obj.restore()
         self.log_audit("RESTORED", obj)
-        return Response({"detail": "Implementación restaurada."}, status=status.HTTP_200_OK)
+        return Response(
+            {"detail": "Implementación restaurada."}, status=status.HTTP_200_OK
+        )

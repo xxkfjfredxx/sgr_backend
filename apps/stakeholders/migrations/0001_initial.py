@@ -7,30 +7,57 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Stakeholder',
+            name="Stakeholder",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_deleted', models.BooleanField(default=False)),
-                ('deleted_at', models.DateTimeField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('name', models.CharField(max_length=150)),
-                ('stakeholder_type', models.CharField(choices=[('Cliente', 'Cliente'), ('Proveedor', 'Proveedor'), ('Contratista', 'Contratista'), ('ARL', 'ARL'), ('Aseguradora', 'Aseguradora'), ('Autoridad', 'Autoridad Reguladora'), ('Comunidad', 'Comunidad'), ('Otro', 'Otro')], max_length=30)),
-                ('contact_info', models.CharField(blank=True, max_length=250)),
-                ('interests', models.TextField()),
-                ('requirements', models.TextField(blank=True)),
-                ('document', models.FileField(blank=True, null=True, upload_to='stakeholder_docs/')),
-                ('last_contact', models.DateField(blank=True, null=True)),
-                ('comments', models.TextField(blank=True)),
-                ('active', models.BooleanField(default=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_deleted", models.BooleanField(default=False)),
+                ("deleted_at", models.DateTimeField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("name", models.CharField(max_length=150)),
+                (
+                    "stakeholder_type",
+                    models.CharField(
+                        choices=[
+                            ("Cliente", "Cliente"),
+                            ("Proveedor", "Proveedor"),
+                            ("Contratista", "Contratista"),
+                            ("ARL", "ARL"),
+                            ("Aseguradora", "Aseguradora"),
+                            ("Autoridad", "Autoridad Reguladora"),
+                            ("Comunidad", "Comunidad"),
+                            ("Otro", "Otro"),
+                        ],
+                        max_length=30,
+                    ),
+                ),
+                ("contact_info", models.CharField(blank=True, max_length=250)),
+                ("interests", models.TextField()),
+                ("requirements", models.TextField(blank=True)),
+                (
+                    "document",
+                    models.FileField(
+                        blank=True, null=True, upload_to="stakeholder_docs/"
+                    ),
+                ),
+                ("last_contact", models.DateField(blank=True, null=True)),
+                ("comments", models.TextField(blank=True)),
+                ("active", models.BooleanField(default=True)),
             ],
             options={
-                'ordering': ['name'],
+                "ordering": ["name"],
             },
         ),
     ]

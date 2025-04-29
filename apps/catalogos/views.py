@@ -28,15 +28,15 @@ class BaseCatalogViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
 
 class BranchViewSet(BaseCatalogViewSet):
-    queryset         = Branch.objects.filter(is_deleted=False)
+    queryset = Branch.objects.filter(is_deleted=False)
     serializer_class = BranchSerializer
 
 
 class PositionViewSet(BaseCatalogViewSet):
-    queryset         = Position.objects.filter(is_deleted=False)
+    queryset = Position.objects.filter(is_deleted=False)
     serializer_class = PositionSerializer
 
 
 class WorkAreaViewSet(BaseCatalogViewSet):
-    queryset         = WorkArea.objects.filter(is_deleted=False)
+    queryset = WorkArea.objects.filter(is_deleted=False)
     serializer_class = WorkAreaSerializer

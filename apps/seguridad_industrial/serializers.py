@@ -7,7 +7,7 @@ class WorkAccidentSerializer(serializers.ModelSerializer):
     employee_data = EmployeeSerializer(source="employee", read_only=True)
 
     class Meta:
-        model  = WorkAccident
+        model = WorkAccident
         fields = "__all__"
         read_only_fields = ("created_at", "created_by")
 
@@ -16,6 +16,6 @@ class WorkAtHeightPermitSerializer(serializers.ModelSerializer):
     employee_data = EmployeeSerializer(source="employee", read_only=True)
 
     class Meta:
-        model  = WorkAtHeightPermit
+        model = WorkAtHeightPermit
         fields = "__all__"
         read_only_fields = ("created_at", "created_by")

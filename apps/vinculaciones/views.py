@@ -15,21 +15,22 @@ class EmploymentLinkViewSet(AuditLogMixin, viewsets.ModelViewSet):
     """
     CRUD de vínculos laborales con auditoría, soft-delete y filtros.
     """
-    queryset           = EmploymentLink.objects.filter(is_deleted=False)
-    serializer_class   = EmploymentLinkSerializer
-    permission_classes = [AllowAny]           # cámbialo a IsAuthenticated en producción
-    filter_backends    = [DjangoFilterBackend, SearchFilter]
-    filterset_fields   = ["company", "employee", "status"]
-    search_fields      = ["position", "area"]
+
+    queryset = EmploymentLink.objects.filter(is_deleted=False)
+    serializer_class = EmploymentLinkSerializer
+    permission_classes = [AllowAny]  # cámbialo a IsAuthenticated en producción
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_fields = ["company", "employee", "status"]
+    search_fields = ["position", "area"]
 
     # --- filtros extra por fecha -----------------
     def get_queryset(self):
         qs = super().get_queryset()
         if d1 := self.request.query_params.get("from"):
-            if (dt := parse_date(d1)):
+            if dt := parse_date(d1):
                 qs = qs.filter(start_date__gte=dt)
         if d2 := self.request.query_params.get("to"):
-            if (dt := parse_date(d2)):
+            if dt := parse_date(d2):
                 qs = qs.filter(start_date__lte=dt)
         return qs
 

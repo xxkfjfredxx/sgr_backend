@@ -9,32 +9,61 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('catalogos', '0001_initial'),
+        ("catalogos", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='LegalRequirement',
+            name="LegalRequirement",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_deleted', models.BooleanField(default=False)),
-                ('deleted_at', models.DateTimeField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('name', models.CharField(max_length=200)),
-                ('description', models.TextField()),
-                ('law_reference', models.CharField(blank=True, help_text='Ley / Norma / Decreto / Contrato', max_length=200)),
-                ('document', models.FileField(blank=True, null=True, upload_to='legal_requirements/')),
-                ('effective_date', models.DateField(blank=True, null=True)),
-                ('expiration_date', models.DateField(blank=True, null=True)),
-                ('reviewed_by', models.CharField(blank=True, max_length=100)),
-                ('review_date', models.DateField(blank=True, null=True)),
-                ('comments', models.TextField(blank=True)),
-                ('active', models.BooleanField(default=True)),
-                ('area', models.ForeignKey(blank=True, help_text='Área o proceso relacionado', null=True, on_delete=django.db.models.deletion.SET_NULL, to='catalogos.workarea')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_deleted", models.BooleanField(default=False)),
+                ("deleted_at", models.DateTimeField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("name", models.CharField(max_length=200)),
+                ("description", models.TextField()),
+                (
+                    "law_reference",
+                    models.CharField(
+                        blank=True,
+                        help_text="Ley / Norma / Decreto / Contrato",
+                        max_length=200,
+                    ),
+                ),
+                (
+                    "document",
+                    models.FileField(
+                        blank=True, null=True, upload_to="legal_requirements/"
+                    ),
+                ),
+                ("effective_date", models.DateField(blank=True, null=True)),
+                ("expiration_date", models.DateField(blank=True, null=True)),
+                ("reviewed_by", models.CharField(blank=True, max_length=100)),
+                ("review_date", models.DateField(blank=True, null=True)),
+                ("comments", models.TextField(blank=True)),
+                ("active", models.BooleanField(default=True)),
+                (
+                    "area",
+                    models.ForeignKey(
+                        blank=True,
+                        help_text="Área o proceso relacionado",
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="catalogos.workarea",
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-created_at'],
+                "ordering": ["-created_at"],
             },
         ),
     ]

@@ -7,27 +7,47 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='MedicalExam',
+            name="MedicalExam",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_deleted', models.BooleanField(default=False)),
-                ('deleted_at', models.DateTimeField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('exam_type', models.CharField(choices=[('Ingreso', 'Ingreso'), ('Periódico', 'Periódico'), ('Retiro', 'Retiro')], max_length=20)),
-                ('date', models.DateField()),
-                ('entity', models.CharField(max_length=100)),
-                ('aptitude', models.CharField(max_length=100)),
-                ('recommendations', models.TextField(blank=True)),
-                ('file', models.FileField(blank=True, null=True, upload_to='medical-exams/')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_deleted", models.BooleanField(default=False)),
+                ("deleted_at", models.DateTimeField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "exam_type",
+                    models.CharField(
+                        choices=[
+                            ("Ingreso", "Ingreso"),
+                            ("Periódico", "Periódico"),
+                            ("Retiro", "Retiro"),
+                        ],
+                        max_length=20,
+                    ),
+                ),
+                ("date", models.DateField()),
+                ("entity", models.CharField(max_length=100)),
+                ("aptitude", models.CharField(max_length=100)),
+                ("recommendations", models.TextField(blank=True)),
+                (
+                    "file",
+                    models.FileField(blank=True, null=True, upload_to="medical-exams/"),
+                ),
             ],
             options={
-                'ordering': ['-date'],
+                "ordering": ["-date"],
             },
         ),
     ]

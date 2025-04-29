@@ -20,7 +20,7 @@ class BaseAuditViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
 
 class TaskViewSet(BaseAuditViewSet):
-    queryset         = Task.objects.filter(is_deleted=False)
+    queryset = Task.objects.filter(is_deleted=False)
     serializer_class = TaskSerializer
 
     def get_queryset(self):
@@ -34,7 +34,7 @@ class TaskViewSet(BaseAuditViewSet):
 
 
 class IPVRMatrixViewSet(BaseAuditViewSet):
-    queryset         = IPVRMatrix.objects.filter(is_deleted=False)
+    queryset = IPVRMatrix.objects.filter(is_deleted=False)
     serializer_class = IPVRMatrixSerializer
 
     def get_queryset(self):

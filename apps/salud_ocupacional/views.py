@@ -10,8 +10,8 @@ from .serializers import MedicalExamSerializer
 
 
 class MedicalExamViewSet(AuditLogMixin, viewsets.ModelViewSet):
-    queryset           = MedicalExam.objects.filter(is_deleted=False)
-    serializer_class   = MedicalExamSerializer
+    queryset = MedicalExam.objects.filter(is_deleted=False)
+    serializer_class = MedicalExamSerializer
     permission_classes = [AllowAny]
 
     # ---------- filtros rápidos ----------
@@ -28,10 +28,10 @@ class MedicalExamViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
         # ?from=YYYY-MM-DD  |  ?to=YYYY-MM-DD
         if f := self.request.query_params.get("from"):
-            if (d1 := parse_date(f)):
+            if d1 := parse_date(f):
                 qs = qs.filter(date__gte=d1)
         if t := self.request.query_params.get("to"):
-            if (d2 := parse_date(t)):
+            if d2 := parse_date(t):
                 qs = qs.filter(date__lte=d2)
 
         return qs
@@ -42,4 +42,6 @@ class MedicalExamViewSet(AuditLogMixin, viewsets.ModelViewSet):
         obj = self.get_object()
         obj.restore()
         self.log_audit("RESTORED", obj)
-        return Response({"detail": "Examen médico restaurado."}, status=status.HTTP_200_OK)
+        return Response(
+            {"detail": "Examen médico restaurado."}, status=status.HTTP_200_OK
+        )

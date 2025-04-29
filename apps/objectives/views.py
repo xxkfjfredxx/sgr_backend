@@ -22,7 +22,7 @@ class BaseAuditViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
 # ---------------- Objectives ----------------
 class SSTObjectiveViewSet(BaseAuditViewSet):
-    queryset         = SSTObjective.objects.filter(is_deleted=False)
+    queryset = SSTObjective.objects.filter(is_deleted=False)
     serializer_class = SSTObjectiveSerializer
 
     def get_queryset(self):
@@ -32,14 +32,14 @@ class SSTObjectiveViewSet(BaseAuditViewSet):
         if st := self.request.query_params.get("status"):
             qs = qs.filter(status=st)
         if d := self.request.query_params.get("due_before"):
-            if (dt := parse_date(d)):
+            if dt := parse_date(d):
                 qs = qs.filter(due_date__lte=dt)
         return qs
 
 
 # ---------------- Goals ---------------------
 class SSTGoalViewSet(BaseAuditViewSet):
-    queryset         = SSTGoal.objects.filter(is_deleted=False)
+    queryset = SSTGoal.objects.filter(is_deleted=False)
     serializer_class = SSTGoalSerializer
 
     def get_queryset(self):

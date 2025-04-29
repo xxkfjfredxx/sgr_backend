@@ -7,28 +7,43 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Reintegro',
+            name="Reintegro",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_deleted', models.BooleanField(default=False)),
-                ('deleted_at', models.DateTimeField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('start_date', models.DateField(help_text='Inicio del proceso de reintegro')),
-                ('end_date', models.DateField(blank=True, help_text='Fin del proceso (si aplica)', null=True)),
-                ('medical_recommendations', models.TextField(blank=True)),
-                ('position_modification', models.BooleanField(default=False)),
-                ('workplace_adaptation', models.BooleanField(default=False)),
-                ('observations', models.TextField(blank=True)),
-                ('successful', models.BooleanField(default=False)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_deleted", models.BooleanField(default=False)),
+                ("deleted_at", models.DateTimeField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "start_date",
+                    models.DateField(help_text="Inicio del proceso de reintegro"),
+                ),
+                (
+                    "end_date",
+                    models.DateField(
+                        blank=True, help_text="Fin del proceso (si aplica)", null=True
+                    ),
+                ),
+                ("medical_recommendations", models.TextField(blank=True)),
+                ("position_modification", models.BooleanField(default=False)),
+                ("workplace_adaptation", models.BooleanField(default=False)),
+                ("observations", models.TextField(blank=True)),
+                ("successful", models.BooleanField(default=False)),
             ],
             options={
-                'ordering': ['-start_date'],
+                "ordering": ["-start_date"],
             },
         ),
     ]

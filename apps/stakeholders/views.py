@@ -10,8 +10,8 @@ from .serializers import StakeholderSerializer
 
 
 class StakeholderViewSet(AuditLogMixin, viewsets.ModelViewSet):
-    queryset           = Stakeholder.objects.filter(is_deleted=False)
-    serializer_class   = StakeholderSerializer
+    queryset = Stakeholder.objects.filter(is_deleted=False)
+    serializer_class = StakeholderSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
@@ -21,7 +21,7 @@ class StakeholderViewSet(AuditLogMixin, viewsets.ModelViewSet):
         if act := self.request.query_params.get("active"):
             qs = qs.filter(active=act.lower() == "true")
         if before := self.request.query_params.get("contact_before"):
-            if (d := parse_date(before)):
+            if d := parse_date(before):
                 qs = qs.filter(last_contact__lte=d)
         return qs
 
@@ -30,4 +30,6 @@ class StakeholderViewSet(AuditLogMixin, viewsets.ModelViewSet):
         obj = self.get_object()
         obj.restore()
         self.log_audit("RESTORED", obj)
-        return Response({"detail": "Stakeholder restaurado."}, status=status.HTTP_200_OK)
+        return Response(
+            {"detail": "Stakeholder restaurado."}, status=status.HTTP_200_OK
+        )

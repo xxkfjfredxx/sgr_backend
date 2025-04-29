@@ -22,7 +22,7 @@ class BaseAuditViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
 # ---------------- Accidentes / Incidentes -----------------
 class WorkAccidentViewSet(BaseAuditViewSet):
-    queryset         = WorkAccident.objects.filter(is_deleted=False)
+    queryset = WorkAccident.objects.filter(is_deleted=False)
     serializer_class = WorkAccidentSerializer
 
     def get_queryset(self):
@@ -34,14 +34,14 @@ class WorkAccidentViewSet(BaseAuditViewSet):
         if sev := self.request.query_params.get("severity"):
             qs = qs.filter(severity=sev)
         if d1 := self.request.query_params.get("from"):
-            if (dt := parse_date(d1)):
+            if dt := parse_date(d1):
                 qs = qs.filter(date__gte=dt)
         return qs
 
 
 # ---------------- Permisos de Trabajo en Alturas -----------
 class WorkAtHeightPermitViewSet(BaseAuditViewSet):
-    queryset         = WorkAtHeightPermit.objects.filter(is_deleted=False)
+    queryset = WorkAtHeightPermit.objects.filter(is_deleted=False)
     serializer_class = WorkAtHeightPermitSerializer
 
     def get_queryset(self):

@@ -29,7 +29,8 @@ class BaseAuditViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
 class ContractorCompanyViewSet(BaseAuditViewSet):
     """CRUD de Empresas Contratistas"""
-    queryset         = ContractorCompany.objects.filter(is_deleted=False)
+
+    queryset = ContractorCompany.objects.filter(is_deleted=False)
     serializer_class = ContractorCompanySerializer
 
     # filtro extra: ?active=true/false
@@ -42,7 +43,8 @@ class ContractorCompanyViewSet(BaseAuditViewSet):
 
 class ContractorContactViewSet(BaseAuditViewSet):
     """CRUD de Contactos de Contratistas"""
-    queryset         = ContractorContact.objects.filter(is_deleted=False)
+
+    queryset = ContractorContact.objects.filter(is_deleted=False)
     serializer_class = ContractorContactSerializer
 
     # filtro extra: ?contractor=<id>

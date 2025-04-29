@@ -7,45 +7,101 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='SSTGoal',
+            name="SSTGoal",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_deleted', models.BooleanField(default=False)),
-                ('deleted_at', models.DateTimeField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('description', models.CharField(max_length=255)),
-                ('indicator', models.CharField(blank=True, help_text='Ej: % accidentes reducidos', max_length=100)),
-                ('target_value', models.CharField(blank=True, help_text='Ej: 10 % menos accidentes', max_length=100)),
-                ('evidence_file', models.FileField(blank=True, null=True, upload_to='sst_goals/')),
-                ('status', models.CharField(choices=[('pending', 'Pendiente'), ('in_progress', 'En progreso'), ('completed', 'Cumplido'), ('overdue', 'Vencido')], default='pending', max_length=20)),
-                ('comment', models.TextField(blank=True)),
-                ('due_date', models.DateField(blank=True, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_deleted", models.BooleanField(default=False)),
+                ("deleted_at", models.DateTimeField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("description", models.CharField(max_length=255)),
+                (
+                    "indicator",
+                    models.CharField(
+                        blank=True,
+                        help_text="Ej: % accidentes reducidos",
+                        max_length=100,
+                    ),
+                ),
+                (
+                    "target_value",
+                    models.CharField(
+                        blank=True,
+                        help_text="Ej: 10 % menos accidentes",
+                        max_length=100,
+                    ),
+                ),
+                (
+                    "evidence_file",
+                    models.FileField(blank=True, null=True, upload_to="sst_goals/"),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("pending", "Pendiente"),
+                            ("in_progress", "En progreso"),
+                            ("completed", "Cumplido"),
+                            ("overdue", "Vencido"),
+                        ],
+                        default="pending",
+                        max_length=20,
+                    ),
+                ),
+                ("comment", models.TextField(blank=True)),
+                ("due_date", models.DateField(blank=True, null=True)),
             ],
             options={
-                'ordering': ['-id'],
+                "ordering": ["-id"],
             },
         ),
         migrations.CreateModel(
-            name='SSTObjective',
+            name="SSTObjective",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_deleted', models.BooleanField(default=False)),
-                ('deleted_at', models.DateTimeField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('title', models.CharField(max_length=200)),
-                ('description', models.TextField(blank=True)),
-                ('due_date', models.DateField()),
-                ('status', models.CharField(choices=[('pending', 'Pendiente'), ('in_progress', 'En progreso'), ('completed', 'Cumplido'), ('overdue', 'Vencido')], default='pending', max_length=20)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_deleted", models.BooleanField(default=False)),
+                ("deleted_at", models.DateTimeField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("title", models.CharField(max_length=200)),
+                ("description", models.TextField(blank=True)),
+                ("due_date", models.DateField()),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("pending", "Pendiente"),
+                            ("in_progress", "En progreso"),
+                            ("completed", "Cumplido"),
+                            ("overdue", "Vencido"),
+                        ],
+                        default="pending",
+                        max_length=20,
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-created_at'],
+                "ordering": ["-created_at"],
             },
         ),
     ]

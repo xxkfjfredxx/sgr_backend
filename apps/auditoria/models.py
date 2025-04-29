@@ -5,19 +5,19 @@ from apps.utils.mixins import AuditMixin
 
 
 class SystemAudit(models.Model):
-    user           = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    action         = models.CharField(max_length=100)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    action = models.CharField(max_length=100)
     affected_table = models.CharField(max_length=100)
-    record_id      = models.IntegerField()
-    previous_data  = models.JSONField(null=True, blank=True)
-    new_data       = models.JSONField(null=True, blank=True)
-    ip_address     = models.CharField(max_length=50, blank=True, null=True)
-    user_agent     = models.TextField(blank=True, null=True)
-    created_at     = models.DateTimeField(auto_now_add=True)
+    record_id = models.IntegerField()
+    previous_data = models.JSONField(null=True, blank=True)
+    new_data = models.JSONField(null=True, blank=True)
+    ip_address = models.CharField(max_length=50, blank=True, null=True)
+    user_agent = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table  = "system_audit"
-        ordering  = ["-created_at"]
+        db_table = "system_audit"
+        ordering = ["-created_at"]
 
     def __str__(self):
         base = f"{self.action} on {self.affected_table}"
@@ -25,7 +25,7 @@ class SystemAudit(models.Model):
 
 
 class AuditChecklist(AuditMixin, models.Model):
-    name        = models.CharField(max_length=200)
+    name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
 
     class Meta:
@@ -36,9 +36,11 @@ class AuditChecklist(AuditMixin, models.Model):
 
 
 class AuditItem(AuditMixin, models.Model):
-    checklist        = models.ForeignKey(AuditChecklist, on_delete=models.CASCADE, related_name="items")
-    question         = models.CharField(max_length=300)
-    expected_result  = models.CharField(max_length=300, blank=True)
+    checklist = models.ForeignKey(
+        AuditChecklist, on_delete=models.CASCADE, related_name="items"
+    )
+    question = models.CharField(max_length=300)
+    expected_result = models.CharField(max_length=300, blank=True)
     evidence_required = models.BooleanField(default=False)
 
     class Meta:
@@ -50,10 +52,12 @@ class AuditItem(AuditMixin, models.Model):
 
 class AuditExecution(AuditMixin, models.Model):
     checklist = models.ForeignKey(AuditChecklist, on_delete=models.CASCADE)
-    auditor   = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    date      = models.DateField(auto_now_add=True)
-    status    = models.CharField(max_length=50, default="Abierta")  # Abierta / Cerrada / En seguimiento
-    comments  = models.TextField(blank=True)
+    auditor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    date = models.DateField(auto_now_add=True)
+    status = models.CharField(
+        max_length=50, default="Abierta"
+    )  # Abierta / Cerrada / En seguimiento
+    comments = models.TextField(blank=True)
 
     class Meta:
         ordering = ["-date"]
@@ -63,18 +67,20 @@ class AuditExecution(AuditMixin, models.Model):
 
 
 class AuditResult(AuditMixin, models.Model):
-    execution = models.ForeignKey(AuditExecution, on_delete=models.CASCADE, related_name="results")
-    item      = models.ForeignKey(AuditItem, on_delete=models.CASCADE)
-    result    = models.CharField(
+    execution = models.ForeignKey(
+        AuditExecution, on_delete=models.CASCADE, related_name="results"
+    )
+    item = models.ForeignKey(AuditItem, on_delete=models.CASCADE)
+    result = models.CharField(
         max_length=30,
         choices=[
-            ("cumple",     "Cumple"),
-            ("no_cumple",  "No cumple"),
-            ("parcial",    "Cumple parcialmente"),
+            ("cumple", "Cumple"),
+            ("no_cumple", "No cumple"),
+            ("parcial", "Cumple parcialmente"),
         ],
     )
     evidence_file = models.FileField(upload_to="audit_evidence/", blank=True, null=True)
-    observation   = models.TextField(blank=True)
+    observation = models.TextField(blank=True)
 
     class Meta:
         ordering = ["item_id"]
@@ -84,24 +90,31 @@ class AuditResult(AuditMixin, models.Model):
 
 
 class AuditFinding(AuditMixin, models.Model):
-    execution   = models.ForeignKey(AuditExecution, on_delete=models.CASCADE, related_name="findings")
+    execution = models.ForeignKey(
+        AuditExecution, on_delete=models.CASCADE, related_name="findings"
+    )
     description = models.TextField()
-    severity    = models.CharField(
+    severity = models.CharField(
         max_length=20,
         choices=[("Leve", "Leve"), ("Moderado", "Moderado"), ("Crítico", "Crítico")],
     )
     status = models.CharField(
         max_length=20,
         choices=[
-            ("abierto",     "Abierto"),
-            ("cerrado",     "Cerrado"),
+            ("abierto", "Abierto"),
+            ("cerrado", "Cerrado"),
             ("seguimiento", "En seguimiento"),
         ],
         default="abierto",
     )
-    closing_evidence = models.FileField(upload_to="audit_findings_closing/", blank=True, null=True)
-    action_item      = models.ForeignKey(
-        ActionItem, on_delete=models.SET_NULL, null=True, blank=True,
+    closing_evidence = models.FileField(
+        upload_to="audit_findings_closing/", blank=True, null=True
+    )
+    action_item = models.ForeignKey(
+        ActionItem,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
         help_text="Acción correctiva asociada (si aplica)",
     )
 

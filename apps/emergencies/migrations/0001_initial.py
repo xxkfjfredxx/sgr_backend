@@ -7,60 +7,125 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='EmergencyBrigadeMember',
+            name="EmergencyBrigadeMember",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_deleted', models.BooleanField(default=False)),
-                ('deleted_at', models.DateTimeField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('role', models.CharField(choices=[('Jefe', 'Jefe de Brigada'), ('PrimerosAuxilios', 'Primeros Auxilios'), ('Evacuacion', 'Evacuación'), ('Incendios', 'Control de Incendios'), ('Comunicaciones', 'Comunicaciones'), ('Otro', 'Otro')], max_length=50)),
-                ('active', models.BooleanField(default=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_deleted", models.BooleanField(default=False)),
+                ("deleted_at", models.DateTimeField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "role",
+                    models.CharField(
+                        choices=[
+                            ("Jefe", "Jefe de Brigada"),
+                            ("PrimerosAuxilios", "Primeros Auxilios"),
+                            ("Evacuacion", "Evacuación"),
+                            ("Incendios", "Control de Incendios"),
+                            ("Comunicaciones", "Comunicaciones"),
+                            ("Otro", "Otro"),
+                        ],
+                        max_length=50,
+                    ),
+                ),
+                ("active", models.BooleanField(default=True)),
             ],
             options={
-                'ordering': ['employee__first_name'],
+                "ordering": ["employee__first_name"],
             },
         ),
         migrations.CreateModel(
-            name='EmergencyDrill',
+            name="EmergencyDrill",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_deleted', models.BooleanField(default=False)),
-                ('deleted_at', models.DateTimeField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('drill_type', models.CharField(choices=[('Evacuacion', 'Evacuación'), ('Incendio', 'Incendio'), ('Sismo', 'Sismo'), ('PrimerosAuxilios', 'Primeros Auxilios'), ('Otro', 'Otro')], max_length=50)),
-                ('date', models.DateField()),
-                ('objectives', models.TextField()),
-                ('findings', models.TextField(blank=True)),
-                ('improvement_actions', models.TextField(blank=True)),
-                ('evidence_file', models.FileField(blank=True, null=True, upload_to='emergency_drills/')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_deleted", models.BooleanField(default=False)),
+                ("deleted_at", models.DateTimeField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "drill_type",
+                    models.CharField(
+                        choices=[
+                            ("Evacuacion", "Evacuación"),
+                            ("Incendio", "Incendio"),
+                            ("Sismo", "Sismo"),
+                            ("PrimerosAuxilios", "Primeros Auxilios"),
+                            ("Otro", "Otro"),
+                        ],
+                        max_length=50,
+                    ),
+                ),
+                ("date", models.DateField()),
+                ("objectives", models.TextField()),
+                ("findings", models.TextField(blank=True)),
+                ("improvement_actions", models.TextField(blank=True)),
+                (
+                    "evidence_file",
+                    models.FileField(
+                        blank=True, null=True, upload_to="emergency_drills/"
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-date'],
+                "ordering": ["-date"],
             },
         ),
         migrations.CreateModel(
-            name='EmergencyEquipment',
+            name="EmergencyEquipment",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_deleted', models.BooleanField(default=False)),
-                ('deleted_at', models.DateTimeField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('type', models.CharField(choices=[('Extintor', 'Extintor'), ('Botiquin', 'Botiquín'), ('Alarma', 'Alarma'), ('Camilla', 'Camilla'), ('Otro', 'Otro')], max_length=50)),
-                ('location', models.CharField(max_length=100)),
-                ('inspection_date', models.DateField(blank=True, null=True)),
-                ('next_inspection', models.DateField(blank=True, null=True)),
-                ('notes', models.TextField(blank=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("is_deleted", models.BooleanField(default=False)),
+                ("deleted_at", models.DateTimeField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "type",
+                    models.CharField(
+                        choices=[
+                            ("Extintor", "Extintor"),
+                            ("Botiquin", "Botiquín"),
+                            ("Alarma", "Alarma"),
+                            ("Camilla", "Camilla"),
+                            ("Otro", "Otro"),
+                        ],
+                        max_length=50,
+                    ),
+                ),
+                ("location", models.CharField(max_length=100)),
+                ("inspection_date", models.DateField(blank=True, null=True)),
+                ("next_inspection", models.DateField(blank=True, null=True)),
+                ("notes", models.TextField(blank=True)),
             ],
             options={
-                'ordering': ['type', 'location'],
+                "ordering": ["type", "location"],
             },
         ),
     ]

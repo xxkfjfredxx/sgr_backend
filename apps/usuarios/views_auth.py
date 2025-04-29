@@ -12,6 +12,7 @@ class LoginView(APIView):
     """
     POST /login/  – Devuelve token y datos de usuario.
     """
+
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
@@ -47,6 +48,7 @@ class LogoutView(APIView):
     """
     POST /logout/  – Borra token y cierra sesión. Idempotente.
     """
+
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
@@ -67,6 +69,7 @@ class MeView(APIView):
     """
     GET /me/  – Devuelve los datos del usuario autenticado.
     """
+
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):

@@ -8,13 +8,13 @@ from .serializers import ActivitySerializer
 
 
 class ActivityViewSet(AuditLogMixin, viewsets.ModelViewSet):
-    queryset           = Activity.objects.filter(is_deleted=False)
-    serializer_class   = ActivitySerializer
-    permission_classes = [AllowAny]              # ⬅️ sigue abierto para depuración
+    queryset = Activity.objects.filter(is_deleted=False)
+    serializer_class = ActivitySerializer
+    permission_classes = [AllowAny]  # ⬅️ sigue abierto para depuración
     # pagination_class = DefaultPagination       # ⬅️ ya NO es necesario: lo define settings.py
 
     def get_queryset(self):
-        qs   = super().get_queryset()
+        qs = super().get_queryset()
         user = self.request.user
 
         # — Ver solo sus propias actividades —
@@ -23,7 +23,7 @@ class ActivityViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
         # — ?date=YYYY-MM-DD —
         if date_str := self.request.query_params.get("date"):
-            if (d := parse_date(date_str)):
+            if d := parse_date(date_str):
                 qs = qs.filter(start_date=d)
 
         # — ?month=YYYY-MM —
