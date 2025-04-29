@@ -1,24 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from apps.utils.mixins import AuditMixin
 
-
-class UserRole(models.Model):  # "Tabla de Roles de Usuario"
+class UserRole(AuditMixin, models.Model):      # ← cambia la herencia
     name = models.CharField(max_length=50, unique=True)
     description = models.TextField(blank=True, null=True)
     permissions = models.JSONField(blank=True, null=True)
     is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    # created_at y updated_at ya los da AuditMixin
 
     class Meta:
-        db_table = 'user_roles'  # "Tabla en base de datos: Roles de Usuario"
+        db_table = "user_roles"
 
-    def __str__(self):
-        return self.name
-
-
-class User(AbstractUser):  # "Tabla de Usuarios"
-    role = models.ForeignKey(UserRole, on_delete=models.RESTRICT)  # "Rol del usuario"
-
+class User(AuditMixin, AbstractUser):
+    role = models.ForeignKey(UserRole, on_delete=models.RESTRICT, null=True, blank=True)
     class Meta:
-        db_table = 'users'  # "Tabla en base de datos: Usuarios"
+        db_table = "users"

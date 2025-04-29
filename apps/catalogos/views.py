@@ -1,20 +1,42 @@
-from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import viewsets, status
 from rest_framework.permissions import AllowAny
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from apps.utils.auditlogmimix import AuditLogMixin
+
 from .models import Branch, Position, WorkArea
 from .serializers import BranchSerializer, PositionSerializer, WorkAreaSerializer
 
-class BranchViewSet(viewsets.ModelViewSet):
-    queryset = Branch.objects.all().order_by('name')
+
+class BaseCatalogViewSet(AuditLogMixin, viewsets.ModelViewSet):
+    permission_classes = [AllowAny]
+
+    # — filtro por ?name=<texto> —
+    def get_queryset(self):
+        qs = super().get_queryset()
+        if name := self.request.query_params.get("name"):
+            qs = qs.filter(name__icontains=name)
+        return qs
+
+    # — restaurar borrado lógico —
+    @action(detail=True, methods=["post"])
+    def restore(self, request, pk=None):
+        obj = self.get_object()
+        obj.restore()
+        self.log_audit("RESTORED", obj)
+        return Response({"detail": "Registro restaurado."}, status=status.HTTP_200_OK)
+
+
+class BranchViewSet(BaseCatalogViewSet):
+    queryset         = Branch.objects.filter(is_deleted=False)
     serializer_class = BranchSerializer
-    permission_classes = [AllowAny]
 
-class PositionViewSet(viewsets.ModelViewSet):
-    queryset = Position.objects.all().order_by('name')
+
+class PositionViewSet(BaseCatalogViewSet):
+    queryset         = Position.objects.filter(is_deleted=False)
     serializer_class = PositionSerializer
-    permission_classes = [AllowAny]
 
-class WorkAreaViewSet(viewsets.ModelViewSet):
-    queryset = WorkArea.objects.all().order_by('name')
+
+class WorkAreaViewSet(BaseCatalogViewSet):
+    queryset         = WorkArea.objects.filter(is_deleted=False)
     serializer_class = WorkAreaSerializer
-    permission_classes = [AllowAny]

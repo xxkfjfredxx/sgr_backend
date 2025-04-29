@@ -1,19 +1,32 @@
 from django.db import models
+from apps.utils.mixins import AuditMixin
 
-class Indicator(models.Model):
-    name = models.CharField(max_length=150)
+
+class Indicator(AuditMixin, models.Model):
+    FREQUENCY_CHOICES = [("Mensual", "Mensual"), ("Anual", "Anual")]
+
+    name        = models.CharField(max_length=150)
     description = models.TextField(blank=True)
-    formula = models.TextField()
-    unit = models.CharField(max_length=50)
-    frequency = models.CharField(max_length=20, choices=[("Mensual", "Mensual"), ("Anual", "Anual")])
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    formula     = models.TextField()
+    unit        = models.CharField(max_length=50)
+    frequency   = models.CharField(max_length=20, choices=FREQUENCY_CHOICES)
 
-class IndicatorResult(models.Model):  # <- ESTE DEBE EXISTIR
-    indicator = models.ForeignKey(Indicator, on_delete=models.CASCADE)
-    period = models.CharField(max_length=20)  # Ej: "2024-03"
-    value = models.DecimalField(max_digits=10, decimal_places=2)
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
+class IndicatorResult(AuditMixin, models.Model):
+    indicator      = models.ForeignKey(Indicator, on_delete=models.CASCADE, related_name="results")
+    period         = models.CharField(max_length=20)           # ej. “2025-03”
+    value          = models.DecimalField(max_digits=12, decimal_places=2)
     interpretation = models.TextField(blank=True, null=True)
-    generated_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-period"]
+        unique_together = ("indicator", "period")
+
+    def __str__(self):
+        return f"{self.indicator} – {self.period}: {self.value}{self.indicator.unit}"

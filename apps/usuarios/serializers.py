@@ -4,24 +4,37 @@ from .models import (
     UserRole, User
 )
 
-class UserRoleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserRole
-        fields = '__all__'
-
 class UserSerializer(serializers.ModelSerializer):
     employee_id = serializers.SerializerMethodField()
 
-    def get_employee_id(self, obj):
-        # Si la relación es OneToOneField desde Employee a User:
-        try:
-            return obj.employee.id  # Ajusta esto según tu relación
-        except Employee.DoesNotExist:
-            return None
-
     class Meta:
-        model = User
+        model  = User
         fields = [
-            'id', 'username', 'email', 'is_superuser', 'is_staff', 'role',
-            'employee_id',  # <-- aquí
+            "id", "username", "first_name", "last_name", "email",
+            "is_superuser", "is_staff", "role", "employee_id",
+            "password",
         ]
+        extra_kwargs = {
+            "password": {"write_only": True, "required": True},
+        }
+
+    def get_employee_id(self, obj):
+        return getattr(getattr(obj, "employee", None), "id", None)
+
+    def create(self, validated_data):
+        password = validated_data.pop("password")
+        user = super().create(validated_data)
+        user.set_password(password)
+        user.save()
+        return user
+
+    def update(self, instance, validated_data):
+        if "password" in validated_data:
+            instance.set_password(validated_data.pop("password"))
+        return super().update(instance, validated_data)
+
+class UserRoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model  = UserRole
+        fields = "__all__"
+        read_only_fields = ("created_at", "created_by")

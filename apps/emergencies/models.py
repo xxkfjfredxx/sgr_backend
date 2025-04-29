@@ -1,55 +1,67 @@
 from django.db import models
 from apps.empleados.models import Employee
+from apps.utils.mixins import AuditMixin
 
-class EmergencyBrigadeMember(models.Model):
+
+class EmergencyBrigadeMember(AuditMixin, models.Model):
     ROLE_CHOICES = [
-        ('Jefe', 'Jefe de Brigada'),
-        ('PrimerosAuxilios', 'Primeros Auxilios'),
-        ('Evacuacion', 'Evacuación'),
-        ('Incendios', 'Control de Incendios'),
-        ('Comunicaciones', 'Comunicaciones'),
-        ('Otro', 'Otro'),
+        ("Jefe",             "Jefe de Brigada"),
+        ("PrimerosAuxilios", "Primeros Auxilios"),
+        ("Evacuacion",       "Evacuación"),
+        ("Incendios",        "Control de Incendios"),
+        ("Comunicaciones",   "Comunicaciones"),
+        ("Otro",             "Otro"),
     ]
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    role = models.CharField(max_length=50, choices=ROLE_CHOICES)
-    active = models.BooleanField(default=True)
+    role     = models.CharField(max_length=50, choices=ROLE_CHOICES)
+    active   = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["employee__first_name"]
 
     def __str__(self):
-        return f"{self.employee} - {self.role}"
+        return f"{self.employee} – {self.role}"
 
-class EmergencyEquipment(models.Model):
+
+class EmergencyEquipment(AuditMixin, models.Model):
     EQUIPMENT_TYPE_CHOICES = [
-        ('Extintor', 'Extintor'),
-        ('Botiquin', 'Botiquín de primeros auxilios'),
-        ('Alarma', 'Alarma'),
-        ('Camilla', 'Camilla'),
-        ('Otro', 'Otro'),
+        ("Extintor",  "Extintor"),
+        ("Botiquin",  "Botiquín"),
+        ("Alarma",    "Alarma"),
+        ("Camilla",   "Camilla"),
+        ("Otro",      "Otro"),
     ]
-    type = models.CharField(max_length=50, choices=EQUIPMENT_TYPE_CHOICES)
-    location = models.CharField(max_length=100)
-    inspection_date = models.DateField(null=True, blank=True)
-    next_inspection = models.DateField(null=True, blank=True)
-    notes = models.TextField(blank=True)
+    type             = models.CharField(max_length=50, choices=EQUIPMENT_TYPE_CHOICES)
+    location         = models.CharField(max_length=100)
+    inspection_date  = models.DateField(null=True, blank=True)
+    next_inspection  = models.DateField(null=True, blank=True)
+    notes            = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ["type", "location"]
 
     def __str__(self):
-        return f"{self.type} - {self.location}"
+        return f"{self.type} – {self.location}"
 
-class EmergencyDrill(models.Model):
+
+class EmergencyDrill(AuditMixin, models.Model):
     DRILL_TYPE_CHOICES = [
-        ('Evacuacion', 'Evacuación'),
-        ('Incendio', 'Incendio'),
-        ('Sismo', 'Sismo'),
-        ('PrimerosAuxilios', 'Primeros Auxilios'),
-        ('Otro', 'Otro'),
+        ("Evacuacion",       "Evacuación"),
+        ("Incendio",         "Incendio"),
+        ("Sismo",            "Sismo"),
+        ("PrimerosAuxilios", "Primeros Auxilios"),
+        ("Otro",             "Otro"),
     ]
-    drill_type = models.CharField(max_length=50, choices=DRILL_TYPE_CHOICES)
-    date = models.DateField()
-    objectives = models.TextField()
-    participants = models.ManyToManyField(Employee, related_name='drill_participations')
-    findings = models.TextField(blank=True)
+    drill_type          = models.CharField(max_length=50, choices=DRILL_TYPE_CHOICES)
+    date                = models.DateField()
+    objectives          = models.TextField()
+    participants        = models.ManyToManyField(Employee, related_name="drill_participations")
+    findings            = models.TextField(blank=True)
     improvement_actions = models.TextField(blank=True)
-    evidence_file = models.FileField(upload_to='emergency_drills/', blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    evidence_file       = models.FileField(upload_to="emergency_drills/", blank=True, null=True)
+
+    class Meta:
+        ordering = ["-date"]
 
     def __str__(self):
-        return f"{self.drill_type} - {self.date}"
+        return f"{self.drill_type} – {self.date}"

@@ -1,16 +1,20 @@
 from django.db import models
 from apps.empleados.models import Employee
+from apps.utils.mixins import AuditMixin
 
-class Reintegro(models.Model):
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    start_date = models.DateField(help_text="Fecha inicio del proceso de reintegro")
-    end_date = models.DateField(blank=True, null=True, help_text="Fecha de finalización (si aplica)")
-    medical_recommendations = models.TextField(blank=True, help_text="Recomendaciones médicas para el reintegro")
-    position_modification = models.BooleanField(default=False, help_text="¿Hubo modificación de cargo?")
-    workplace_adaptation = models.BooleanField(default=False, help_text="¿Hubo adaptación en el puesto de trabajo?")
-    observations = models.TextField(blank=True)
-    successful = models.BooleanField(default=False, help_text="¿Reintegro exitoso?")
-    created_at = models.DateTimeField(auto_now_add=True)
+
+class Reintegro(AuditMixin, models.Model):
+    employee               = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    start_date             = models.DateField(help_text="Inicio del proceso de reintegro")
+    end_date               = models.DateField(blank=True, null=True, help_text="Fin del proceso (si aplica)")
+    medical_recommendations = models.TextField(blank=True)
+    position_modification  = models.BooleanField(default=False)
+    workplace_adaptation   = models.BooleanField(default=False)
+    observations           = models.TextField(blank=True)
+    successful             = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ["-start_date"]
 
     def __str__(self):
-        return f"Reintegro de {self.employee} - {self.start_date}"
+        return f"Reintegro {self.employee} – {self.start_date}"

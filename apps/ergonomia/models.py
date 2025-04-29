@@ -1,43 +1,53 @@
 from django.db import models
+from apps.utils.mixins import AuditMixin
 
-class ErgonomicAssessment(models.Model):
-    employee = models.ForeignKey('empleados.Employee', on_delete=models.CASCADE, related_name='ergonomic_assessments')
-    position = models.ForeignKey('catalogos.Position', on_delete=models.SET_NULL, null=True, blank=True)
-    area = models.CharField(max_length=100, blank=True)
-    date = models.DateField()
-    evaluation_type = models.CharField(max_length=100, blank=True)  # Ej: "Postural", "Manual handling"
-    summary = models.TextField(blank=True)
-    file = models.FileField(upload_to='ergonomics/', blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    responsible = models.CharField(max_length=100, blank=True)
+
+class ErgonomicAssessment(AuditMixin, models.Model):
+    employee        = models.ForeignKey("empleados.Employee", on_delete=models.CASCADE, related_name="ergonomic_assessments")
+    position        = models.ForeignKey("catalogos.Position", on_delete=models.SET_NULL, null=True, blank=True)
+    area            = models.CharField(max_length=100, blank=True)
+    date            = models.DateField()
+    evaluation_type = models.CharField(max_length=100, blank=True)  # Ej.: Postural, Manual handling
+    summary         = models.TextField(blank=True)
+    file            = models.FileField(upload_to="ergonomics/", blank=True, null=True)
+    responsible     = models.CharField(max_length=100, blank=True)
+
+    class Meta:
+        ordering = ["-date"]
 
     def __str__(self):
-        return f"{self.employee} - {self.date} - {self.evaluation_type}"
+        return f"{self.employee} – {self.date} – {self.evaluation_type}"
 
-class ARO(models.Model):
-    employee = models.ForeignKey('empleados.Employee', on_delete=models.SET_NULL, null=True, blank=True)
-    position = models.ForeignKey('catalogos.Position', on_delete=models.SET_NULL, null=True, blank=True)
-    date = models.DateField()
+
+class ARO(AuditMixin, models.Model):
+    employee    = models.ForeignKey("empleados.Employee", on_delete=models.SET_NULL, null=True, blank=True)
+    position    = models.ForeignKey("catalogos.Position", on_delete=models.SET_NULL, null=True, blank=True)
+    date        = models.DateField()
     description = models.TextField()
-    hazard = models.CharField(max_length=150)
-    risk = models.CharField(max_length=150)
-    control = models.TextField()
-    evidence = models.FileField(upload_to='aro/', blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    hazard      = models.CharField(max_length=150)
+    risk        = models.CharField(max_length=150)
+    control     = models.TextField()
+    evidence    = models.FileField(upload_to="aro/", blank=True, null=True)
+
+    class Meta:
+        ordering = ["-date"]
 
     def __str__(self):
         return f"ARO: {self.hazard} ({self.date})"
 
-class ATS(models.Model):
-    employee = models.ForeignKey('empleados.Employee', on_delete=models.SET_NULL, null=True, blank=True)
-    position = models.ForeignKey('catalogos.Position', on_delete=models.SET_NULL, null=True, blank=True)
-    date = models.DateField()
-    activity = models.CharField(max_length=150)
-    hazard = models.CharField(max_length=150)
-    risk = models.CharField(max_length=150)
-    control = models.TextField()
-    evidence = models.FileField(upload_to='ats/', blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+
+class ATS(AuditMixin, models.Model):
+    employee  = models.ForeignKey("empleados.Employee", on_delete=models.SET_NULL, null=True, blank=True)
+    position  = models.ForeignKey("catalogos.Position", on_delete=models.SET_NULL, null=True, blank=True)
+    date      = models.DateField()
+    activity  = models.CharField(max_length=150)
+    hazard    = models.CharField(max_length=150)
+    risk      = models.CharField(max_length=150)
+    control   = models.TextField()
+    evidence  = models.FileField(upload_to="ats/", blank=True, null=True)
+
+    class Meta:
+        ordering = ["-date"]
 
     def __str__(self):
         return f"ATS: {self.activity} ({self.date})"

@@ -40,6 +40,10 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
     'rest_framework.permissions.AllowAny',
     ],
+    'DEFAULT_PAGINATION_CLASS': 'apps.core.pagination.DefaultPagination',
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+    ],
 }
 
 INSTALLED_APPS = [
@@ -52,6 +56,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework',
     'corsheaders',
+    "django_filters",
     'apps.ipvr',   
     'apps.epp',
     'apps.legal',

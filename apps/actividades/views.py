@@ -1,39 +1,37 @@
+from django.utils.dateparse import parse_date
 from rest_framework import viewsets
+from rest_framework.permissions import AllowAny
+from apps.utils.auditlogmimix import AuditLogMixin
+
 from .models import Activity
 from .serializers import ActivitySerializer
-from rest_framework.permissions import IsAuthenticated
-from django.utils.dateparse import parse_date
-from datetime import datetime
 
-class ActivityViewSet(viewsets.ModelViewSet):
-    queryset = Activity.objects.all()
-    serializer_class = ActivitySerializer
-    permission_classes = [IsAuthenticated]
+
+class ActivityViewSet(AuditLogMixin, viewsets.ModelViewSet):
+    queryset           = Activity.objects.filter(is_deleted=False)
+    serializer_class   = ActivitySerializer
+    permission_classes = [AllowAny]              # ⬅️ sigue abierto para depuración
+    # pagination_class = DefaultPagination       # ⬅️ ya NO es necesario: lo define settings.py
 
     def get_queryset(self):
+        qs   = super().get_queryset()
         user = self.request.user
-        queryset = Activity.objects.filter(created_by=user)
 
-        # Filtro por día específico (opcional)
-        date_param = self.request.query_params.get('date')
-        if date_param:
+        # — Ver solo sus propias actividades —
+        if user.is_authenticated:
+            qs = qs.filter(created_by=user)
+
+        # — ?date=YYYY-MM-DD —
+        if date_str := self.request.query_params.get("date"):
+            if (d := parse_date(date_str)):
+                qs = qs.filter(start_date=d)
+
+        # — ?month=YYYY-MM —
+        if month_str := self.request.query_params.get("month"):
             try:
-                date = parse_date(date_param)
-                if date:
-                    queryset = queryset.filter(start_date=date)
-            except Exception:
+                year, month = map(int, month_str.split("-"))
+                qs = qs.filter(start_date__year=year, start_date__month=month)
+            except ValueError:
                 pass
 
-        # Filtro por mes y año
-        month_param = self.request.query_params.get('month')
-        if month_param:
-            try:
-                year, month = map(int, month_param.split('-'))
-                queryset = queryset.filter(
-                    start_date__year=year,
-                    start_date__month=month
-                )
-            except Exception:
-                pass
-
-        return queryset
+        return qs
