@@ -1,6 +1,7 @@
 from rest_framework.routers import DefaultRouter
+from django.urls import path
 
-# ViewSets existentes
+# Importa tus ViewSets y la función summary
 from apps.empresa.views import CompanyViewSet
 from apps.empleados.views import (
     EmployeeViewSet,
@@ -17,7 +18,6 @@ from apps.auditoria.views import (
     AuditResultViewSet,
     AuditFindingViewSet,
 )
-
 from apps.catalogos.views import BranchViewSet, PositionViewSet, WorkAreaViewSet
 from apps.usuarios.views import UserViewSet, UserRoleViewSet
 from apps.salud_ocupacional.views import MedicalExamViewSet
@@ -35,7 +35,11 @@ from apps.pausas_activas.views import (
     ActivePauseSessionViewSet,
     ActivePauseAttendanceViewSet,
 )
-from apps.indicadores.views import IndicatorViewSet, IndicatorResultViewSet
+from apps.indicadores.views import (
+    IndicatorViewSet,
+    IndicatorResultViewSet,
+    indicator_summary,
+)
 from apps.alertas.views import DocumentAlertViewSet
 from apps.acciones_correctivas.views import (
     ImprovementPlanViewSet,
@@ -43,45 +47,29 @@ from apps.acciones_correctivas.views import (
     RiskActionViewSet,
 )
 from apps.sst_policies.views import SSTPolicyViewSet, PolicyAcceptanceViewSet
-
-# NUEVAS APPS
-# Inspecciones y checklists
 from apps.inspecciones.views import (
     InspectionTemplateViewSet,
     InspectionItemViewSet,
     InspectionViewSet,
     InspectionResponseViewSet,
 )
-
 from apps.emergencies.views import (
     EmergencyBrigadeMemberViewSet,
     EmergencyEquipmentViewSet,
     EmergencyDrillViewSet,
 )
-
-# EPP
 from apps.epp.views import EPPItemViewSet, EPPAssignmentViewSet
-
-# Matriz de riesgos
 from apps.riesgos.views import AreaViewSet, HazardViewSet, RiskAssessmentViewSet
-
-# Acceso/egreso y firma de aceptación de riesgos
 from apps.accesos.views import AccessLogViewSet, RiskAcceptanceFormViewSet
-
 from apps.stakeholders.views import StakeholderViewSet
 from apps.legal.views import LegalRequirementViewSet
-
 from apps.suggestions.views import SuggestionBoxViewSet
 from apps.contratos.views import ContractViewSet
 from apps.objectives.views import SSTObjectiveViewSet, SSTGoalViewSet
-
-
 from apps.actividades.views import ActivityViewSet
 
-# Crear router
 router = DefaultRouter()
 
-# Endpoints estándar
 router.register(r"companies", CompanyViewSet)
 router.register(r"employees", EmployeeViewSet)
 router.register(r"employment-links", EmploymentLinkViewSet)
@@ -119,34 +107,26 @@ router.register(r"contracts", ContractViewSet)
 router.register(r"sst-objectives", SSTObjectiveViewSet)
 router.register(r"sst-goals", SSTGoalViewSet)
 router.register(r"risk-actions", RiskActionViewSet)
-
 router.register(r"system-audit", SystemAuditViewSet)
 router.register(r"activities", ActivityViewSet)
-
-# Auditorías internas
 router.register(r"audit-checklists", AuditChecklistViewSet)
 router.register(r"audit-items", AuditItemViewSet)
 router.register(r"audit-executions", AuditExecutionViewSet)
 router.register(r"audit-results", AuditResultViewSet)
 router.register(r"audit-findings", AuditFindingViewSet)
-
-# Inspecciones
 router.register(r"inspection-templates", InspectionTemplateViewSet)
 router.register(r"inspection-items", InspectionItemViewSet)
 router.register(r"inspections", InspectionViewSet)
 router.register(r"inspection-responses", InspectionResponseViewSet)
-
-# EPP
 router.register(r"epp-items", EPPItemViewSet)
 router.register(r"epp-assignments", EPPAssignmentViewSet)
-
-# Matriz de riesgos
 router.register(r"areas", AreaViewSet)
 router.register(r"hazards", HazardViewSet)
 router.register(r"risk-assessments", RiskAssessmentViewSet)
-
-# Accesos y firmas de aceptación
 router.register(r"access-logs", AccessLogViewSet)
 router.register(r"risk-acceptances", RiskAcceptanceFormViewSet)
 
-urlpatterns = router.urls
+# 2) Insertamos summary ANTES de router.urls
+urlpatterns = [
+    path("indicators/summary/", indicator_summary, name="indicator-summary"),
+] + router.urls

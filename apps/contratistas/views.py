@@ -1,24 +1,22 @@
 from rest_framework import viewsets, status
+from rest_framework.permissions import AllowAny
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from django.db import models
 from apps.utils.auditlogmimix import AuditLogMixin
 
-from .models import ContractorCompany, ContractorContact
-from .serializers import ContractorCompanySerializer, ContractorContactSerializer
+from .models import Employee, DocumentType, EmployeeDocument
+from .serializers import (
+    EmployeeSerializer,
+    DocumentTypeSerializer,
+    EmployeeDocumentSerializer,
+)
 
 
 class BaseAuditViewSet(AuditLogMixin, viewsets.ModelViewSet):
     permission_classes = [AllowAny]
 
-    # filtro común por nombre ?name=
-    def get_queryset(self):
-        qs = super().get_queryset()
-        if nm := self.request.query_params.get("name"):
-            qs = qs.filter(name__icontains=nm)
-        return qs
-
-    # restaurar borrado lógico
     @action(detail=True, methods=["post"])
     def restore(self, request, pk=None):
         obj = self.get_object()
@@ -27,29 +25,48 @@ class BaseAuditViewSet(AuditLogMixin, viewsets.ModelViewSet):
         return Response({"detail": "Registro restaurado."}, status=status.HTTP_200_OK)
 
 
-class ContractorCompanyViewSet(BaseAuditViewSet):
-    """CRUD de Empresas Contratistas"""
+class EmployeeViewSet(BaseAuditViewSet):
+    queryset = Employee.objects.filter(is_deleted=False)
+    serializer_class = EmployeeSerializer
 
-    queryset = ContractorCompany.objects.filter(is_deleted=False)
-    serializer_class = ContractorCompanySerializer
-
-    # filtro extra: ?active=true/false
     def get_queryset(self):
         qs = super().get_queryset()
-        if act := self.request.query_params.get("active"):
-            qs = qs.filter(active=act.lower() == "true")
+
+        if company_id := self.request.query_params.get("company"):
+            qs = qs.filter(employmentlink__company_id=company_id).distinct()
+
+        if name := self.request.query_params.get("name"):
+            qs = qs.filter(
+                models.Q(first_name__icontains=name)
+                | models.Q(last_name__icontains=name)
+            )
+
+        if doc := self.request.query_params.get("document"):
+            qs = qs.filter(document__icontains=doc)
+
         return qs
 
 
-class ContractorContactViewSet(BaseAuditViewSet):
-    """CRUD de Contactos de Contratistas"""
+class DocumentTypeViewSet(BaseAuditViewSet):
+    queryset = DocumentType.objects.filter(is_deleted=False)
+    serializer_class = DocumentTypeSerializer
 
-    queryset = ContractorContact.objects.filter(is_deleted=False)
-    serializer_class = ContractorContactSerializer
 
-    # filtro extra: ?contractor=<id>
+class EmployeeDocumentViewSet(BaseAuditViewSet):
+    queryset = EmployeeDocument.objects.filter(is_deleted=False)
+    serializer_class = EmployeeDocumentSerializer
+    parser_classes = [MultiPartParser, FormParser]
+
     def get_queryset(self):
         qs = super().get_queryset()
-        if cid := self.request.query_params.get("contractor"):
-            qs = qs.filter(contractor_id=cid)
+
+        if emp := self.request.query_params.get("employee"):
+            qs = qs.filter(employee_id=emp)
+
+        if dtype := self.request.query_params.get("document_type"):
+            qs = qs.filter(document_type_id=dtype)
+
+        if company_id := self.request.query_params.get("company"):
+            qs = qs.filter(company_id=company_id)
+
         return qs

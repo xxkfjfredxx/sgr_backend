@@ -14,18 +14,17 @@ class ActivityViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
-        user = self.request.user
 
-        # 🧠 Filtro principal: actividades de la empresa del usuario
-        if user.is_authenticated and hasattr(user, "employee"):
-            qs = qs.filter(company=user.employee.company)
+        # ✅ Filtro por empresa via query param
+        if company_id := self.request.query_params.get("company"):
+            qs = qs.filter(company_id=company_id)
 
-        # — ?date=YYYY-MM-DD —
+        # Filtro por fecha exacta
         if date_str := self.request.query_params.get("date"):
             if d := parse_date(date_str):
                 qs = qs.filter(start_date=d)
 
-        # — ?month=YYYY-MM —
+        # Filtro por mes y año
         if month_str := self.request.query_params.get("month"):
             try:
                 year, month = map(int, month_str.split("-"))
@@ -38,8 +37,14 @@ class ActivityViewSet(AuditLogMixin, viewsets.ModelViewSet):
     def perform_create(self, serializer):
         user = self.request.user
         employee = getattr(user, "employee", None)
+        company_id = self.request.data.get(
+            "company"
+        )  # Por si lo mandas explícito desde React
 
-        if employee and employee.company:
-            serializer.save(created_by=user, company=employee.company)
+        if employee and employee.employmentlink_set.exists():
+            company = employee.employmentlink_set.first().company
+            serializer.save(created_by=user, company=company)
+        elif company_id:
+            serializer.save(created_by=user, company_id=company_id)
         else:
-            raise Exception("Este usuario no tiene una empresa asociada.")
+            raise Exception("No se pudo determinar la empresa asociada.")
