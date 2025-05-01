@@ -3,10 +3,14 @@ from .models import Employee, EmployeeDocument, DocumentType
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
+    # Campo extra para el email del usuario relacionado
+    user_email = serializers.EmailField(source="user.email", read_only=True)
+
     class Meta:
         model = Employee
+        # Incluimos todos los campos del modelo + el extra user_email
         fields = "__all__"
-        read_only_fields = ("created_at", "created_by")
+        read_only_fields = ("created_at", "created_by", "user_email")
 
 
 class DocumentTypeSerializer(serializers.ModelSerializer):
