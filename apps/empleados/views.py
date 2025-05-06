@@ -4,7 +4,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from apps.utils.auditlogmimix import AuditLogMixin
-from django.db import models
+from rest_framework.filters import SearchFilter
 
 from .models import Employee, DocumentType, EmployeeDocument
 from .serializers import (
@@ -28,17 +28,14 @@ class BaseAuditViewSet(AuditLogMixin, viewsets.ModelViewSet):
 class EmployeeViewSet(BaseAuditViewSet):
     queryset = Employee.objects.filter(is_deleted=False)
     serializer_class = EmployeeSerializer
-
-    def get_queryset(self):
-        qs = super().get_queryset()
-        if name := self.request.query_params.get("name"):
-            qs = qs.filter(
-                models.Q(first_name__icontains=name)
-                | models.Q(last_name__icontains=name)
-            )
-        if doc := self.request.query_params.get("document"):
-            qs = qs.filter(document__icontains=doc)
-        return qs
+    filter_backends = [SearchFilter]
+    search_fields = [
+        "first_name",
+        "last_name",
+        "document",
+        "user__email",
+        "phone_contact",
+    ]
 
 
 class DocumentTypeViewSet(BaseAuditViewSet):

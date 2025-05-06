@@ -54,11 +54,92 @@
       "phone_contact": "3123456789",
       "address": "Barrio Nuevo",
       "socioeconomic_stratum": 4,
+      "_comment": "cargar este json para cargar la data: python manage.py loaddata initial_data.json",
       "created_at": "2025-01-01T00:00:00Z",
-      "_comment cargar este json para cargar la data": "python manage.py loaddata apps/usuarios/fixtures/roles.json",
       "updated_at": "2025-01-01T00:00:00Z"
     }
+  },
+
+  
+  {
+    "model": "empleados.documenttype",
+    "pk": 1,
+    "fields": {
+      "name": "Cédula",
+      "required": true,
+      "created_at": "2025-01-01T00:00:00Z",
+      "updated_at": "2025-01-01T00:00:00Z",
+      "_comment": "Tipo de documento: identidad del empleado"
+    }
+  },
+  {
+    "model": "empleados.documenttype",
+    "pk": 2,
+    "fields": {
+      "name": "CV",
+      "required": true,
+      "created_at": "2025-01-01T00:00:00Z",
+      "updated_at": "2025-01-01T00:00:00Z",
+      "_comment": "Hoja de vida / curriculum"
+    }
+  },
+  {
+    "model": "empleados.documenttype",
+    "pk": 3,
+    "fields": {
+      "name": "Contrato",
+      "required": true,
+      "created_at": "2025-01-01T00:00:00Z",
+      "updated_at": "2025-01-01T00:00:00Z",
+      "_comment": "Contrato laboral"
+    }
+  },
+  {
+    "model": "empleados.documenttype",
+    "pk": 4,
+    "fields": {
+      "name": "Certificación",
+      "required": false,
+      "created_at": "2025-01-01T00:00:00Z",
+      "updated_at": "2025-01-01T00:00:00Z",
+      "_comment": "Cursos y certificaciones (EPP, alturas, primeros auxilios…) "
+    }
+  },
+  {
+    "model": "empleados.documenttype",
+    "pk": 5,
+    "fields": {
+      "name": "Afiliación EPS/ARL",
+      "required": true,
+      "created_at": "2025-01-01T00:00:00Z",
+      "updated_at": "2025-01-01T00:00:00Z",
+      "_comment": "Comprobantes de afiliación a salud y riesgos"
+    }
+  },
+  {
+    "model": "empleados.documenttype",
+    "pk": 6,
+    "fields": {
+      "name": "Licencia",
+      "required": false,
+      "created_at": "2025-01-01T00:00:00Z",
+      "updated_at": "2025-01-01T00:00:00Z",
+      "_comment": "Licencias de conducción o de maquinaria"
+    }
+  },
+  {
+    "model": "empleados.documenttype",
+    "pk": 7,
+    "fields": {
+      "name": "Otro",
+      "required": false,
+      "created_at": "2025-01-01T00:00:00Z",
+      "updated_at": "2025-01-01T00:00:00Z",
+      "_comment": "Cualquier otro documento"
+    }
+  },
+
+  {
+    "_comment": "SUB_TYPES para MedicalExam (choices en código): Audiometría, Espirometría, Visión, Laboratorio, Presión arterial, Otro"
   }
 ]
-
-      

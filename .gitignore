@@ -173,4 +173,4 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 config.zip
-config/media/documents/
+config/media/

@@ -7,5 +7,23 @@ class MedicalExamSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MedicalExam
-        fields = "__all__"
-        read_only_fields = ("created_at", "created_by")
+        fields = [
+            "id",
+            "employee",
+            "employee_name",
+            "company",
+            "exam_phase",
+            "sub_type",
+            "risk_level",
+            "date",
+            "entity",
+            "aptitude",
+            "recommendations",
+            "file",
+            "metrics",
+            "next_due",
+            "created_at",
+            "created_by",
+            "updated_at",
+        ]
+        read_only_fields = ("created_at", "created_by", "updated_at")
