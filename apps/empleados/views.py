@@ -3,8 +3,12 @@ from rest_framework.permissions import AllowAny
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from apps.utils.auditlogmimix import AuditLogMixin
 from rest_framework.filters import SearchFilter
+from django.db import models
+from django.db.models import Subquery
+
+from apps.utils.auditlogmimix import AuditLogMixin
+from apps.vinculaciones.models import EmploymentLink
 
 from .models import Employee, DocumentType, EmployeeDocument
 from .serializers import (
@@ -26,7 +30,6 @@ class BaseAuditViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
 
 class EmployeeViewSet(BaseAuditViewSet):
-    queryset = Employee.objects.filter(is_deleted=False)
     serializer_class = EmployeeSerializer
     filter_backends = [SearchFilter]
     search_fields = [
@@ -36,6 +39,34 @@ class EmployeeViewSet(BaseAuditViewSet):
         "user__email",
         "phone_contact",
     ]
+
+    def get_queryset(self):
+        print("🔥 GET_QUERYSET EJECUTADO")
+        qs = Employee.objects.filter(is_deleted=False)
+
+        company = self.request.query_params.get("company")
+        if company and company.isdigit():
+            linked_ids = EmploymentLink.objects.filter(company_id=company).values(
+                "employee_id"
+            )
+            qs = qs.filter(id__in=Subquery(linked_ids))
+
+        if name := self.request.query_params.get("name"):
+            qs = qs.filter(
+                models.Q(first_name__icontains=name)
+                | models.Q(last_name__icontains=name)
+            )
+
+        if doc := self.request.query_params.get("document"):
+            qs = qs.filter(document__icontains=doc)
+
+        if is_active := self.request.query_params.get("is_active"):
+            if is_active.lower() == "true":
+                qs = qs.filter(employment_links__status="ACTIVE")
+            elif is_active.lower() == "false":
+                qs = qs.exclude(employment_links__status="ACTIVE")
+
+        return qs.distinct()
 
 
 class DocumentTypeViewSet(BaseAuditViewSet):

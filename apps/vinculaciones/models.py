@@ -11,7 +11,12 @@ class EmploymentLink(AuditMixin, models.Model):
         ("ENDED", "Finalizado"),
     ]
 
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, db_index=True)
+    employee = models.ForeignKey(
+        Employee,
+        on_delete=models.CASCADE,
+        db_index=True,
+        related_name="employment_links",  # ✅ esto se necesita
+    )
     company = models.ForeignKey(Company, on_delete=models.CASCADE, db_index=True)
 
     position = models.CharField(max_length=100)

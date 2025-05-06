@@ -71,7 +71,7 @@ from apps.actividades.views import ActivityViewSet
 router = DefaultRouter()
 
 router.register(r"companies", CompanyViewSet)
-router.register(r"employees", EmployeeViewSet)
+router.register(r"employees", EmployeeViewSet, basename="employees")  # ✅
 router.register(r"employment-links", EmploymentLinkViewSet)
 router.register(r"work-history", WorkHistoryViewSet)
 router.register(r"branches", BranchViewSet)
