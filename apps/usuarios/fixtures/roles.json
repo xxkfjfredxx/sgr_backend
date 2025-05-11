@@ -54,22 +54,21 @@
       "phone_contact": "3123456789",
       "address": "Barrio Nuevo",
       "socioeconomic_stratum": 4,
-      "_comment": "cargar este json para cargar la data: python manage.py loaddata initial_data.json",
       "created_at": "2025-01-01T00:00:00Z",
       "updated_at": "2025-01-01T00:00:00Z"
     }
   },
-
-  
   {
     "model": "empleados.documenttype",
     "pk": 1,
     "fields": {
       "name": "Cédula",
-      "required": true,
+      "code": "CEDULA",
+      "requires_expiration": false,
+      "default_expiry_months": null,
+      "category": null,
       "created_at": "2025-01-01T00:00:00Z",
-      "updated_at": "2025-01-01T00:00:00Z",
-      "_comment": "Tipo de documento: identidad del empleado"
+      "updated_at": "2025-01-01T00:00:00Z"
     }
   },
   {
@@ -77,10 +76,12 @@
     "pk": 2,
     "fields": {
       "name": "CV",
-      "required": true,
+      "code": "CV",
+      "requires_expiration": false,
+      "default_expiry_months": null,
+      "category": null,
       "created_at": "2025-01-01T00:00:00Z",
-      "updated_at": "2025-01-01T00:00:00Z",
-      "_comment": "Hoja de vida / curriculum"
+      "updated_at": "2025-01-01T00:00:00Z"
     }
   },
   {
@@ -88,10 +89,12 @@
     "pk": 3,
     "fields": {
       "name": "Contrato",
-      "required": true,
+      "code": "CONTRATO",
+      "requires_expiration": false,
+      "default_expiry_months": null,
+      "category": null,
       "created_at": "2025-01-01T00:00:00Z",
-      "updated_at": "2025-01-01T00:00:00Z",
-      "_comment": "Contrato laboral"
+      "updated_at": "2025-01-01T00:00:00Z"
     }
   },
   {
@@ -99,10 +102,12 @@
     "pk": 4,
     "fields": {
       "name": "Certificación",
-      "required": false,
+      "code": "CERTIFICACION",
+      "requires_expiration": true,
+      "default_expiry_months": null,
+      "category": null,
       "created_at": "2025-01-01T00:00:00Z",
-      "updated_at": "2025-01-01T00:00:00Z",
-      "_comment": "Cursos y certificaciones (EPP, alturas, primeros auxilios…) "
+      "updated_at": "2025-01-01T00:00:00Z"
     }
   },
   {
@@ -110,10 +115,12 @@
     "pk": 5,
     "fields": {
       "name": "Afiliación EPS/ARL",
-      "required": true,
+      "code": "AFILIACION_EPS_ARL",
+      "requires_expiration": false,
+      "default_expiry_months": null,
+      "category": null,
       "created_at": "2025-01-01T00:00:00Z",
-      "updated_at": "2025-01-01T00:00:00Z",
-      "_comment": "Comprobantes de afiliación a salud y riesgos"
+      "updated_at": "2025-01-01T00:00:00Z"
     }
   },
   {
@@ -121,10 +128,12 @@
     "pk": 6,
     "fields": {
       "name": "Licencia",
-      "required": false,
+      "code": "LICENCIA",
+      "requires_expiration": true,
+      "default_expiry_months": null,
+      "category": null,
       "created_at": "2025-01-01T00:00:00Z",
-      "updated_at": "2025-01-01T00:00:00Z",
-      "_comment": "Licencias de conducción o de maquinaria"
+      "updated_at": "2025-01-01T00:00:00Z"
     }
   },
   {
@@ -132,14 +141,12 @@
     "pk": 7,
     "fields": {
       "name": "Otro",
-      "required": false,
+      "code": "OTRO",
+      "requires_expiration": false,
+      "default_expiry_months": null,
+      "category": null,
       "created_at": "2025-01-01T00:00:00Z",
-      "updated_at": "2025-01-01T00:00:00Z",
-      "_comment": "Cualquier otro documento"
+      "updated_at": "2025-01-01T00:00:00Z"
     }
-  },
-
-  {
-    "_comment": "SUB_TYPES para MedicalExam (choices en código): Audiometría, Espirometría, Visión, Laboratorio, Presión arterial, Otro"
   }
 ]

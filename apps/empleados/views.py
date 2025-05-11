@@ -10,11 +10,12 @@ from django.db.models import Subquery
 from apps.utils.auditlogmimix import AuditLogMixin
 from apps.vinculaciones.models import EmploymentLink
 
-from .models import Employee, DocumentType, EmployeeDocument
+from .models import Employee, DocumentType, EmployeeDocument, DocumentCategory
 from .serializers import (
     EmployeeSerializer,
     DocumentTypeSerializer,
     EmployeeDocumentSerializer,
+    DocumentCategorySerializer,
 )
 
 
@@ -69,11 +70,6 @@ class EmployeeViewSet(BaseAuditViewSet):
         return qs.distinct()
 
 
-class DocumentTypeViewSet(BaseAuditViewSet):
-    queryset = DocumentType.objects.filter(is_deleted=False)
-    serializer_class = DocumentTypeSerializer
-
-
 class EmployeeDocumentViewSet(BaseAuditViewSet):
     queryset = EmployeeDocument.objects.filter(is_deleted=False)
     serializer_class = EmployeeDocumentSerializer
@@ -85,4 +81,24 @@ class EmployeeDocumentViewSet(BaseAuditViewSet):
             qs = qs.filter(employee_id=emp)
         if dtype := self.request.query_params.get("document_type"):
             qs = qs.filter(document_type_id=dtype)
+        return qs
+
+
+# ─── Categorías (solo lectura) ───────────────────────────────
+class DocumentCategoryViewSet(BaseAuditViewSet):
+    queryset = DocumentCategory.objects.filter(is_deleted=False)
+    serializer_class = DocumentCategorySerializer
+    http_method_names = ["get", "head", "options"]
+
+
+# ─── Tipos de documento (solo lectura) ───────────────────────
+class DocumentTypeViewSet(BaseAuditViewSet):
+    queryset = DocumentType.objects.filter(is_deleted=False)
+    serializer_class = DocumentTypeSerializer
+    http_method_names = ["get", "head", "options"]
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        if cat := self.request.query_params.get("category"):
+            qs = qs.filter(category_id=cat)
         return qs

@@ -1,23 +1,53 @@
+# apps/empleados/serializers.py
 from rest_framework import serializers
-from .models import Employee, EmployeeDocument, DocumentType
+from .models import (
+    Employee,
+    EmployeeDocument,
+    DocumentType,
+    DocumentCategory,
+)
 
 
+# ─── Categoría ────────────────────────────────────────────────
+class DocumentCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DocumentCategory
+        fields = ("id", "name", "description")
+
+
+# ─── Tipo de documento ────────────────────────────────────────
+class DocumentTypeSerializer(serializers.ModelSerializer):
+    category = DocumentCategorySerializer(read_only=True)
+    category_id = serializers.PrimaryKeyRelatedField(
+        queryset=DocumentCategory.objects.all(),
+        source="category",
+        write_only=True,
+    )
+
+    class Meta:
+        model = DocumentType
+        fields = (
+            "id",
+            "code",
+            "name",
+            "category",
+            "category_id",
+            "requires_expiration",
+            "default_expiry_months",
+            "created_at",
+            "created_by",
+        )
+        read_only_fields = ("created_at", "created_by")
+
+
+# ─── Employee y Document existían ─────────────────────────────
 class EmployeeSerializer(serializers.ModelSerializer):
-    # Campo extra para el email del usuario relacionado
     user_email = serializers.EmailField(source="user.email", read_only=True)
 
     class Meta:
         model = Employee
-        # Incluimos todos los campos del modelo + el extra user_email
         fields = "__all__"
         read_only_fields = ("created_at", "created_by", "user_email")
-
-
-class DocumentTypeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DocumentType
-        fields = "__all__"
-        read_only_fields = ("created_at", "created_by")
 
 
 class EmployeeDocumentSerializer(serializers.ModelSerializer):

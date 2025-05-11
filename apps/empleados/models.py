@@ -41,9 +41,41 @@ class Employee(AuditMixin, models.Model):
         return f"{self.first_name} {self.last_name}"
 
 
+# ──────────────────────────────────────────────────────────────
+#  NUEVO  ▸  Categoría de documentos
+# ──────────────────────────────────────────────────────────────
+class DocumentCategory(AuditMixin, models.Model):
+    name = models.CharField(max_length=60, unique=True)
+    description = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
+# ──────────────────────────────────────────────────────────────
+#  Modificado ▸ DocumentType
+# ──────────────────────────────────────────────────────────────
 class DocumentType(AuditMixin, models.Model):
+    code = models.CharField(max_length=30, unique=True)
     name = models.CharField(max_length=100)
-    required = models.BooleanField(default=False)
+
+    # NUEVOS CAMPOS ↓↓↓
+    category = models.ForeignKey(
+        DocumentCategory,
+        on_delete=models.PROTECT,
+        related_name="types",
+        null=True,
+        blank=True,
+    )
+    requires_expiration = models.BooleanField(default=False)
+    default_expiry_months = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
+        help_text="Si se deja vacío y el documento vence, el usuario ingresará la fecha manualmente.",
+    )
 
     class Meta:
         ordering = ["name"]
@@ -65,6 +97,15 @@ class EmployeeDocument(AuditMixin, models.Model):
         "empleados.Employee", on_delete=models.CASCADE, related_name="documents"
     )
     document_type = models.ForeignKey("DocumentType", on_delete=models.PROTECT)
+
+    absence = models.ForeignKey(
+        "ausentismo.Absence",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name="support_docs",
+    )
+
     file = models.FileField(upload_to=document_upload_path)
 
     company = models.ForeignKey(
