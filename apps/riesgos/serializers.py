@@ -1,5 +1,13 @@
 from rest_framework import serializers
-from .models import Area, Hazard, RiskAssessment, RiskControl, RiskReview
+from .models import (
+    Area,
+    Hazard,
+    RiskAssessment,
+    RiskControl,
+    RiskReview,
+    ControlEvidence,
+    ControlFollowUp,
+)
 
 
 class AreaSerializer(serializers.ModelSerializer):
@@ -42,6 +50,24 @@ class RiskControlSerializer(serializers.ModelSerializer):
         model = RiskControl
         fields = "__all__"
         read_only_fields = ("created_at", "created_by")
+
+
+class ControlEvidenceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ControlEvidence
+        fields = "__all__"
+        read_only_fields = ("uploaded_at",)
+
+
+class ControlFollowUpSerializer(serializers.ModelSerializer):
+    performed_by_name = serializers.CharField(
+        source="performed_by.first_name", read_only=True
+    )
+
+    class Meta:
+        model = ControlFollowUp
+        fields = "__all__"
+        read_only_fields = ("date",)
 
 
 class RiskReviewSerializer(serializers.ModelSerializer):

@@ -92,6 +92,27 @@ class RiskControl(AuditMixin, models.Model):
         return f"Control – {self.risk_assessment}"
 
 
+class ControlEvidence(models.Model):
+    control = models.ForeignKey(
+        "RiskControl", on_delete=models.CASCADE, related_name="evidences"
+    )
+    file = models.FileField(upload_to="control_evidences/")
+    description = models.TextField(blank=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+
+class ControlFollowUp(models.Model):
+    control = models.ForeignKey(
+        "RiskControl", on_delete=models.CASCADE, related_name="followups"
+    )
+    date = models.DateField(auto_now_add=True)
+    performed_by = models.ForeignKey(
+        "empleados.Employee", on_delete=models.SET_NULL, null=True
+    )
+    notes = models.TextField(blank=True)
+    is_controlled = models.BooleanField(default=False)
+
+
 class RiskReview(AuditMixin, models.Model):
     risk_assessment = models.ForeignKey(
         "RiskAssessment", on_delete=models.CASCADE, related_name="reviews"

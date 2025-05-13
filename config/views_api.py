@@ -46,6 +46,7 @@ from apps.acciones_correctivas.views import (
     ActionItemViewSet,
     RiskActionViewSet,
 )
+from apps.riesgos.views import ControlEvidenceViewSet, ControlFollowUpViewSet
 from apps.sst_policies.views import SSTPolicyViewSet, PolicyAcceptanceViewSet
 from apps.inspecciones.views import (
     InspectionTemplateViewSet,
@@ -74,6 +75,9 @@ router = DefaultRouter()
 
 router.register(r"signage", SignageInventoryViewSet, basename="signage")
 router.register(r"vaccinations", VaccinationRecordViewSet, basename="vaccinations")
+
+router.register(r"control-evidences", ControlEvidenceViewSet)
+router.register(r"control-followups", ControlFollowUpViewSet)
 
 router.register(r"equipment-inventory", EquipmentInventoryViewSet)
 router.register(r"equipment-inspections", EquipmentInspectionViewSet)

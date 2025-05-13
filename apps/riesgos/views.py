@@ -5,13 +5,23 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from apps.utils.auditlogmimix import AuditLogMixin
 
-from .models import Area, Hazard, RiskAssessment, RiskControl, RiskReview
+from .models import (
+    Area,
+    Hazard,
+    RiskAssessment,
+    RiskControl,
+    RiskReview,
+    ControlEvidence,
+    ControlFollowUp,
+)
 from .serializers import (
     AreaSerializer,
     HazardSerializer,
     RiskAssessmentSerializer,
     RiskControlSerializer,
     RiskReviewSerializer,
+    ControlEvidenceSerializer,
+    ControlFollowUpSerializer,
 )
 
 
@@ -70,6 +80,30 @@ class RiskControlViewSet(BaseAuditViewSet):
         qs = super().get_queryset()
         if ra := self.request.query_params.get("assessment"):
             qs = qs.filter(risk_assessment_id=ra)
+        return qs
+
+
+# -------- Evidencias de Control -----------------------------------------
+class ControlEvidenceViewSet(BaseAuditViewSet):
+    queryset = ControlEvidence.objects.all()
+    serializer_class = ControlEvidenceSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        if control := self.request.query_params.get("control"):
+            qs = qs.filter(control_id=control)
+        return qs
+
+
+# -------- Seguimiento de Controles --------------------------------------
+class ControlFollowUpViewSet(BaseAuditViewSet):
+    queryset = ControlFollowUp.objects.all()
+    serializer_class = ControlFollowUpSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        if control := self.request.query_params.get("control"):
+            qs = qs.filter(control_id=control)
         return qs
 
 

@@ -6,6 +6,8 @@ from .views import (
     RiskControlViewSet,
     RiskReviewViewSet,
     RiskActionViewSet,
+    ControlEvidenceViewSet,
+    ControlFollowUpViewSet,
 )
 
 router = DefaultRouter()
@@ -15,5 +17,7 @@ router.register(r"risk-assessments", RiskAssessmentViewSet, basename="riskassess
 router.register(r"risk-controls", RiskControlViewSet, basename="risk-control")
 router.register(r"risk-reviews", RiskReviewViewSet, basename="risk-review")
 router.register(r"risk-actions", RiskActionViewSet, basename="risk-action")
+router.register(r"control-evidences", ControlEvidenceViewSet)
+router.register(r"control-followups", ControlFollowUpViewSet)
 
 urlpatterns = router.urls
