@@ -10,4 +10,10 @@ class ActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Activity
         fields = "__all__"
-        read_only_fields = ("is_deleted", "created_at", "created_by", "updated_at")
+        read_only_fields = (
+            "id",
+            "is_deleted",
+            "created_at",
+            "created_by",
+            "updated_at",
+        )

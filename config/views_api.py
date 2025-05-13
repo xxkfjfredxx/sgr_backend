@@ -67,8 +67,12 @@ from apps.suggestions.views import SuggestionBoxViewSet
 from apps.contratos.views import ContractViewSet
 from apps.objectives.views import SSTObjectiveViewSet, SSTGoalViewSet
 from apps.actividades.views import ActivityViewSet
+from apps.safety.views import SignageInventoryViewSet, VaccinationRecordViewSet
 
 router = DefaultRouter()
+
+router.register(r"signage", SignageInventoryViewSet, basename="signage")
+router.register(r"vaccinations", VaccinationRecordViewSet, basename="vaccinations")
 
 router.register(r"companies", CompanyViewSet)
 router.register(r"employees", EmployeeViewSet, basename="employees")  # ✅

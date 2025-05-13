@@ -15,7 +15,7 @@ class ActivityViewSet(AuditLogMixin, viewsets.ModelViewSet):
     def get_queryset(self):
         qs = super().get_queryset()
 
-        # ✅ Filtro por empresa via query param
+        # Filtro por empresa vía query param
         if company_id := self.request.query_params.get("company"):
             qs = qs.filter(company_id=company_id)
 
@@ -35,16 +35,10 @@ class ActivityViewSet(AuditLogMixin, viewsets.ModelViewSet):
         return qs
 
     def perform_create(self, serializer):
+        """
+        Asigna created_by y company_id directamente desde el payload.
+        No usa employmentlink_set.
+        """
         user = self.request.user
-        employee = getattr(user, "employee", None)
-        company_id = self.request.data.get(
-            "company"
-        )  # Por si lo mandas explícito desde React
-
-        if employee and employee.employmentlink_set.exists():
-            company = employee.employmentlink_set.first().company
-            serializer.save(created_by=user, company=company)
-        elif company_id:
-            serializer.save(created_by=user, company_id=company_id)
-        else:
-            raise Exception("No se pudo determinar la empresa asociada.")
+        company_id = self.request.data.get("company")
+        serializer.save(created_by=user, company_id=company_id)
