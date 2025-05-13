@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     "django_filters",
     "apps.ipvr",
     "apps.epp",
+    "apps.equipment",
     "apps.safety",
     "apps.legal",
     "apps.cambios",
