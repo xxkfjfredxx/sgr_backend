@@ -4,12 +4,41 @@ from apps.empleados.serializers import EmployeeSerializer
 
 
 class WorkAccidentSerializer(serializers.ModelSerializer):
+    # datos de empleado para mostrar en la lista
     employee_data = EmployeeSerializer(source="employee", read_only=True)
 
     class Meta:
         model = WorkAccident
-        fields = "__all__"
-        read_only_fields = ("created_at", "created_by")
+        fields = [
+            "id",
+            "employee",
+            "employee_data",
+            "company",
+            "incident_type",
+            "date",
+            "location",
+            "description",
+            "injury_type",
+            "severity",
+            "reported_to_arl",
+            "days_lost",
+            "training_valid",
+            "medical_exam_valid",
+            "corrective_actions",
+            "evidence_file",
+            "created_by",
+            "created_at",
+            "updated_at",
+            "is_deleted",
+        ]
+        read_only_fields = (
+            "id",
+            "employee_data",
+            "created_by",
+            "created_at",
+            "updated_at",
+            "is_deleted",
+        )
 
 
 class WorkAtHeightPermitSerializer(serializers.ModelSerializer):
@@ -17,5 +46,27 @@ class WorkAtHeightPermitSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = WorkAtHeightPermit
-        fields = "__all__"
-        read_only_fields = ("created_at", "created_by")
+        fields = [
+            "id",
+            "employee",
+            "employee_data",
+            "date",
+            "location",
+            "work_description",
+            "checklist",
+            "approved",
+            "supervisor",
+            "evidence_file",
+            "created_by",
+            "created_at",
+            "updated_at",
+            "is_deleted",
+        ]
+        read_only_fields = (
+            "id",
+            "employee_data",
+            "created_by",
+            "created_at",
+            "updated_at",
+            "is_deleted",
+        )
