@@ -47,6 +47,8 @@ REST_FRAMEWORK = {
 }
 
 INSTALLED_APPS = [
+    "jet.dashboard",  # dashboard primero
+    "jet",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -56,6 +58,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "rest_framework",
     "corsheaders",
+    "multitenancy",
     "django_filters",
     "apps.ipvr",
     "apps.epp",
@@ -104,6 +107,8 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "apps.utils.middleware.ActiveCompanyMiddleware",
+    "apps.utils.middleware.CustomTenantMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -183,3 +188,9 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CORS_ALLOW_ALL_ORIGINS = True
+
+JET_DEFAULT_THEME = "light-gray"
+
+JET_DASHBOARD_SITE_TITLE = "Panel de Administración"
+JET_INDEX_DASHBOARD = "jet.dashboard.dashboard.DefaultIndexDashboard"
+JET_APP_INDEX_DASHBOARD = "jet.dashboard.dashboard.DefaultAppIndexDashboard"

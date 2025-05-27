@@ -37,6 +37,7 @@ class EmergencyBrigadeMemberViewSet(BaseAuditViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.filter(employee__company=self.request.user.active_company)
         if role := self.request.query_params.get("role"):
             qs = qs.filter(role=role)
         if act := self.request.query_params.get("active"):
@@ -50,6 +51,7 @@ class EmergencyEquipmentViewSet(BaseAuditViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.filter(employee__company=self.request.user.active_company)
         if typ := self.request.query_params.get("type"):
             qs = qs.filter(type=typ)
         if loc := self.request.query_params.get("location"):
@@ -63,6 +65,7 @@ class EmergencyDrillViewSet(BaseAuditViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.filter(employee__company=self.request.user.active_company)
         if dtype := self.request.query_params.get("drill_type"):
             qs = qs.filter(drill_type=dtype)
         if date_str := self.request.query_params.get("date"):

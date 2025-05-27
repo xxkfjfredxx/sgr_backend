@@ -26,6 +26,7 @@ class WorkAccidentViewSet(BaseAuditViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.filter(employee__company=self.request.user.active_company)
         # filtro por empresa
         if company_id := self.request.query_params.get("company"):
             qs = qs.filter(company_id=company_id)
@@ -53,6 +54,7 @@ class WorkAtHeightPermitViewSet(BaseAuditViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.filter(employee__company=self.request.user.active_company)
         if company_id := self.request.query_params.get("company"):
             qs = qs.filter(employee__company_id=company_id)
         if emp := self.request.query_params.get("employee"):

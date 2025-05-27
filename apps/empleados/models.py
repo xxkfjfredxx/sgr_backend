@@ -4,6 +4,8 @@ import os
 from datetime import datetime
 from apps.contratistas.models import ContractorCompany
 from apps.utils.mixins import AuditMixin
+from apps.empresa.models import Company
+from django_multitenant.models import TenantManager
 
 
 class Employee(AuditMixin, models.Model):
@@ -18,6 +20,15 @@ class Employee(AuditMixin, models.Model):
         related_name="employees",
         help_text="Solo si es empleado de un contratista",
     )
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="employees",
+        help_text="Empresa a la que pertenece el empleado",
+    )
+    objects = TenantManager()
     document = models.CharField(max_length=20, unique=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)

@@ -19,6 +19,10 @@ class ContractViewSet(AuditLogMixin, viewsets.ModelViewSet):
     filterset_fields = ["company", "employee", "status", "contract_type"]
     search_fields = ["employee__first_name", "employee__last_name"]
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(company=self.request.user.active_company)
+
     @action(detail=True, methods=["post"])
     def restore(self, request, pk=None):
         obj = self.get_object()

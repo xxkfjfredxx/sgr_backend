@@ -26,6 +26,7 @@ class ActivePauseSessionViewSet(BaseAuditViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.filter(employee__company=self.request.user.active_company)
         # ?date=YYYY-MM-DD
         if d := self.request.query_params.get("date"):
             if dt := parse_date(d):
@@ -42,6 +43,7 @@ class ActivePauseAttendanceViewSet(BaseAuditViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.filter(employee__company=self.request.user.active_company)
         # ?session=<id>
         if ses := self.request.query_params.get("session"):
             qs = qs.filter(session_id=ses)

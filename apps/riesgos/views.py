@@ -63,6 +63,7 @@ class RiskAssessmentViewSet(BaseAuditViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.filter(employee__company=self.request.user.active_company)
         if haz := self.request.query_params.get("hazard"):
             qs = qs.filter(hazard_id=haz)
         if d1 := self.request.query_params.get("from"):
@@ -78,6 +79,9 @@ class RiskControlViewSet(BaseAuditViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.filter(
+            risk_assessment__employee__company=self.request.user.active_company
+        )
         if ra := self.request.query_params.get("assessment"):
             qs = qs.filter(risk_assessment_id=ra)
         return qs
@@ -90,6 +94,9 @@ class ControlEvidenceViewSet(BaseAuditViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.filter(
+            control__risk_assessment__employee__company=self.request.user.active_company
+        )
         if control := self.request.query_params.get("control"):
             qs = qs.filter(control_id=control)
         return qs
@@ -102,6 +109,9 @@ class ControlFollowUpViewSet(BaseAuditViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.filter(
+            control__risk_assessment__employee__company=self.request.user.active_company
+        )
         if control := self.request.query_params.get("control"):
             qs = qs.filter(control_id=control)
         return qs
@@ -114,6 +124,9 @@ class RiskReviewViewSet(BaseAuditViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.filter(
+            risk_assessment__employee__company=self.request.user.active_company
+        )
         if ra := self.request.query_params.get("assessment"):
             qs = qs.filter(risk_assessment_id=ra)
         return qs

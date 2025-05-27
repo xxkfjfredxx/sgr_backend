@@ -27,6 +27,8 @@ class ErgonomicAssessmentViewSet(BaseAuditViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.filter(employee__company=self.request.user.active_company)
+
         if emp := self.request.query_params.get("employee"):
             qs = qs.filter(employee_id=emp)
         if date_str := self.request.query_params.get("date"):
@@ -42,6 +44,8 @@ class AROViewSet(BaseAuditViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.filter(employee__company=self.request.user.active_company)
+
         if hazard := self.request.query_params.get("hazard"):
             qs = qs.filter(hazard__icontains=hazard)
         if emp := self.request.query_params.get("employee"):
@@ -56,6 +60,8 @@ class ATSViewSet(BaseAuditViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.filter(employee__company=self.request.user.active_company)
+
         if activity := self.request.query_params.get("activity"):
             qs = qs.filter(activity__icontains=activity)
         if emp := self.request.query_params.get("employee"):

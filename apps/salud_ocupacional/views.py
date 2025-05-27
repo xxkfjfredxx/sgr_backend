@@ -14,11 +14,13 @@ class MedicalExamViewSet(viewsets.ModelViewSet):
     """
 
     queryset = MedicalExam.objects.filter(is_deleted=False)
+
     serializer_class = MedicalExamSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.filter(employee__company=self.request.user.active_company)
         params = self.request.query_params
         if emp := params.get("employee"):
             qs = qs.filter(employee_id=emp)

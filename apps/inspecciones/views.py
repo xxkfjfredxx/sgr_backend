@@ -49,6 +49,7 @@ class InspectionViewSet(BaseAuditViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.filter(employee__company=self.request.user.active_company)
         if tmpl := self.request.query_params.get("template"):
             qs = qs.filter(template_id=tmpl)
         if emp := self.request.query_params.get("performed_by"):
@@ -66,6 +67,8 @@ class InspectionResponseViewSet(BaseAuditViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.filter(inspection__employee__company=self.request.user.active_company)
+
         if insp := self.request.query_params.get("inspection"):
             qs = qs.filter(inspection_id=insp)
         if item := self.request.query_params.get("item"):

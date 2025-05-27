@@ -21,3 +21,7 @@ class User(AuditMixin, AbstractUser):
 
     class Meta:
         db_table = "users"
+
+    @property
+    def active_company(self):
+        return getattr(self, "_active_company", None)

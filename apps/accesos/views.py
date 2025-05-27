@@ -19,7 +19,7 @@ class AccessLogViewSet(AuditLogMixin, viewsets.ModelViewSet):
     # --- filtros rápidos opcionales -----------------
     def get_queryset(self):
         qs = super().get_queryset()
-
+        qs = qs.filter(employee__company=self.request.user.active_company)
         # ?employee=<id>
         if emp_id := self.request.query_params.get("employee"):
             qs = qs.filter(employee_id=emp_id)

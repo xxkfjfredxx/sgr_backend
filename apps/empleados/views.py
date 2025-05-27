@@ -43,24 +43,33 @@ class EmployeeViewSet(BaseAuditViewSet):
 
     def get_queryset(self):
         print("🔥 GET_QUERYSET EJECUTADO")
+        user = self.request.user
         qs = Employee.objects.filter(is_deleted=False)
+        qs = qs.filter(company=self.request.user.active_company)
+        # 🔒 Filtro por empresa activa del usuario (solo si tiene)
+        if hasattr(user, "active_company") and user.active_company:
+            qs = qs.filter(company=user.active_company)
 
-        company = self.request.query_params.get("company")
-        if company and company.isdigit():
-            linked_ids = EmploymentLink.objects.filter(company_id=company).values(
-                "employee_id"
-            )
-            qs = qs.filter(id__in=Subquery(linked_ids))
+        # Filtro opcional por parámetro "company"
+        if company := self.request.query_params.get("company"):
+            if company.isdigit():
+                linked_ids = EmploymentLink.objects.filter(company_id=company).values(
+                    "employee_id"
+                )
+                qs = qs.filter(id__in=Subquery(linked_ids))
 
+        # Filtro por nombre
         if name := self.request.query_params.get("name"):
             qs = qs.filter(
                 models.Q(first_name__icontains=name)
                 | models.Q(last_name__icontains=name)
             )
 
+        # Filtro por documento
         if doc := self.request.query_params.get("document"):
             qs = qs.filter(document__icontains=doc)
 
+        # Filtro por estado activo/inactivo
         if is_active := self.request.query_params.get("is_active"):
             if is_active.lower() == "true":
                 qs = qs.filter(employment_links__status="ACTIVE")
@@ -77,6 +86,7 @@ class EmployeeDocumentViewSet(BaseAuditViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.filter(employee__company=self.request.user.active_company)
         if emp := self.request.query_params.get("employee"):
             qs = qs.filter(employee_id=emp)
         if dtype := self.request.query_params.get("document_type"):

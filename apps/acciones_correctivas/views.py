@@ -19,9 +19,10 @@ class ImprovementPlanViewSet(AuditLogMixin, viewsets.ModelViewSet):
     serializer_class = ImprovementPlanSerializer
     permission_classes = [AllowAny]
 
-    # filtro rápido ?status=open
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.filter(employee__company=self.request.user.active_company)
+
         if st := self.request.query_params.get("status"):
             qs = qs.filter(status=st)
         return qs
@@ -43,6 +44,8 @@ class ActionItemViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.filter(plan__employee__company=self.request.user.active_company)
+
         if plan := self.request.query_params.get("plan"):
             qs = qs.filter(plan_id=plan)
         return qs
@@ -64,6 +67,10 @@ class RiskActionViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.filter(
+            risk_assessment__employee__company=self.request.user.active_company
+        )
+
         if ass := self.request.query_params.get("risk_assessment"):
             qs = qs.filter(risk_assessment_id=ass)
         return qs

@@ -16,6 +16,7 @@ class SuggestionBoxViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.filter(employee__company=self.request.user.active_company)
         if typ := self.request.query_params.get("type"):
             qs = qs.filter(type=typ)
         if resp := self.request.query_params.get("responded"):

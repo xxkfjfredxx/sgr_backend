@@ -48,6 +48,15 @@ class EmployeeSerializer(serializers.ModelSerializer):
         model = Employee
         fields = "__all__"
         read_only_fields = ("created_at", "created_by", "user_email")
+        extra_kwargs = {
+            "company": {"required": False},
+        }
+
+    def create(self, validated_data):
+        request = self.context.get("request")
+        if request and hasattr(request.user, "active_company"):
+            validated_data["company"] = request.user.active_company
+        return super().create(validated_data)
 
 
 class EmployeeDocumentSerializer(serializers.ModelSerializer):

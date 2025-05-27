@@ -26,6 +26,7 @@ class EmploymentLinkViewSet(AuditLogMixin, viewsets.ModelViewSet):
     # --- filtros extra por fecha -----------------
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.filter(company=self.request.user.active_company)
         if d1 := self.request.query_params.get("from"):
             if dt := parse_date(d1):
                 qs = qs.filter(start_date__gte=dt)

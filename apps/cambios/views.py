@@ -19,6 +19,7 @@ class ChangeRequestViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.filter(employee__company=self.request.user.active_company)
         if st := self.request.query_params.get("status"):
             qs = qs.filter(status=st)
         return qs
@@ -38,6 +39,7 @@ class ChangeEvaluationViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.filter(employee__company=self.request.user.active_company)
         if risk := self.request.query_params.get("risk"):
             qs = qs.filter(risk_level=risk)
         return qs
@@ -57,6 +59,7 @@ class ChangeImplementationViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.filter(employee__company=self.request.user.active_company)
         if impl := self.request.query_params.get("implemented_by"):
             qs = qs.filter(implemented_by_id=impl)
         return qs

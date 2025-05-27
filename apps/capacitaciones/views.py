@@ -24,6 +24,7 @@ class TrainingSessionViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         qs = TrainingSession.objects.all()
+        qs = qs.filter(employee__company=self.request.user.active_company)
         include_deleted = self.request.query_params.get("include_deleted") == "true"
         if not include_deleted:
             qs = qs.filter(is_deleted=False)
@@ -57,7 +58,7 @@ class TrainingSessionAttendanceViewSet(AuditLogMixin, viewsets.ModelViewSet):
         • detail/update/destroy → queryset completo (sin filtro)
         """
         qs = TrainingSessionAttendance.objects.all()
-
+        qs = qs.filter(employee__company=self.request.user.active_company)
         # filtros externos
         if ses := self.request.query_params.get("session"):
             qs = qs.filter(session_id=ses)
@@ -89,6 +90,7 @@ class CertificationViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         qs = Certification.objects.all()
+        qs = qs.filter(participant__employee__company=self.request.user.active_company)
         include_deleted = self.request.query_params.get("include_deleted") == "true"
         if not include_deleted:
             qs = qs.filter(is_deleted=False)

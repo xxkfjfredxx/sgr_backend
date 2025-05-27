@@ -36,6 +36,7 @@ class PolicyAcceptanceViewSet(BaseAuditViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.filter(employee__company=self.request.user.active_company)
         if pol := self.request.query_params.get("policy"):
             qs = qs.filter(policy_id=pol)
         if emp := self.request.query_params.get("employee"):

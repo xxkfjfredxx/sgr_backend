@@ -17,7 +17,7 @@ class ReintegroViewSet(AuditLogMixin, viewsets.ModelViewSet):
     # ---------- filtros rápidos ----------
     def get_queryset(self):
         qs = super().get_queryset()
-
+        qs = qs.filter(employee__company=self.request.user.active_company)
         # ?employee=<id>
         if emp := self.request.query_params.get("employee"):
             qs = qs.filter(employee_id=emp)

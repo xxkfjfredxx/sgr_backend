@@ -10,6 +10,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(api_urls)),
     path("api/", include("apps.usuarios.urls")),
+    path("jet/dashboard/", include("jet.dashboard.urls", "jet-dashboard")),
+    path("jet/", include("jet.urls", namespace="jet")),
 ]
 
 if settings.DEBUG:
