@@ -1,12 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from apps.utils.mixins import AuditMixin
+from apps.empresa.models import Company
 
 
 class UserRole(AuditMixin, models.Model):
-    name = models.CharField(max_length=50, unique=True)  # índice implícito por UNIQUE
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name="roles")
+    name = models.CharField(max_length=50)
     description = models.TextField(blank=True, null=True)
     permissions = models.JSONField(blank=True, null=True)
+    access_level = models.IntegerField(default=1)
     is_active = models.BooleanField(default=True, db_index=True)
 
     class Meta:
