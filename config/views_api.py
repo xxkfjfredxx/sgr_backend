@@ -82,7 +82,7 @@ router.register(r"control-followups", ControlFollowUpViewSet)
 router.register(r"equipment-inventory", EquipmentInventoryViewSet)
 router.register(r"equipment-inspections", EquipmentInspectionViewSet)
 
-router.register(r"companies", CompanyViewSet)
+router.register(r"companies", CompanyViewSet, basename="companies")
 router.register(r"employees", EmployeeViewSet, basename="employees")  # ✅
 router.register(r"employment-links", EmploymentLinkViewSet)
 router.register(r"work-history", WorkHistoryViewSet)

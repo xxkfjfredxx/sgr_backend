@@ -18,6 +18,13 @@ class Branch(AuditMixin, models.Model):  # Sucursal
 class Position(AuditMixin, models.Model):  # Cargo
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True, null=True)
+    RISK_LEVEL_CHOICES = [
+        ("bajo", "Bajo"),
+        ("medio", "Medio"),
+        ("alto", "Alto"),
+    ]
+
+    risk_level = models.CharField(max_length=10, choices=RISK_LEVEL_CHOICES)
 
     class Meta:
         db_table = "positions"

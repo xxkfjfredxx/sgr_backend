@@ -1,5 +1,5 @@
-from rest_framework import viewsets, status
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db.models import Q  # ✅ Asegúrate de importar esto
@@ -10,22 +10,32 @@ from .serializers import CompanySerializer
 
 
 class CompanyViewSet(AuditLogMixin, viewsets.ModelViewSet):
-    queryset = Company.objects.filter(is_deleted=False)
     serializer_class = CompanySerializer
-    permission_classes = [
-        AllowAny
-    ]  # ← puedes cambiar a IsAuthenticated si es necesario
+    permission_classes = [IsAuthenticated]  # ← solo usuarios autenticados
 
-    # -------- filtros rápidos ----------
     def get_queryset(self):
-        qs = super().get_queryset()
+        user = self.request.user
 
-        # 🔍 Nuevo filtro por nombre o NIT
-        search = self.request.query_params.get("search")
-        if search:
+        # ✅ SUPERADMIN: acceso total
+        if user.is_superuser:
+            qs = Company.objects.filter(is_deleted=False)
+
+        # ✅ ADMIN GLOBAL: sin empresa asociada ni relación employee
+        elif (
+            user.role
+            and user.role.name.lower() == "admin"
+            and not hasattr(user, "employee")
+            and not user.role.company  # 👈 Verifica que el rol no esté ligado a una empresa
+        ):
+            qs = Company.objects.filter(is_deleted=False)
+
+        # 🚫 DEMÁS USUARIOS: sin acceso
+        else:
+            qs = Company.objects.none()
+
+        # 🔍 Filtros de búsqueda
+        if search := self.request.query_params.get("search"):
             qs = qs.filter(Q(name__icontains=search) | Q(nit__icontains=search))
-
-        # Filtros existentes
         if name := self.request.query_params.get("name"):
             qs = qs.filter(name__icontains=name)
         if sector := self.request.query_params.get("sector"):
@@ -34,14 +44,6 @@ class CompanyViewSet(AuditLogMixin, viewsets.ModelViewSet):
         return qs
 
     # -------- restore lógico -----------
-    @action(detail=True, methods=["post"])
-    def restore(self, request, pk=None):
-        obj = self.get_object()
-        obj.restore()
-        self.log_audit("RESTORED", obj)
-        return Response({"detail": "Empresa restaurada."}, status=status.HTTP_200_OK)
-
-    # -------- compañías del usuario ----
     @action(
         detail=False,
         methods=["get"],
@@ -49,19 +51,29 @@ class CompanyViewSet(AuditLogMixin, viewsets.ModelViewSet):
         permission_classes=[IsAuthenticated],
     )
     def my_companies(self, request):
-        """Compañías visibles para el usuario autenticado."""
         user = request.user
 
-        if user.is_superuser or getattr(user.role, "name", "").lower() == "admin":
+        if user.is_superuser or (
+            user.role
+            and user.role.name.lower() == "admin"
+            and not hasattr(user, "employee")
+            and not user.role.company
+        ):
             qs = self.get_queryset()
+
         elif hasattr(user, "employee"):
+            empresa = user.employee.empresa
             qs = (
-                self.get_queryset()
-                .filter(employmentlink__employee=user.employee)
-                .distinct()
+                Company.objects.filter(id=empresa.id)
+                if empresa
+                else Company.objects.none()
             )
+
+        elif user.role and user.role.company:
+            qs = Company.objects.filter(id=user.role.company.id)
+
         else:
-            qs = self.get_queryset().none()
+            qs = Company.objects.none()
 
         page = self.paginate_queryset(qs)
         if page is not None:

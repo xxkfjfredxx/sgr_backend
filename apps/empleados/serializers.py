@@ -6,6 +6,9 @@ from .models import (
     DocumentType,
     DocumentCategory,
 )
+from apps.capacitaciones.models import TrainingSessionAttendance
+from apps.salud_ocupacional.models import MedicalExam
+from datetime import date
 
 
 # ─── Categoría ────────────────────────────────────────────────
@@ -43,6 +46,8 @@ class DocumentTypeSerializer(serializers.ModelSerializer):
 # ─── Employee y Document existían ─────────────────────────────
 class EmployeeSerializer(serializers.ModelSerializer):
     user_email = serializers.EmailField(source="user.email", read_only=True)
+    course_expirations = serializers.SerializerMethodField()
+    exam_expirations = serializers.SerializerMethodField()
 
     class Meta:
         model = Employee
@@ -57,6 +62,22 @@ class EmployeeSerializer(serializers.ModelSerializer):
         if request and hasattr(request.user, "active_company"):
             validated_data["company"] = request.user.active_company
         return super().create(validated_data)
+
+    def get_course_expirations(self, obj):
+        cursos = (
+            TrainingSessionAttendance.objects.filter(
+                employee=obj, session__date__gte=date.today()
+            )
+            .select_related("session")
+            .order_by("session__date")[:3]
+        )
+        return [{"name": c.session.topic, "expires_on": c.session.date} for c in cursos]
+
+    def get_exam_expirations(self, obj):
+        examenes = MedicalExam.objects.filter(
+            employee=obj, date__gte=date.today()
+        ).order_by("date")[:3]
+        return [{"type": e.sub_type, "expires_on": e.date} for e in examenes]
 
 
 class EmployeeDocumentSerializer(serializers.ModelSerializer):
