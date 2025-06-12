@@ -1,8 +1,8 @@
-from django.utils.dateparse import parse_date
 from rest_framework import viewsets, status
-from rest_framework.permissions import AllowAny
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+from django.utils.dateparse import parse_date
 
 from .models import MedicalExam
 from .serializers import MedicalExamSerializer
@@ -14,7 +14,6 @@ class MedicalExamViewSet(viewsets.ModelViewSet):
     """
 
     queryset = MedicalExam.objects.filter(is_deleted=False)
-
     serializer_class = MedicalExamSerializer
     permission_classes = [AllowAny]
 
@@ -22,20 +21,22 @@ class MedicalExamViewSet(viewsets.ModelViewSet):
         qs = super().get_queryset()
         qs = qs.filter(employee__company=self.request.user.active_company)
         params = self.request.query_params
+
         if emp := params.get("employee"):
             qs = qs.filter(employee_id=emp)
         if phase := params.get("phase"):
             qs = qs.filter(exam_phase=phase)
-        if st := params.get("sub_type"):
-            qs = qs.filter(sub_type=st)
-        if rl := params.get("risk_level"):
-            qs = qs.filter(risk_level=rl)
+        if et := params.get("exam_type"):  # nuevo filtro opcional
+            qs = qs.filter(exam_type=et)
+        if ndm := params.get("next_due_months"):  # nuevo filtro opcional
+            qs = qs.filter(next_due_months=ndm)
         if f := params.get("from"):
             if d1 := parse_date(f):
                 qs = qs.filter(date__gte=d1)
         if t := params.get("to"):
             if d2 := parse_date(t):
                 qs = qs.filter(date__lte=d2)
+
         return qs
 
     @action(detail=True, methods=["post"])

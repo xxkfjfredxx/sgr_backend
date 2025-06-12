@@ -113,40 +113,20 @@ def indicator_summary(request):
     ).count()
     accident_rate = round((accident_count / (total_employees or 1)) * 100, 2)
 
-    # --- APTITUD MÉDICA (basado en next_due o cálculo) ---
+    # --- APTITUD MÉDICA (basado en next_due ya calculado) ---
     company_id = request.GET.get("company")
     today = timezone.localdate()
     threshold = today + timedelta(days=30)
 
     qs = MedicalExam.objects.filter(
         company_id=company_id, date__range=(from_date, last_day)
-    )
-    exams = list(qs)
-    total_exams = len(exams)
+    ).exclude(next_due__isnull=True)
 
+    total_exams = qs.count()
     valid = expiring = expired = 0
-    for e in exams:
-        # intentar leer next_due del JSONField metrics
-        nd_str = e.metrics.get("next_due") if isinstance(e.metrics, dict) else None
-        if nd_str:
-            nd = datetime.strptime(nd_str, "%Y-%m-%d").date()
-        else:
-            # calcular según riesgo
-            d = e.date
-            if e.risk_level == "I":
-                nd = d.replace(year=d.year + 3)
-            elif e.risk_level == "II":
-                nd = d.replace(year=d.year + 2)
-            elif e.risk_level == "III":
-                nd = d.replace(year=d.year + 1)
-            elif e.risk_level == "IV":
-                m = d.month + 6
-                y = d.year + (m - 1) // 12
-                m = ((m - 1) % 12) + 1
-                nd = d.replace(year=y, month=m)
-            else:
-                nd = d.replace(year=d.year + 1)
 
+    for e in qs:
+        nd = e.next_due
         if nd > threshold:
             valid += 1
         elif nd > today:

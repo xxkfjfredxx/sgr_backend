@@ -77,7 +77,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         examenes = MedicalExam.objects.filter(
             employee=obj, date__gte=date.today()
         ).order_by("date")[:3]
-        return [{"type": e.sub_type, "expires_on": e.date} for e in examenes]
+        return [{"type": e.exam_type, "expires_on": e.date} for e in examenes]
 
 
 class EmployeeDocumentSerializer(serializers.ModelSerializer):
