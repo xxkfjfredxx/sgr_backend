@@ -36,6 +36,7 @@ class Employee(AuditMixin, models.Model):
     birth_date = models.DateField(blank=True, null=True)
     eps = models.CharField(max_length=100, blank=True, null=True)
     afp = models.CharField(max_length=100, blank=True, null=True)
+    compensation_fund = models.CharField(max_length=100, blank=True, null=True)
     education = models.CharField(max_length=100, blank=True, null=True)
     marital_status = models.CharField(max_length=50, blank=True, null=True)
     emergency_contact = models.CharField(max_length=100, blank=True, null=True)
