@@ -2,6 +2,8 @@ from django.utils.deprecation import MiddlewareMixin
 from django.core.exceptions import PermissionDenied
 from apps.empresa.models import Company
 from django_multitenant.utils import set_current_tenant
+from django_multitenant.utils import unset_current_tenant
+
 
 class ActiveCompanyMiddleware(MiddlewareMixin):
     """
@@ -32,3 +34,7 @@ class ActiveCompanyMiddleware(MiddlewareMixin):
 
         # Guardamos la Company en el request por si la necesitas
         request.active_company = company
+
+    def process_response(self, request, response):
+        unset_current_tenant()
+        return response

@@ -42,11 +42,12 @@ class UserSerializer(serializers.ModelSerializer):
             "id", "username", "first_name", "last_name", "email",
             "is_superuser", "is_staff",
             "role", "role_id",
-            "company",           # ← permanece write-only
+            "company",
             "employee_id",
             "password",
         ]
         extra_kwargs = {
+            "username": {"validators": []}, 
             "password": {"write_only": True, "required": True},
         }
 
