@@ -4,6 +4,8 @@ from apps.core.models import TenantBase          # ⇒ filtra por company_id
 from apps.utils.mixins import AuditMixin
 from apps.empresa.models import Company
 from apps.usuarios.managers import UserManager
+from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.validators import UnicodeUsernameValidator
 
 
 class UserRole(TenantBase, AuditMixin, models.Model):
@@ -26,24 +28,47 @@ class UserRole(TenantBase, AuditMixin, models.Model):
 
 
 class User(AuditMixin, AbstractUser):
+    email = models.EmailField(
+        _('email address'),
+        max_length=254,
+        unique=True,
+    )
+
+    username = models.CharField(
+        _('username'),
+        max_length=150,
+        unique=False,
+        help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+        validators=[UnicodeUsernameValidator()],
+        error_messages={
+            'unique': _("A user with that username already exists."),
+        },
+    )
+
     role = models.ForeignKey(
         "usuarios.UserRole",
         on_delete=models.RESTRICT,
         null=True, blank=True,
     )
+
     company = models.ForeignKey(
         Company,
         on_delete=models.PROTECT,
-        null=True,          # ← puede ser NULL solo para superuser
+        null=True,
         blank=True,
         db_index=True,
     )
 
+    USERNAME_FIELD = 'email'       # ⚡️ CAMBIO CRUCIAL
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
+
     class Meta:
         db_table = "users"
-        unique_together = ("username", "company")
+        unique_together = (
+            ("username", "company"),
+            ("email", "company"),
+        )
 
-    # tenant = company.tenant si existe; None para superuser global
     @property
     def tenant(self):
         return self.company.tenant if self.company else None
