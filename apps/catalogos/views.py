@@ -28,15 +28,26 @@ class BaseCatalogViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
 
 class BranchViewSet(BaseCatalogViewSet):
-    queryset = Branch.objects.filter(is_deleted=False)
+    queryset = Branch.objects.all()
     serializer_class = BranchSerializer
+
+    def get_queryset(self):
+        company = self.request.user.company
+        return Branch.objects.filter(company=company)
 
 
 class PositionViewSet(BaseCatalogViewSet):
-    queryset = Position.objects.filter(is_deleted=False)
+    queryset = Position.objects.all()
     serializer_class = PositionSerializer
 
+    def get_queryset(self):
+        company = self.request.user.company
+        return Position.objects.filter(company=company)
 
 class WorkAreaViewSet(BaseCatalogViewSet):
-    queryset = WorkArea.objects.filter(is_deleted=False)
+    queryset = WorkArea.objects.all()
     serializer_class = WorkAreaSerializer
+
+    def get_queryset(self):
+        company = self.request.user.company
+        return WorkArea.objects.filter(company=company)

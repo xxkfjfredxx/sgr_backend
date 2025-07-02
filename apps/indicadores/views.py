@@ -36,7 +36,8 @@ class IndicatorViewSet(BaseAuditViewSet):
     serializer_class = IndicatorSerializer
 
     def get_queryset(self):
-        qs = super().get_queryset()
+        company = self.request.user.company
+        qs = super().get_queryset().filter(company=company)
         if name := self.request.query_params.get("name"):
             qs = qs.filter(name__icontains=name)
         return qs
@@ -47,13 +48,13 @@ class IndicatorResultViewSet(BaseAuditViewSet):
     serializer_class = IndicatorResultSerializer
 
     def get_queryset(self):
-        qs = super().get_queryset()
+        company = self.request.user.company
+        qs = super().get_queryset().filter(indicator__company=company)
         if ind := self.request.query_params.get("indicator"):
             qs = qs.filter(indicator_id=ind)
         if per := self.request.query_params.get("period"):
             qs = qs.filter(period=per)
         return qs
-
 
 @api_view(["GET"])
 def indicator_summary(request):
