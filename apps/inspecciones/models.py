@@ -1,5 +1,6 @@
 from django.db import models
 from apps.empleados.models import Employee
+from apps.core.models import TenantBase
 from apps.utils.mixins import AuditMixin
 
 
@@ -27,21 +28,31 @@ class InspectionItem(AuditMixin, models.Model):
         return f"{self.template} – {self.question[:50]}"
 
 
-class Inspection(AuditMixin, models.Model):
-    template = models.ForeignKey(InspectionTemplate, on_delete=models.PROTECT)
+class Inspection(TenantBase, AuditMixin, models.Model):
+    template     = models.ForeignKey(InspectionTemplate, on_delete=models.PROTECT)
     performed_by = models.ForeignKey(
-        Employee, on_delete=models.SET_NULL, null=True, blank=True
+        Employee,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="inspections_performed",
     )
-    date = models.DateField()
-    location = models.CharField(max_length=150)
-    comments = models.TextField(blank=True)
+    date         = models.DateField()
+    location     = models.CharField(max_length=150)
+    comments     = models.TextField(blank=True)
 
     class Meta:
+        db_table = "inspections"
         ordering = ["-date"]
+        indexes = [
+            # Filtrado por tenant + PK
+            models.Index(fields=["company_id", "id"]),
+            # Búsqueda rápida por fecha
+            models.Index(fields=["date"]),
+        ]
 
     def __str__(self):
         return f"{self.template} – {self.location} ({self.date})"
-
 
 class InspectionResponse(AuditMixin, models.Model):
     inspection = models.ForeignKey(

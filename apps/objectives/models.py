@@ -1,9 +1,10 @@
 from django.db import models
+from apps.core.models import TenantBase
 from apps.usuarios.models import User
 from apps.utils.mixins import AuditMixin
 
 
-class SSTObjective(AuditMixin, models.Model):
+class SSTObjective(TenantBase,AuditMixin, models.Model):
     STATUS_CHOICES = [
         ("pending", "Pendiente"),
         ("in_progress", "En progreso"),

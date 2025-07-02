@@ -5,10 +5,11 @@ from datetime import datetime
 from apps.contratistas.models import ContractorCompany
 from apps.utils.mixins import AuditMixin
 from apps.empresa.models import Company
+from apps.core.models import TenantBase
 from django_multitenant.models import TenantManager
 
 
-class Employee(AuditMixin, models.Model):
+class Employee(TenantBase,AuditMixin, models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True
     )
@@ -51,6 +52,11 @@ class Employee(AuditMixin, models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+    
+    @property
+    def tenant(self):
+        return self.company.tenant if self.company else None
+
 
 
 # ──────────────────────────────────────────────────────────────

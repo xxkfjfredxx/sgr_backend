@@ -7,6 +7,10 @@ class EsRolPermitido(permissions.BasePermission):
         if not user.is_authenticated:
             return False
 
+        # ✅ superusers siempre pueden
+        if user.is_superuser:
+            return True
+
         roles_permitidos = getattr(view, "roles_permitidos", None)
         if roles_permitidos is None:
             return True

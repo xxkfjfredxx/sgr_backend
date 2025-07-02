@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from corsheaders.defaults import default_headers
+
 from pathlib import Path
 import os
 
@@ -19,6 +20,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:5176",
+    "http://127.0.0.1:5176",
 ]
 
 CORS_ALLOW_CREDENTIALS = True  # si manejas cookies / sesiones
@@ -70,6 +74,7 @@ INSTALLED_APPS = [
     "django_filters",
     "apps.ipvr",
     "apps.epp",
+    'django_multitenant',
     "apps.equipment",
     "apps.safety",
     "apps.legal",
@@ -82,6 +87,7 @@ INSTALLED_APPS = [
     "apps.ergonomia",
     "apps.historial",
     "apps.usuarios",
+    "apps.tenants",
     "apps.contratos",
     "apps.reintegro",
     "apps.catalogos",
@@ -114,9 +120,12 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django.middleware.security.SecurityMiddleware",
     "apps.utils.middleware.ActiveCompanyMiddleware",
-    "apps.utils.middleware.CustomTenantMiddleware",
+]
+
+# Aquí le indicas a Django que use tu router de multitenant
+DATABASE_ROUTERS = [
+    "apps.utils.routers.TenantRouter",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -148,7 +157,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "sgr_db",
         "USER": "root",
-        "PASSWORD": "root",
+        "PASSWORD": "toor",
         "HOST": "localhost",
         "PORT": "3306",
     }
@@ -201,3 +210,4 @@ JET_DEFAULT_THEME = "light-gray"
 JET_DASHBOARD_SITE_TITLE = "Panel de Administración"
 JET_INDEX_DASHBOARD = "jet.dashboard.dashboard.DefaultIndexDashboard"
 JET_APP_INDEX_DASHBOARD = "jet.dashboard.dashboard.DefaultAppIndexDashboard"
+CORS_ALLOW_ALL_ORIGINS = True

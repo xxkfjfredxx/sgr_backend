@@ -1,8 +1,9 @@
 from django.db import models
+from apps.core.models import TenantBase
 from apps.utils.mixins import AuditMixin
 
 
-class Branch(AuditMixin, models.Model):  # Sucursal
+class Branch(TenantBase,AuditMixin, models.Model):  # Sucursal
     name = models.CharField(max_length=100, unique=True)
     address = models.TextField(blank=True, null=True)
     city = models.CharField(max_length=100, blank=True, null=True)
@@ -15,7 +16,7 @@ class Branch(AuditMixin, models.Model):  # Sucursal
         return self.name
 
 
-class Position(AuditMixin, models.Model):  # Cargo
+class Position(TenantBase,AuditMixin, models.Model):  # Cargo
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True, null=True)
     RISK_LEVEL_CHOICES = [
@@ -23,7 +24,6 @@ class Position(AuditMixin, models.Model):  # Cargo
         ("medio", "Medio"),
         ("alto", "Alto"),
     ]
-
     risk_level = models.CharField(max_length=10, choices=RISK_LEVEL_CHOICES)
 
     class Meta:
@@ -34,7 +34,7 @@ class Position(AuditMixin, models.Model):  # Cargo
         return self.name
 
 
-class WorkArea(AuditMixin, models.Model):  # Área
+class WorkArea(TenantBase,AuditMixin, models.Model):  # Área
     name = models.CharField(max_length=100, unique=True)
 
     class Meta:

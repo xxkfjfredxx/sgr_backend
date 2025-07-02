@@ -1,14 +1,13 @@
 from django.db import models
+from apps.core.models import TenantBase
 from apps.empleados.models import Employee
 from apps.utils.mixins import AuditMixin
 
-
-class AccessLog(AuditMixin, models.Model):
+class AccessLog(TenantBase,AuditMixin, models.Model):
     ACCESS_TYPE_CHOICES = [
         ("ingreso", "Ingreso"),
         ("egreso", "Egreso"),
     ]
-
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     access_type = models.CharField(max_length=10, choices=ACCESS_TYPE_CHOICES)
     timestamp = models.DateTimeField(auto_now_add=True)
@@ -23,7 +22,7 @@ class AccessLog(AuditMixin, models.Model):
 
     def __str__(self) -> str:
         return f"{self.employee} · {self.get_access_type_display()} · {self.timestamp}"
-
+    
 
 class RiskAcceptanceForm(AuditMixin, models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)

@@ -1,10 +1,11 @@
 from django.db import models
+from apps.core.models import TenantBase
 from apps.utils.mixins import AuditMixin
 from apps.empleados.models import Employee
 from apps.empresa.models import Company
 
 
-class EmploymentLink(AuditMixin, models.Model):
+class EmploymentLink(TenantBase,AuditMixin, models.Model):
     STATUS_CHOICES = [
         ("ACTIVE", "Activo"),
         ("INACTIVE", "Inactivo"),

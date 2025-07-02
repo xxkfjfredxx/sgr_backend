@@ -1,8 +1,6 @@
-# apps/riesgos/models.py
 from django.db import models
+from apps.core.models import TenantBase
 from apps.utils.mixins import AuditMixin
-
-# ──────────────────── MODELOS PRINCIPALES ────────────────────
 
 
 class Area(AuditMixin, models.Model):
@@ -36,7 +34,7 @@ class Hazard(AuditMixin, models.Model):
         return f"{self.area} – {self.description}"
 
 
-class RiskAssessment(AuditMixin, models.Model):
+class RiskAssessment(TenantBase,AuditMixin, models.Model):
     hazard = models.ForeignKey("Hazard", on_delete=models.CASCADE, db_index=True)
     date = models.DateField(db_index=True)
     probability = models.IntegerField()
@@ -60,9 +58,14 @@ class RiskAssessment(AuditMixin, models.Model):
     )
 
     class Meta:
-        ordering = ["-date"]
+        db_table  = "risk_assessments"
+        ordering  = ["-date"]
         indexes = [
+            # Tenant filter + PK
+            models.Index(fields=["company_id", "id"]),
+            # Búsqueda por hazard y estado
             models.Index(fields=["hazard", "is_active"]),
+            # Si tienes soft-delete
             models.Index(fields=["is_deleted"]),
         ]
 

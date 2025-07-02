@@ -1,15 +1,16 @@
 from django.db import models
+from apps.core.models import TenantBase
 from apps.empleados.models import Employee
+from apps.tenants.models import Tenant
 from apps.utils.mixins import AuditMixin
 
 
-class ImprovementPlan(AuditMixin, models.Model):
+class ImprovementPlan(TenantBase,AuditMixin, models.Model):
     STATUS_CHOICES = [
         ("open", "Abierto"),
         ("in_progress", "En Progreso"),
         ("closed", "Cerrado"),
     ]
-
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="open")

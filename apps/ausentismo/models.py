@@ -1,10 +1,12 @@
 from django.db import models
+from apps.core.models import TenantBase
 from apps.empleados.models import Employee
 from apps.utils.mixins import AuditMixin
 from apps.empresa.models import Company
+from apps.tenants.models import Tenant
 
 
-class Absence(AuditMixin, models.Model):
+class Absence(TenantBase,AuditMixin, models.Model):
     ABSENCE_CHOICES = [
         ("Incapacidad", "Incapacidad"),
         ("Licencia", "Licencia"),
@@ -20,6 +22,7 @@ class Absence(AuditMixin, models.Model):
     diagnosis_description = models.CharField(max_length=255, blank=True, null=True)
     health_provider = models.CharField(max_length=100, blank=True, null=True)
     reintegrated = models.BooleanField(default=False)
+
 
     class Meta:
         ordering = ["-start_date"]

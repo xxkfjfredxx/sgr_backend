@@ -1,22 +1,22 @@
 from django.db import models
+from apps.core.models import TenantBase
 from apps.utils.mixins import AuditMixin
-from apps.empresa.models import Company  # 👈 Asegúrate de tener este modelo
+from apps.empresa.models import Company 
+from apps.tenants.models import Tenant
 
-
-class Activity(AuditMixin, models.Model):
+class Activity(TenantBase,AuditMixin, models.Model):
     STATUS_CHOICES = [
         ("pending", "Pendiente"),
         ("in_progress", "En progreso"),
         ("completed", "Finalizada"),
         ("cancelled", "Cancelada"),
     ]
-
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)  # 👈 NUEVO
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ["start_date"]

@@ -9,11 +9,8 @@ from .serializers import UserSerializer
 
 
 class LoginView(APIView):
-    """
-    POST /login/  – Devuelve token y datos de usuario.
-    """
-
-    permission_classes = [permissions.AllowAny]
+    permission_classes      = [permissions.AllowAny]
+    authentication_classes  = []          # 👈  ignora token entrante
 
     def post(self, request):
         username = request.data.get("username")
@@ -22,24 +19,24 @@ class LoginView(APIView):
         user = authenticate(request, username=username, password=password)
         if user is None:
             return Response(
-                {"error": "Credenciales inválidas"},
+                {"detail": "Credenciales inválidas"},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 
-        # 1️⃣ cerramos sesión anterior (opcional) y creamos nueva
+        # reglas multitenant …
+        if not user.is_superuser:
+            if user.company is None:
+                return Response({"detail": "Usuario sin empresa"}, status=400)
+            if user.role is None:
+                return Response({"detail": "Usuario sin rol"}, status=400)
+
+        # genera token limpio
+        Token.objects.filter(user=user).delete()
+        token = Token.objects.create(user=user)
         login(request, user)
 
-        # 2️⃣ eliminamos tokens previos para evitar duplicados
-        Token.objects.filter(user=user).delete()
-
-        # 3️⃣ generamos token limpio
-        token = Token.objects.create(user=user)
-
         return Response(
-            {
-                "token": token.key,
-                "user": UserSerializer(user).data,
-            },
+            {"token": token.key, "user": UserSerializer(user).data},
             status=status.HTTP_200_OK,
         )
 

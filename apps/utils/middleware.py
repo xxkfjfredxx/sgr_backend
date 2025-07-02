@@ -1,36 +1,34 @@
+from django.utils.deprecation import MiddlewareMixin
 from django.core.exceptions import PermissionDenied
 from apps.empresa.models import Company
 from django_multitenant.utils import set_current_tenant
 
+class ActiveCompanyMiddleware(MiddlewareMixin):
+    """
+    1) Lee X-Active-Company
+    2) Valida que el usuario tenga acceso a esa Company
+    3) Llama a set_current_tenant() para que el ORM filtre por company_id
+    """
+    def process_request(self, request):
+        header = request.headers.get("X-Active-Company")
+        if not header:
+            # Si no hay header, dejamos que falle más adelante si es necesario
+            return
 
-class ActiveCompanyMiddleware:
-    def __init__(self, get_response):
-        self.get_response = get_response
+        if not request.user.is_authenticated or not header.isdigit():
+            raise PermissionDenied("X-Active-Company inválido o usuario no autenticado")
 
-    def __call__(self, request):
-        company_id = request.headers.get("X-Active-Company")
-        if request.user.is_authenticated and company_id and company_id.isdigit():
-            try:
-                company = Company.objects.get(id=company_id)
+        try:
+            company = Company.objects.get(pk=int(header))
+        except Company.DoesNotExist:
+            raise PermissionDenied("Compañía no encontrada")
 
-                # 🔐 Validación de seguridad
-                if not request.user.empresas_asignadas.filter(id=company.id).exists():
-                    raise PermissionDenied("You don't have access to this company.")
+        # Verifica que el usuario esté asignado a esa compañía
+        if not request.user.empresas_asignadas.filter(pk=company.pk).exists():
+            raise PermissionDenied("No tienes acceso a esta compañía")
 
-                request.user._active_company = company
+        # Activa el tenant para django-multitenant
+        set_current_tenant(company)
 
-            except Company.DoesNotExist:
-                request.user._active_company = None
-
-        return self.get_response(request)
-
-
-class CustomTenantMiddleware:
-    def __init__(self, get_response):
-        self.get_response = get_response
-
-    def __call__(self, request):
-        tenant = getattr(request.user, "active_company", None)
-        if tenant:
-            set_current_tenant(tenant)
-        return self.get_response(request)
+        # Guardamos la Company en el request por si la necesitas
+        request.active_company = company

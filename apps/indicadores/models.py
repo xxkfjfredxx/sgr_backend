@@ -1,8 +1,9 @@
 from django.db import models
+from apps.core.models import TenantBase
 from apps.utils.mixins import AuditMixin
 
 
-class Indicator(AuditMixin, models.Model):
+class Indicator(TenantBase,AuditMixin, models.Model):
     FREQUENCY_CHOICES = [("Mensual", "Mensual"), ("Anual", "Anual")]
 
     name = models.CharField(max_length=150)

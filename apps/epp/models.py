@@ -1,8 +1,9 @@
 from django.db import models
+from apps.core.models import TenantBase
 from apps.utils.mixins import AuditMixin
 
 
-class EPPItem(AuditMixin, models.Model):
+class EPPItem(TenantBase,AuditMixin, models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     stock = models.IntegerField(default=0)

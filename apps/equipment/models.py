@@ -1,8 +1,9 @@
 from django.db import models
+from apps.core.models import TenantBase
 from apps.empresa.models import Company
 
 
-class EquipmentInventory(models.Model):
+class EquipmentInventory(TenantBase,models.Model):
     company = models.ForeignKey(
         Company, on_delete=models.CASCADE, related_name="equipment_inventory"
     )

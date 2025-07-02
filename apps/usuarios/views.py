@@ -7,6 +7,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db.models import Q
+from rest_framework.exceptions import PermissionDenied, ValidationError
 
 
 class UserRoleViewSet(AuditLogMixin, viewsets.ModelViewSet):
@@ -16,6 +17,19 @@ class UserRoleViewSet(AuditLogMixin, viewsets.ModelViewSet):
     search_fields = ["name"]
     roles_permitidos = ["Admin"]
     permission_classes = [EsRolPermitido]
+
+    def perform_create(self, serializer):
+        company_id = self.request.data.get("company")
+        if not company_id:
+            raise ValidationError({"company": "Este campo es obligatorio."})
+
+        user = self.request.user
+        if not user.is_superuser:
+            # El usuario sólo puede usar su propia empresa
+            if not user.role or user.role.company_id != int(company_id):
+                raise PermissionDenied("No puedes crear roles en otra empresa.")
+
+        serializer.save(company_id=company_id)
 
     # ✅ Filtro por empresa
     def get_queryset(self):

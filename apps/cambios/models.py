@@ -1,11 +1,12 @@
-# apps/cambios/models.py
 from django.db import models
+from apps.core.models import TenantBase
 from apps.utils.mixins import AuditMixin
 from apps.usuarios.models import User
-from apps.empleados.models import Employee  # si lo necesitas para implemented_by
+from apps.empleados.models import Employee
+from apps.tenants.models import Tenant
 
 
-class ChangeRequest(AuditMixin, models.Model):
+class ChangeRequest(TenantBase,AuditMixin, models.Model):
     STATUS_CHOICES = [
         ("pending", "Pendiente"),
         ("approved", "Aprobado"),
@@ -21,6 +22,7 @@ class ChangeRequest(AuditMixin, models.Model):
         max_length=20, choices=STATUS_CHOICES, default="pending", db_index=True
     )
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
 
     class Meta:
         ordering = ["-created_at"]

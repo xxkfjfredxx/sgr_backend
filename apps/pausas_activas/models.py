@@ -1,8 +1,9 @@
 from django.db import models
+from apps.core.models import TenantBase
 from apps.utils.mixins import AuditMixin
 
 
-class ActivePauseSession(AuditMixin, models.Model):
+class ActivePauseSession(TenantBase,AuditMixin, models.Model):
     date = models.DateField()
     topic = models.CharField(
         max_length=120, blank=True
