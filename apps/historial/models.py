@@ -1,10 +1,11 @@
 from django.db import models
+from apps.core.models import TenantBase
 from apps.utils.mixins import AuditMixin
 from apps.vinculaciones.models import EmploymentLink
 from apps.usuarios.models import User
 
 
-class WorkHistory(AuditMixin, models.Model):
+class WorkHistory(TenantBase,AuditMixin, models.Model):
     employment_link = models.ForeignKey(EmploymentLink, on_delete=models.CASCADE)
     modified_field = models.CharField(max_length=50)
     old_value = models.TextField(blank=True, null=True)

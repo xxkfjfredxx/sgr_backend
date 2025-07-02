@@ -1,9 +1,10 @@
 from django.db import models
 from apps.catalogos.models import WorkArea
+from apps.core.models import TenantBase
 from apps.utils.mixins import AuditMixin
 
 
-class LegalRequirement(AuditMixin, models.Model):
+class LegalRequirement(TenantBase,AuditMixin, models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()
     area = models.ForeignKey(
