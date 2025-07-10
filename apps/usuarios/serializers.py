@@ -31,7 +31,6 @@ class UserSerializer(serializers.ModelSerializer):
     )
     company = serializers.PrimaryKeyRelatedField(
         queryset=Company.objects.all(),
-        write_only=True,      # id en el payload
         required=False,       # si falta lo tomamos del rol
     )
     employee_id = serializers.SerializerMethodField()
@@ -53,7 +52,13 @@ class UserSerializer(serializers.ModelSerializer):
 
     # ---------- helpers ----------
     def get_employee_id(self, obj):
-        return getattr(getattr(obj, "employee", None), "id", None)
+        if obj.is_superuser:
+            return None
+        try:
+            return obj.employee.id
+        except Exception:
+            return None
+
 
     # ---------- create ----------
     def create(self, validated_data):

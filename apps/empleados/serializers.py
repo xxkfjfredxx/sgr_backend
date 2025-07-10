@@ -59,8 +59,11 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         request = self.context.get("request")
-        if request and hasattr(request.user, "active_company"):
-            validated_data["company"] = request.user.active_company
+        if request and hasattr(request, "active_company"):
+            print(f"Company assigned in serializer: {request.active_company}")
+            validated_data["company"] = request.active_company
+        else:
+            print("No active company found in serializer!")
         return super().create(validated_data)
 
     def get_course_expirations(self, obj):

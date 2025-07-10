@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.filters import SearchFilter
 from django.db import models
 from django.db.models import Subquery
-
+from django.core.exceptions import PermissionDenied
 from apps.utils.auditlogmimix import AuditLogMixin
 from apps.vinculaciones.models import EmploymentLink
 
@@ -30,6 +30,7 @@ class BaseAuditViewSet(AuditLogMixin, viewsets.ModelViewSet):
         return Response({"detail": "Registro restaurado."}, status=status.HTTP_200_OK)
 
 
+# ─── EmployeeViewSet ───────────────────────────────────────────────
 class EmployeeViewSet(BaseAuditViewSet):
     serializer_class = EmployeeSerializer
     filter_backends = [SearchFilter]
@@ -41,40 +42,34 @@ class EmployeeViewSet(BaseAuditViewSet):
         "phone_contact",
     ]
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        if not hasattr(self.request, 'active_company'):
+            raise PermissionDenied("No se encontró la compañía activa en la solicitud")
+        context['request'] = self.request
+        print(f"ACTIVE COMPANY in context: {self.request.active_company}")  # Verifica que esté presente
+        return context
+
     def get_queryset(self):
         print("🔥 GET_QUERYSET EJECUTADO")
+
         user = self.request.user
-        qs = Employee.objects.filter(is_deleted=False)
-        qs = qs.filter(company=self.request.user.active_company)
-        # 🔒 Filtro por empresa activa del usuario (solo si tiene)
+        if hasattr(self.request, 'active_company'):
+            qs = Employee.objects.filter(company=self.request.active_company)
+        else:
+            raise PermissionDenied("No se encontró la compañía activa en la solicitud")
+
         if hasattr(user, "active_company") and user.active_company:
             qs = qs.filter(company=user.active_company)
 
-        # Filtro opcional por parámetro "company"
-        if company := self.request.query_params.get("company"):
-            if company.isdigit():
-                linked_ids = EmploymentLink.objects.filter(company_id=company).values(
-                    "employee_id"
-                )
-                qs = qs.filter(id__in=Subquery(linked_ids))
-
-        # Filtro por nombre
         if name := self.request.query_params.get("name"):
             qs = qs.filter(
                 models.Q(first_name__icontains=name)
                 | models.Q(last_name__icontains=name)
             )
 
-        # Filtro por documento
         if doc := self.request.query_params.get("document"):
             qs = qs.filter(document__icontains=doc)
-
-        # Filtro por estado activo/inactivo
-        if is_active := self.request.query_params.get("is_active"):
-            if is_active.lower() == "true":
-                qs = qs.filter(employment_links__status="ACTIVE")
-            elif is_active.lower() == "false":
-                qs = qs.exclude(employment_links__status="ACTIVE")
 
         return qs.distinct()
 

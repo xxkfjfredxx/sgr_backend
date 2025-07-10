@@ -1,12 +1,11 @@
 from django.db import models
-from apps.core.models import TenantBase
 from apps.empleados.models import Employee
 from apps.utils.mixins import AuditMixin
 from apps.empresa.models import Company
 from django.db.models import Q, UniqueConstraint
 
 
-class TrainingSession(TenantBase,AuditMixin, models.Model):
+class TrainingSession(AuditMixin, models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     duration_hours = models.PositiveSmallIntegerField(null=True, blank=True)
     modality = models.CharField(max_length=20, blank=True)

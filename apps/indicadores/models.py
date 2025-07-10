@@ -1,9 +1,11 @@
 from django.db import models
-from apps.core.models import TenantBase
+ 
+from apps.empresa.models import Company
 from apps.utils.mixins import AuditMixin
 
 
-class Indicator(TenantBase,AuditMixin, models.Model):
+class Indicator(AuditMixin, models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     FREQUENCY_CHOICES = [("Mensual", "Mensual"), ("Anual", "Anual")]
 
     name = models.CharField(max_length=150)

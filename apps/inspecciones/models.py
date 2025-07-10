@@ -1,6 +1,7 @@
 from django.db import models
 from apps.empleados.models import Employee
-from apps.core.models import TenantBase
+ 
+from apps.empresa.models import Company
 from apps.utils.mixins import AuditMixin
 
 
@@ -28,8 +29,9 @@ class InspectionItem(AuditMixin, models.Model):
         return f"{self.template} – {self.question[:50]}"
 
 
-class Inspection(TenantBase, AuditMixin, models.Model):
-    template     = models.ForeignKey(InspectionTemplate, on_delete=models.PROTECT)
+class Inspection(AuditMixin, models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    template = models.ForeignKey(InspectionTemplate, on_delete=models.PROTECT)
     performed_by = models.ForeignKey(
         Employee,
         on_delete=models.SET_NULL,

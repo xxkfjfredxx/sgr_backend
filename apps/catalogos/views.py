@@ -34,6 +34,9 @@ class BranchViewSet(BaseCatalogViewSet):
     def get_queryset(self):
         company = self.request.user.company
         return Branch.objects.filter(company=company)
+    
+    def perform_create(self, serializer):
+        serializer.save(company=self.request.user.company)
 
 
 class PositionViewSet(BaseCatalogViewSet):
@@ -43,6 +46,9 @@ class PositionViewSet(BaseCatalogViewSet):
     def get_queryset(self):
         company = self.request.user.company
         return Position.objects.filter(company=company)
+    
+    def perform_create(self, serializer):
+        serializer.save(company=self.request.user.company)
 
 class WorkAreaViewSet(BaseCatalogViewSet):
     queryset = WorkArea.objects.all()
@@ -51,3 +57,6 @@ class WorkAreaViewSet(BaseCatalogViewSet):
     def get_queryset(self):
         company = self.request.user.company
         return WorkArea.objects.filter(company=company)
+    
+    def perform_create(self, serializer):
+        serializer.save(company=self.request.user.company)

@@ -1,9 +1,10 @@
 from django.db import models
-from apps.core.models import TenantBase
+from apps.empresa.models import Company
 from apps.utils.mixins import AuditMixin
 
 
-class ContractorCompany(TenantBase,AuditMixin, models.Model):
+class ContractorCompany(AuditMixin, models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     name = models.CharField(max_length=150)
     nit = models.CharField(max_length=50, unique=True)
     address = models.CharField(max_length=150, blank=True)

@@ -1,5 +1,5 @@
 from django.db import models
-from apps.core.models import TenantBase
+ 
 from apps.empleados.models import Employee
 from apps.empresa.models import Company
 from apps.utils.mixins import AuditMixin
@@ -18,12 +18,12 @@ def document_upload_path(instance, filename):
     return f"medical-exams/{instance.employee.id}/{filename}"
 
 
-class MedicalExam(TenantBase,AuditMixin, models.Model):
+class MedicalExam(AuditMixin, models.Model):
     """
     Exámenes médicos de SST: ingreso, periódico y retiro.
     Se registran resultados, entidad ejecutora, nivel de riesgo y próximos vencimientos.
     """
-
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     # Fases del examen
     EXAM_PHASES = [
         ("Ingreso", "Ingreso"),

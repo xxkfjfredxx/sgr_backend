@@ -1,11 +1,10 @@
 from django.db import models
-from apps.core.models import TenantBase
 from apps.empleados.models import Employee
 from apps.utils.mixins import AuditMixin
 from apps.empresa.models import Company
 
 
-class WorkAccident(TenantBase,AuditMixin, models.Model):
+class WorkAccident(AuditMixin, models.Model):
     INCIDENT_CHOICES = [
         ("Accidente", "Accidente de Trabajo"),
         ("Incidente", "Incidente"),

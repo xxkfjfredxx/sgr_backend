@@ -5,7 +5,7 @@ from .models import Branch, Position, WorkArea
 class BranchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Branch
-        fields = "__all__"
+        exclude = ['company']
         read_only_fields = ("created_at", "created_by")
 
     def validate_name(self, value):
@@ -22,7 +22,7 @@ class BranchSerializer(serializers.ModelSerializer):
 class PositionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Position
-        fields = "__all__"
+        exclude = ['company']
         read_only_fields = ("created_at", "created_by")
 
     def validate_name(self, value):
@@ -39,7 +39,7 @@ class PositionSerializer(serializers.ModelSerializer):
 class WorkAreaSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkArea
-        fields = "__all__"
+        exclude = ['company']
         read_only_fields = ("created_at", "created_by")
 
     def validate_name(self, value):

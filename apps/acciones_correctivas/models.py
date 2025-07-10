@@ -1,11 +1,12 @@
 from django.db import models
-from apps.core.models import TenantBase
 from apps.empleados.models import Employee
+from apps.empresa.models import Company
 from apps.tenants.models import Tenant
 from apps.utils.mixins import AuditMixin
 
 
-class ImprovementPlan(TenantBase,AuditMixin, models.Model):
+class ImprovementPlan(AuditMixin, models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     STATUS_CHOICES = [
         ("open", "Abierto"),
         ("in_progress", "En Progreso"),

@@ -50,43 +50,27 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.TokenAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.AllowAny",
+        "rest_framework.permissions.IsAuthenticated",
     ],
     "DEFAULT_PAGINATION_CLASS": "apps.core.pagination.DefaultPagination",
     "DEFAULT_FILTER_BACKENDS": [
         "django_filters.rest_framework.DjangoFilterBackend",
     ],
-}
+} 
 
-INSTALLED_APPS = [
-    "jet.dashboard",  # dashboard primero
-    "jet",
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-    "rest_framework.authtoken",
-    "rest_framework",
-    "corsheaders",
-    "multitenancy",
-    "django_filters",
+TENANT_APPS = [
     "apps.ipvr",
     "apps.epp",
-    'django_multitenant',
     "apps.equipment",
     "apps.safety",
     "apps.legal",
     "apps.cambios",
     "apps.soporte",
-    "apps.empresa",
     "apps.alertas",
     "apps.riesgos",
     "apps.accesos",
     "apps.ergonomia",
     "apps.historial",
-    "apps.usuarios",
     "apps.tenants",
     "apps.contratos",
     "apps.reintegro",
@@ -111,6 +95,31 @@ INSTALLED_APPS = [
     "apps.seguridad_industrial",
 ]
 
+
+SHARED_APPS = [
+    "django_tenants",
+    "jet.dashboard",
+    "jet",
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "rest_framework.authtoken",
+    "rest_framework",
+    "corsheaders",
+    "django_filters",
+    "tenant",
+    "apps.utils", 
+    "apps.empresa",
+    "apps.usuarios",
+]
+
+INSTALLED_APPS = list(SHARED_APPS) + [
+    app for app in TENANT_APPS if app not in SHARED_APPS
+]
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "corsheaders.middleware.CorsMiddleware",
@@ -120,12 +129,13 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "apps.utils.middleware.ActiveCompanyMiddleware",
+    #"apps.utils.middleware.ActiveCompanyMiddleware",
+    "apps.utils.middleware.TenantMiddleware",
 ]
 
 # Aquí le indicas a Django que use tu router de multitenant
 DATABASE_ROUTERS = [
-    "apps.utils.routers.TenantRouter",
+    "django_tenants.routers.TenantSyncRouter",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -154,12 +164,12 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
+        "ENGINE": "django_tenants.postgresql_backend",
         "NAME": "sgr_db",
-        "USER": "root",
-        "PASSWORD": "toor",
+        "USER": "postgres",
+        "PASSWORD": "root",
         "HOST": "localhost",
-        "PORT": "3306",
+        "PORT": "5432",
     }
 }
 
@@ -211,3 +221,5 @@ JET_DASHBOARD_SITE_TITLE = "Panel de Administración"
 JET_INDEX_DASHBOARD = "jet.dashboard.dashboard.DefaultIndexDashboard"
 JET_APP_INDEX_DASHBOARD = "jet.dashboard.dashboard.DefaultAppIndexDashboard"
 CORS_ALLOW_ALL_ORIGINS = True
+TENANT_MODEL = "tenant.Tenant"
+TENANT_DOMAIN_MODEL = "tenant.Domain"

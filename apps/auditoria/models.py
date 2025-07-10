@@ -1,11 +1,12 @@
 from django.db import models
-from apps.core.models import TenantBase
+from apps.empresa.models import Company
 from apps.usuarios.models import User
 from apps.acciones_correctivas.models import ActionItem
 from apps.utils.mixins import AuditMixin
 from apps.tenants.models import Tenant
 
-class SystemAudit(TenantBase,models.Model):
+class SystemAudit(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     action = models.CharField(max_length=100)
     affected_table = models.CharField(max_length=100)
@@ -25,7 +26,8 @@ class SystemAudit(TenantBase,models.Model):
         return f"{base} by {self.user}" if self.user else base
 
 
-class AuditChecklist(TenantBase,AuditMixin, models.Model):
+class AuditChecklist(AuditMixin, models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)

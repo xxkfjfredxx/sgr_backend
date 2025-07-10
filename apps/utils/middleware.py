@@ -1,40 +1,56 @@
-from django.utils.deprecation import MiddlewareMixin
+from django_tenants.middleware.main import TenantMainMiddleware
 from django.core.exceptions import PermissionDenied
-from apps.empresa.models import Company
-from django_multitenant.utils import set_current_tenant
-from django_multitenant.utils import unset_current_tenant
+from apps.empresa.models import Company  # Asegúrate de importar Company
+from django_tenants.utils import tenant_context
 
+import tenant
 
-class ActiveCompanyMiddleware(MiddlewareMixin):
+class TenantMiddleware(TenantMainMiddleware):
     """
-    1) Lee X-Active-Company
-    2) Valida que el usuario tenga acceso a esa Company
-    3) Llama a set_current_tenant() para que el ORM filtre por company_id
+    1) Lee el header X-Active-Company.
+    2) Valida que el usuario esté autenticado y tenga acceso a esa compañía.
+    3) Llama a set_current_tenant() para que el ORM filtre por company_id.
     """
     def process_request(self, request):
-        header = request.headers.get("X-Active-Company")
-        if not header:
-            # Si no hay header, dejamos que falle más adelante si es necesario
+        print("Verificando el middleware: Proceso de asignación de compañía activa")
+        # Excluir login/logout
+        if request.path.startswith("/api/login/") or request.path.startswith("/api/logout/"):
+            return  # Excluir login/logout
+        # Obtener el tenant (empresa) desde el header 'X-Active-Company'
+        company_id = request.headers.get("X-Active-Company")
+        
+        # Si no se proporciona el header, no se hace nada, y se permitirá continuar más tarde.
+        if not company_id:
             return
+        
+        # Verificar si el header contiene un valor válido
+        if not company_id.isdigit():
+            raise PermissionDenied("X-Active-Company inválido")
 
-        if not request.user.is_authenticated or not header.isdigit():
-            raise PermissionDenied("X-Active-Company inválido o usuario no autenticado")
-
+        # Convertir el valor de company_id en entero y obtener la compañía correspondiente
         try:
-            company = Company.objects.get(pk=int(header))
+            company = Company.objects.get(pk=int(company_id))
         except Company.DoesNotExist:
             raise PermissionDenied("Compañía no encontrada")
 
-        # Verifica que el usuario esté asignado a esa compañía
+        # Verificar si el usuario está autenticado y tiene acceso a esa compañía
+        if not request.user.is_authenticated:
+            raise PermissionDenied("Usuario no autenticado")
+        
+        # Verificar que el usuario tenga acceso a la compañía
         if not request.user.empresas_asignadas.filter(pk=company.pk).exists():
             raise PermissionDenied("No tienes acceso a esta compañía")
 
-        # Activa el tenant para django-multitenant
-        set_current_tenant(company)
+        # Establecer el tenant actual para que django_tenants filtre las consultas por la compañía
+        request.tenant = tenant  # para compatibilidad
+        request._tenant_context = tenant_context(tenant)
+        request._tenant_context.__enter__()
 
-        # Guardamos la Company en el request por si la necesitas
+        # Guardamos la Company en el request por si se necesita más adelante
         request.active_company = company
 
     def process_response(self, request, response):
-        unset_current_tenant()
+        if hasattr(request, "_tenant_context"):
+            request._tenant_context.__exit__(None, None, None)
         return response
+

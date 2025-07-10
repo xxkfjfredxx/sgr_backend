@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from apps.core.models import TenantBase          # ⇒ filtra por company_id
 from apps.utils.mixins import AuditMixin
 from apps.empresa.models import Company
 from apps.usuarios.managers import UserManager
@@ -8,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.validators import UnicodeUsernameValidator
 
 
-class UserRole(TenantBase, AuditMixin, models.Model):
+class UserRole(AuditMixin, models.Model):
     company = models.ForeignKey(Company, on_delete=models.PROTECT,
                                 null=True, blank=True, db_index=True)
     objects = UserManager()

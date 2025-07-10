@@ -1,10 +1,11 @@
 from django.db import models
-from apps.core.models import TenantBase
+ 
+from apps.empresa.models import Company
 from apps.usuarios.models import User
 from apps.utils.mixins import AuditMixin
 
 
-class SupportTicket(TenantBase,AuditMixin, models.Model):
+class SupportTicket( AuditMixin, models.Model):
     STATUS_CHOICES = [
         ("open", "Abierto"),
         ("in_progress", "En progreso"),
@@ -32,7 +33,8 @@ class SupportTicket(TenantBase,AuditMixin, models.Model):
         return self.title
 
 
-class MaintenanceSchedule(TenantBase,AuditMixin, models.Model):
+class MaintenanceSchedule(AuditMixin, models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     title = models.CharField(max_length=150)
     description = models.TextField(blank=True)
     scheduled_date = models.DateField()

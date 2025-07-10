@@ -1,6 +1,7 @@
 from django.db import models
-from apps.core.models import TenantBase
+ 
 from apps.empleados.models import Employee
+from apps.empresa.models import Company
 from apps.utils.mixins import AuditMixin
 
 
@@ -24,7 +25,8 @@ class EmergencyBrigadeMember(AuditMixin, models.Model):
         return f"{self.employee} – {self.role}"
 
 
-class EmergencyEquipment(TenantBase,AuditMixin, models.Model):
+class EmergencyEquipment(AuditMixin, models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     EQUIPMENT_TYPE_CHOICES = [
         ("Extintor", "Extintor"),
         ("Botiquin", "Botiquín"),

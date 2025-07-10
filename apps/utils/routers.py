@@ -10,9 +10,14 @@ class TenantRouter:
 
     def db_for_read(self, model, **hints):
         tenant = get_current_tenant()
-        return getattr(tenant, "db_label", "default")
+        # Verifica que el tenant esté presente
+        if tenant:
+            return getattr(tenant, "db_label", "default")
+        return "default"
 
     def db_for_write(self, model, **hints):
         tenant = get_current_tenant()
-        return getattr(tenant, "db_label", "default")
- 
+        # Verifica que el tenant esté presente
+        if tenant:
+            return getattr(tenant, "db_label", "default")
+        return "default"

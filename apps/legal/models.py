@@ -1,10 +1,11 @@
 from django.db import models
 from apps.catalogos.models import WorkArea
-from apps.core.models import TenantBase
+from apps.empresa.models import Company
 from apps.utils.mixins import AuditMixin
 
 
-class LegalRequirement(TenantBase,AuditMixin, models.Model):
+class LegalRequirement(AuditMixin, models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     description = models.TextField()
     area = models.ForeignKey(

@@ -8,4 +8,6 @@ class CompanySerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'tenant': {'read_only': True},
             'db_label': {'read_only': True},
+            'schema_name': {'required': False},     # 👈 agrega esto
+            'domain_url': {'required': False},      # 👈 y esto también
         }

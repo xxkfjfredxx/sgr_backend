@@ -1,10 +1,11 @@
 from django.db import models
-from apps.core.models import TenantBase
+from apps.empresa.models import Company
 from apps.usuarios.models import User
 from apps.utils.mixins import AuditMixin
 
 
-class SSTObjective(TenantBase,AuditMixin, models.Model):
+class SSTObjective(AuditMixin, models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     STATUS_CHOICES = [
         ("pending", "Pendiente"),
         ("in_progress", "En progreso"),

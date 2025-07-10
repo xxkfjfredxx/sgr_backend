@@ -1,10 +1,11 @@
 from django.db import models
-from apps.core.models import TenantBase
+from apps.empresa.models import Company
 from apps.utils.mixins import AuditMixin
 from apps.empleados.models import Employee
 
 
-class SSTPolicy(TenantBase,AuditMixin, models.Model):
+class SSTPolicy(AuditMixin, models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     title = models.CharField(max_length=150)
     description = models.TextField()
     document = models.FileField(upload_to="sst_policy/", blank=True, null=True)

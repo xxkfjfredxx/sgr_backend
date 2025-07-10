@@ -1,10 +1,10 @@
 from django.db import models
-from apps.core.models import TenantBase
 from apps.utils.mixins import AuditMixin
 from apps.empresa.models import Company 
 from apps.tenants.models import Tenant
 
-class Activity(TenantBase,AuditMixin, models.Model):
+class Activity(AuditMixin, models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     STATUS_CHOICES = [
         ("pending", "Pendiente"),
         ("in_progress", "En progreso"),

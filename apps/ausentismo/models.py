@@ -1,12 +1,12 @@
 from django.db import models
-from apps.core.models import TenantBase
 from apps.empleados.models import Employee
 from apps.utils.mixins import AuditMixin
 from apps.empresa.models import Company
 from apps.tenants.models import Tenant
 
 
-class Absence(TenantBase,AuditMixin, models.Model):
+class Absence(AuditMixin, models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     ABSENCE_CHOICES = [
         ("Incapacidad", "Incapacidad"),
         ("Licencia", "Licencia"),

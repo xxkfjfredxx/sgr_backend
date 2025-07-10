@@ -1,9 +1,11 @@
 from django.db import models
-from apps.core.models import TenantBase
+ 
+from apps.empresa.models import Company
 from apps.utils.mixins import AuditMixin
 
 
-class Branch(TenantBase,AuditMixin, models.Model):  # Sucursal
+class Branch(AuditMixin, models.Model):  # Sucursal
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     address = models.TextField(blank=True, null=True)
     city = models.CharField(max_length=100, blank=True, null=True)
@@ -17,7 +19,8 @@ class Branch(TenantBase,AuditMixin, models.Model):  # Sucursal
         return self.name
 
 
-class Position(TenantBase,AuditMixin, models.Model):  # Cargo
+class Position(AuditMixin, models.Model):  # Cargo
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     RISK_LEVEL_CHOICES = [
@@ -36,7 +39,8 @@ class Position(TenantBase,AuditMixin, models.Model):  # Cargo
         return self.name
 
 
-class WorkArea(TenantBase,AuditMixin, models.Model):  # Área
+class WorkArea(AuditMixin, models.Model):  # Área
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
 
     class Meta:
