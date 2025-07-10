@@ -34,6 +34,8 @@ class UserSerializer(serializers.ModelSerializer):
         required=False,       # si falta lo tomamos del rol
     )
     employee_id = serializers.SerializerMethodField()
+    is_deleted = serializers.BooleanField(read_only=True)
+
 
     class Meta:
         model  = User
@@ -44,6 +46,8 @@ class UserSerializer(serializers.ModelSerializer):
             "company",
             "employee_id",
             "password",
+            'is_deleted',
+            "is_active",
         ]
         extra_kwargs = {
             "username": {"validators": []}, 

@@ -8,6 +8,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db.models import Q
 from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.exceptions import NotFound
 
 
 class UserRoleViewSet(AuditLogMixin, viewsets.ModelViewSet):
@@ -40,6 +41,8 @@ class UserRoleViewSet(AuditLogMixin, viewsets.ModelViewSet):
         return qs
 
 
+from rest_framework.exceptions import PermissionDenied
+
 class UserViewSet(AuditLogMixin, viewsets.ModelViewSet):
     queryset = User.objects.filter(is_deleted=False)
     serializer_class = UserSerializer
@@ -49,16 +52,55 @@ class UserViewSet(AuditLogMixin, viewsets.ModelViewSet):
     permission_classes = [EsRolPermitido]
     roles_permitidos = ["Admin", "RRHH"]
 
-    # ✅ Filtro robusto por empresa: por employee o por rol
+    def get_object(self):
+        # Para acciones que necesitan acceder incluso si el usuario está eliminado
+        if self.action in ["restaurar", "eliminar_definitivamente", "retrieve"]:
+            try:
+                return User.objects.get(pk=self.kwargs["pk"])
+            except User.DoesNotExist:
+                raise NotFound("Usuario no encontrado.")
+        return super().get_object()
+
+    @action(detail=True, methods=['post'])
+    def restaurar(self, request, pk=None):
+        user = self.get_object()
+        user.is_deleted = False
+        user.is_active = True
+        user.save()
+        return Response({'status': 'usuario restaurado'})
+    
+    @action(detail=True, methods=['delete'], url_path='eliminar-definitivamente')
+    def eliminar_definitivamente(self, request, pk=None):
+        user = self.get_object()
+        user.delete()
+        return Response({'status': 'usuario eliminado de forma permanente'})
+
     def get_queryset(self):
-        qs = super().get_queryset()
+        user = self.request.user
         empresa_id = self.request.query_params.get("empresa")
+        incluir_eliminados = self.request.query_params.get("incluir_eliminados") == "true"
+        active_company = getattr(self.request, "active_company", None)
+
+        if not user.is_authenticated:
+            raise PermissionDenied("No estás autenticado.")
+
+        if not active_company:
+            raise PermissionDenied("No se encontró la empresa activa.")
+
+        if not user.is_superuser and user.company_id != active_company.pk:
+            raise PermissionDenied("No tienes permiso para acceder a esta empresa.")
+
+        # 👇 Aquí cambia esto 👇
+        qs = User.objects.all() if incluir_eliminados else User.objects.filter(is_deleted=False)
+
         if empresa_id:
             qs = qs.filter(
                 Q(employee__company_id=empresa_id) | Q(role__company_id=empresa_id)
             ).distinct()
+
         return qs
 
+    
 
 class BaseAuditViewSet(AuditLogMixin, viewsets.ModelViewSet):
     @action(detail=True, methods=["post"])

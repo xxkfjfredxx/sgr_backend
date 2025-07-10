@@ -68,6 +68,12 @@ class User(AuditMixin, AbstractUser):
             ("email", "company"),
         )
 
+    def soft_delete(self, user=None):
+        if not self.is_deleted:
+            self.is_deleted = True
+            self.is_active = False
+            self.save()
+
     @property
     def tenant(self):
         return self.company.tenant if self.company else None
