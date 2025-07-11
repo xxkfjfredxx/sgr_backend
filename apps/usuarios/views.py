@@ -19,25 +19,56 @@ class UserRoleViewSet(AuditLogMixin, viewsets.ModelViewSet):
     roles_permitidos = ["Admin"]
     permission_classes = [EsRolPermitido]
 
-    def perform_create(self, serializer):
-        company_id = self.request.data.get("company")
+    def create(self, request, *args, **kwargs):
+        company_id = request.data.get("company")
+        name = request.data.get("name")
+
         if not company_id:
-            raise ValidationError({"company": "Este campo es obligatorio."})
+            raise ValidationError({"company": "This field is required."})
+        if not name:
+            raise ValidationError({"name": "This field is required."})
 
-        user = self.request.user
+        user = request.user
         if not user.is_superuser:
-            # El usuario sólo puede usar su propia empresa
             if not user.role or user.role.company_id != int(company_id):
-                raise PermissionDenied("No puedes crear roles en otra empresa.")
+                raise PermissionDenied("You don't have permission to create roles in this company.")
 
-        serializer.save(company_id=company_id)
+        # Buscar rol eliminado
+        existing = UserRole.objects.filter(
+            company_id=company_id,
+            name=name,
+            is_deleted=True
+        ).first()
 
-    # ✅ Filtro por empresa
+        if existing:
+            # Restaurar
+            existing.is_deleted = False
+            existing.description = request.data.get("description", existing.description)
+            existing.access_level = request.data.get("access_level", existing.access_level)
+            existing.save()
+
+            # Actualizar permisos si se enviaron
+            permissions = request.data.get("permissions")
+            if permissions is not None:
+                existing.permissions = permissions
+                existing.save()
+
+
+            # Registrar auditoría
+            self.log_audit("RESTORED", existing)
+
+            # Serializar y responder como si fuera nuevo
+            serializer = self.get_serializer(existing)
+            return Response(serializer.data, status=200)
+
+        # Si no existe, crear normalmente
+        return super().create(request, *args, **kwargs)
+
     def get_queryset(self):
         qs = super().get_queryset()
-        empresa_id = self.request.query_params.get("empresa")
-        if empresa_id:
-            qs = qs.filter(company_id=empresa_id)
+        company_id = self.request.query_params.get("empresa")
+        if company_id:
+            qs = qs.filter(company_id=company_id)
         return qs
 
 
