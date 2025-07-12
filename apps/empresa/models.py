@@ -19,7 +19,9 @@ class Company(TenantMixin, models.Model):
     sector = models.CharField(max_length=100, blank=True, null=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
-
+    schema_name = models.CharField(max_length=63, unique=True)
+    domain_url = models.CharField(max_length=128, unique=True)
+    is_deleted = models.BooleanField(default=False)
     auto_create_schema = True  # importante para django-tenants
 
     class Meta:
@@ -44,3 +46,24 @@ class Company(TenantMixin, models.Model):
             self.domain_url = f"{self.schema_name}.localhost"
 
         super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        from django_tenants.utils import schema_context, get_tenant_model, get_public_schema_name
+        from django.db import connection
+
+        # Evita que alguien borre el esquema público
+        if self.schema_name == get_public_schema_name():
+            raise ValidationError("No puedes eliminar el esquema público.")
+
+        schema_name = self.schema_name
+
+        super().delete(*args, **kwargs)  # ← borra el tenant del modelo
+
+        # Elimina el schema físico (solo si no es public)
+        with connection.cursor() as cursor:
+            cursor.execute(f'DROP SCHEMA IF EXISTS "{schema_name}" CASCADE;')
+
+    def soft_delete(self):
+        self.is_deleted = True
+        self.is_active = False
+        self.save()

@@ -1,21 +1,15 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, serializers
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django.db.models import Q
-import uuid
-from rest_framework import serializers
-
+from django.core.exceptions import ValidationError
+from django.core.management import call_command
+from django_tenants.utils import schema_context, get_public_schema_name
 from apps.utils.auditlogmimix import AuditLogMixin
 from .models import Company
-from apps.tenants.models import Tenant
 from .serializers import CompanySerializer
 
-
-# apps/empresa/views.py
 import logging
-
-# Configura el logger
 logger = logging.getLogger(__name__)
 
 class CompanyViewSet(viewsets.ModelViewSet):
@@ -24,17 +18,33 @@ class CompanyViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_superuser:
-            qs = Company.objects.all()
-        else:
-            qs = Company.objects.none()
+        incluir_eliminadas = self.request.query_params.get("incluir_eliminadas") == "true"
+        
+        if not user.is_superuser:
+            return Company.objects.none()
+        
+        qs = Company.objects.all()
+        if not incluir_eliminadas:
+            qs = qs.filter(is_deleted=False)
         return qs
+
+    def delete(self, *args, **kwargs):
+        raise ValidationError("Usa el método eliminar_definitivo para borrar completamente una empresa.")
 
     def perform_create(self, serializer):
         user = self.request.user
         if not user.is_superuser:
             raise serializers.ValidationError({"detail": "Solo el superusuario puede crear empresas."})
-        serializer.save()
+
+        company = serializer.save()
+
+        try:
+            with schema_context(company.schema_name):
+                call_command('migrate', interactive=False, verbosity=0)
+        except Exception as e:
+            logger.error(f"Error al migrar el esquema '{company.schema_name}': {str(e)}")
+            company.delete()
+            raise serializers.ValidationError({"detail": "Error al aplicar migraciones del esquema. Empresa eliminada."})
 
     @action(detail=False, methods=["get"], url_path="my-companies")
     def my_companies(self, request):
@@ -53,8 +63,7 @@ class CompanyViewSet(viewsets.ModelViewSet):
         company = getattr(request, "active_company", None)
 
         if not company:
-            # Si no existe 'active_company', intenta usar la empresa de usuario
-            if request.user.is_authenticated and request.user.company:
+            if request.user.is_authenticated and hasattr(request.user, "company"):
                 company = request.user.company
 
         if not company:
@@ -65,3 +74,50 @@ class CompanyViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(company)
         return Response(serializer.data)
+
+    @action(detail=True, methods=["post"])
+    def restore(self, request, pk=None):
+        company = self.get_object()
+        company.is_deleted = False
+        company.is_active = True
+        company.save()
+        return Response({'status': 'Restaurada'})
+
+    @action(detail=True, methods=['delete'], url_path='eliminar-definitivo')
+    def eliminar_definitivo(self, request, pk=None):
+        company = self.get_object()
+
+        if company.schema_name == get_public_schema_name():
+            raise ValidationError("No puedes eliminar el esquema público.")
+
+        try:
+            with schema_context(company.schema_name):
+                from django.db import connection
+                with connection.cursor() as cursor:
+                    cursor.execute("SELECT 1 FROM django_migrations LIMIT 1;")
+                
+                # Aquí mismo haces el borrado
+                company.delete()
+            return Response({'status': 'Eliminada completamente'})
+        except Exception as e:
+            return Response(
+                {'detail': f"No se puede eliminar porque el schema está corrupto o incompleto: {str(e)}"},
+                status=500
+            )
+
+        try:
+            company.delete()
+            return Response({'status': 'Eliminada completamente'})
+        except Exception as e:
+            return Response({'detail': f"Error al eliminar: {str(e)}"}, status=500)
+
+    def destroy(self, request, *args, **kwargs):
+        company = self.get_object()
+
+        if company.schema_name == get_public_schema_name():
+            raise ValidationError("No puedes eliminar el esquema público.")
+
+        company.is_deleted = True
+        company.is_active = False
+        company.save()
+        return Response({'status': 'Empresa desactivada (soft delete)'}, status=204)
