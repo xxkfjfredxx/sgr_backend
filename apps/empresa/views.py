@@ -8,6 +8,8 @@ from django_tenants.utils import schema_context, get_public_schema_name
 from apps.utils.auditlogmimix import AuditLogMixin
 from .models import Company
 from .serializers import CompanySerializer
+from django.db.models.deletion import ProtectedError
+
 
 import logging
 logger = logging.getLogger(__name__)
@@ -28,8 +30,8 @@ class CompanyViewSet(viewsets.ModelViewSet):
             qs = qs.filter(is_deleted=False)
         return qs
 
-    def delete(self, *args, **kwargs):
-        raise ValidationError("Usa el método eliminar_definitivo para borrar completamente una empresa.")
+    #def delete(self, *args, **kwargs):
+    #    raise ValidationError("Usa el método eliminar_definitivo para borrar completamente una empresa.")
 
     def perform_create(self, serializer):
         user = self.request.user
@@ -77,28 +79,54 @@ class CompanyViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["post"])
     def restore(self, request, pk=None):
-        company = self.get_object()
+        # ⚠️ No uses self.get_object() aquí porque no incluye eliminadas
+        try:
+            company = Company.objects.get(pk=pk)
+        except Company.DoesNotExist:
+            return Response({'detail': 'Empresa no encontrada'}, status=404)
+
         company.is_deleted = False
         company.is_active = True
         company.save()
         return Response({'status': 'Restaurada'})
 
+
     @action(detail=True, methods=['delete'], url_path='eliminar-definitivo')
     def eliminar_definitivo(self, request, pk=None):
-        company = self.get_object()
+        try:
+            company = Company.objects.get(pk=pk)  # 👈 Buscar directamente, incluye eliminadas
+        except Company.DoesNotExist:
+            return Response({'detail': 'Empresa no encontrada'}, status=404)
 
         if company.schema_name == get_public_schema_name():
             raise ValidationError("No puedes eliminar el esquema público.")
-
+        
         try:
             with schema_context(company.schema_name):
-                from django.db import connection
+                from apps.usuarios.models import User, UserRole
+                from django.apps import apps
+
+                UserRole.objects.all().delete()
+                User.objects.all().delete()
+
+                # Limpia otras tablas (opcional)
+                connection = apps.get_app_config('your_app_name').connection
                 with connection.cursor() as cursor:
-                    cursor.execute("SELECT 1 FROM django_migrations LIMIT 1;")
-                
-                # Aquí mismo haces el borrado
-                company.delete()
-            return Response({'status': 'Eliminada completamente'})
+                    cursor.execute("""
+                        DO $$
+                        DECLARE
+                            tablename text;
+                        BEGIN
+                            FOR tablename IN
+                                SELECT tablename
+                                FROM pg_tables
+                                WHERE schemaname = current_schema() AND tablename != 'django_migrations'
+                            LOOP
+                                EXECUTE format('DELETE FROM %I', tablename);
+                            END LOOP;
+                        END;
+                        $$;
+                    """)
         except Exception as e:
             return Response(
                 {'detail': f"No se puede eliminar porque el schema está corrupto o incompleto: {str(e)}"},
@@ -108,8 +136,11 @@ class CompanyViewSet(viewsets.ModelViewSet):
         try:
             company.delete()
             return Response({'status': 'Eliminada completamente'})
+        except ProtectedError as e:
+            return Response({'detail': f"Error de integridad: {str(e)}"}, status=400)
         except Exception as e:
             return Response({'detail': f"Error al eliminar: {str(e)}"}, status=500)
+
 
     def destroy(self, request, *args, **kwargs):
         company = self.get_object()
