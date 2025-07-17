@@ -8,27 +8,29 @@ from django_tenants.utils import tenant_context
 from .serializers import UserSerializer
 from django.contrib.auth import authenticate, login, logout
 
+from apps.empresa.models import UserCompanyIndex
+from apps.empleados.models import Employee
+from apps.usuarios.serializers import UserSerializer
 
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
 
     def post(self, request):
+        # 1️⃣ Autenticar en el esquema public
         email = request.data.get("email")
         password = request.data.get("password")
-
         user = authenticate(request, email=email, password=password)
-
-        if user is None:
+        if not user:
             return Response(
                 {"detail": "Credenciales inválidas"},
-                status=status.HTTP_401_UNAUTHORIZED,
+                status=status.HTTP_401_UNAUTHORIZED
             )
 
         tenant_id = None
         company_name = None
 
-        # Distinción clara: superuser vs usuario normal
+        # 2️⃣ Superuser → sin tenant
         if user.is_superuser:
             user_data = {
                 "id": user.id,
@@ -37,36 +39,43 @@ class LoginView(APIView):
                 "last_name": user.last_name,
                 "is_superuser": True,
             }
+
         else:
+            # 3️⃣ Usar índice público para resolver la company
             try:
-                from apps.empleados.models import Employee
-                employee = Employee.objects.get(user=user)
-                company = employee.company
-                tenant_id = str(company.id)
-                company_name = company.name
-            except Exception:
+                idx = UserCompanyIndex.objects.get(user=user)
+                company = idx.company
+            except UserCompanyIndex.DoesNotExist:
                 return Response(
-                    {"detail": "El usuario no tiene un empleado o empresa asociada"},
-                    status=status.HTTP_400_BAD_REQUEST,
+                    {"detail": "El usuario no tiene empresa asociada"},
+                    status=status.HTTP_400_BAD_REQUEST
                 )
 
-            # Si no es superuser, sí usamos el serializer completo
+            # 4️⃣ Entrar al schema tenant y cargar el Employee
+            with tenant_context(company):
+                try:
+                    employee = Employee.objects.get(user=user)
+                except Employee.DoesNotExist:
+                    return Response(
+                        {"detail": "El usuario no tiene un empleado asociado"},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+
+            tenant_id = str(company.id)
+            company_name = company.name
             user_data = UserSerializer(user).data
 
-        # Elimina tokens viejos y crea uno nuevo
+        # 5️⃣ Crear token, iniciar sesión y devolver respuesta
         Token.objects.filter(user=user).delete()
         token = Token.objects.create(user=user)
         login(request, user)
 
-        return Response(
-            {
-                "token": token.key,
-                "user": user_data,
-                "tenant_id": tenant_id,
-                "company_name": company_name,
-            },
-            status=status.HTTP_200_OK,
-        )
+        return Response({
+            "token": token.key,
+            "user": user_data,
+            "tenant_id": tenant_id,
+            "company_name": company_name,
+        }, status=status.HTTP_200_OK)
 
 
 class LogoutView(APIView):

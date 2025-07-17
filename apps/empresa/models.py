@@ -6,6 +6,7 @@ from django_tenants.models import TenantMixin
 from django.core.exceptions import ValidationError
 import re
 import logging
+from django.conf import settings
 
 # Configura el logger
 logger = logging.getLogger(__name__)
@@ -67,3 +68,22 @@ class Company(TenantMixin, models.Model):
         self.is_deleted = True
         self.is_active = False
         self.save()
+
+
+class UserCompanyIndex(models.Model):
+    """
+    Índice en public: relaciona cada user con su company.
+    """
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="company_index",
+    )
+    company = models.ForeignKey(
+        "empresa.Company",  # Ajusta si tu modelo Company no está en ese path
+        on_delete=models.CASCADE,
+        related_name="user_indices",
+    )
+
+    class Meta:
+        db_table = "user_company_index"  # Nombre claro en public

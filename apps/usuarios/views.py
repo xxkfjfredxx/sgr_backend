@@ -9,6 +9,8 @@ from rest_framework.response import Response
 from django.db.models import Q
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.exceptions import NotFound
+from apps.empleados.models import Employee
+from django_tenants.utils import tenant_context
 
 
 class UserRoleViewSet(AuditLogMixin, viewsets.ModelViewSet):
@@ -99,7 +101,7 @@ class UserViewSet(AuditLogMixin, viewsets.ModelViewSet):
         user.is_active = True
         user.save()
         return Response({'status': 'usuario restaurado'})
-    
+
     @action(detail=True, methods=['delete'], url_path='eliminar-definitivamente')
     def eliminar_definitivamente(self, request, pk=None):
         user = self.get_object()
@@ -114,24 +116,32 @@ class UserViewSet(AuditLogMixin, viewsets.ModelViewSet):
 
         if not user.is_authenticated:
             raise PermissionDenied("No estás autenticado.")
-
         if not active_company:
             raise PermissionDenied("No se encontró la empresa activa.")
-
-        if not user.is_superuser and user.company_id != active_company.pk:
+        if not user.is_superuser and getattr(user, "company_id", None) != active_company.pk:
             raise PermissionDenied("No tienes permiso para acceder a esta empresa.")
 
-        # 👇 Aquí cambia esto 👇
         qs = User.objects.all() if incluir_eliminados else User.objects.filter(is_deleted=False)
-
         if empresa_id:
             qs = qs.filter(
                 Q(employee__company_id=empresa_id) | Q(role__company_id=empresa_id)
             ).distinct()
-
         return qs
 
-    
+    def perform_create(self, serializer):
+        user = serializer.save()
+        if not user.is_superuser:
+            company = getattr(self.request, "active_company", None)
+            if company:
+                with tenant_context(company):
+                    emp = Employee.objects.create(
+                        user=user,
+                        company=company,
+                        document=str(user.id).zfill(8),
+                        first_name=user.first_name or "",
+                        last_name=user.last_name or "",
+                    )
+        return user
 
 class BaseAuditViewSet(AuditLogMixin, viewsets.ModelViewSet):
     @action(detail=True, methods=["post"])
