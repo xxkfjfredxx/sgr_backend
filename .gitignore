@@ -175,3 +175,4 @@ cython_debug/
 config.zip
 apps.zip
 config/media/
+backend.zip

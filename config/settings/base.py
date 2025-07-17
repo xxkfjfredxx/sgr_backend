@@ -126,11 +126,11 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+    "apps.utils.middleware.TenantMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     #"apps.utils.middleware.ActiveCompanyMiddleware",
-    "apps.utils.middleware.TenantMiddleware",
 ]
 
 # Aquí le indicas a Django que use tu router de multitenant

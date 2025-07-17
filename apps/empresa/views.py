@@ -9,7 +9,7 @@ from apps.utils.auditlogmimix import AuditLogMixin
 from .models import Company
 from .serializers import CompanySerializer
 from django.db.models.deletion import ProtectedError
-
+from django.db import connection
 
 import logging
 logger = logging.getLogger(__name__)
@@ -94,53 +94,38 @@ class CompanyViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['delete'], url_path='eliminar-definitivo')
     def eliminar_definitivo(self, request, pk=None):
         try:
-            company = Company.objects.get(pk=pk)  # 👈 Buscar directamente, incluye eliminadas
+            company = Company.objects.get(pk=pk)
         except Company.DoesNotExist:
             return Response({'detail': 'Empresa no encontrada'}, status=404)
 
-        if company.schema_name == get_public_schema_name():
-            raise ValidationError("No puedes eliminar el esquema público.")
-        
+        public_schema = get_public_schema_name()
+        if company.schema_name == public_schema:
+            return Response({'detail': 'No se puede eliminar el schema público'}, status=400)
+
+        schema_to_drop = company.schema_name
+        table_name = Company._meta.db_table  # "companies"
+
         try:
-            with schema_context(company.schema_name):
-                from apps.usuarios.models import User, UserRole
-                from django.apps import apps
+            # 1) Drop del schema tenant completo
+            with connection.cursor() as cursor:
+                cursor.execute(f'DROP SCHEMA IF EXISTS "{schema_to_drop}" CASCADE;')
 
-                UserRole.objects.all().delete()
-                User.objects.all().delete()
+            # 2) Borrado de la fila de Company en el esquema public
+            #    en un contexto claro de public schema
+            cursor_sql = (
+                f'DELETE FROM "{public_schema}"."{table_name}" '
+                'WHERE id = %s;'
+            )
+            with connection.cursor() as cursor:
+                cursor.execute(cursor_sql, [company.pk])
 
-                # Limpia otras tablas (opcional)
-                connection = apps.get_app_config('your_app_name').connection
-                with connection.cursor() as cursor:
-                    cursor.execute("""
-                        DO $$
-                        DECLARE
-                            tablename text;
-                        BEGIN
-                            FOR tablename IN
-                                SELECT tablename
-                                FROM pg_tables
-                                WHERE schemaname = current_schema() AND tablename != 'django_migrations'
-                            LOOP
-                                EXECUTE format('DELETE FROM %I', tablename);
-                            END LOOP;
-                        END;
-                        $$;
-                    """)
+            return Response({'detail': 'Empresa y schema eliminados correctamente'})
+
         except Exception as e:
             return Response(
-                {'detail': f"No se puede eliminar porque el schema está corrupto o incompleto: {str(e)}"},
+                {'detail': f"Error al eliminar la empresa: {e}"},
                 status=500
             )
-
-        try:
-            company.delete()
-            return Response({'status': 'Eliminada completamente'})
-        except ProtectedError as e:
-            return Response({'detail': f"Error de integridad: {str(e)}"}, status=400)
-        except Exception as e:
-            return Response({'detail': f"Error al eliminar: {str(e)}"}, status=500)
-
 
     def destroy(self, request, *args, **kwargs):
         company = self.get_object()
