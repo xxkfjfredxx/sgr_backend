@@ -14,6 +14,7 @@ class SSTPolicy(AuditMixin, models.Model):
     active = models.BooleanField(default=True)
 
     class Meta:
+        db_table = "sst_policy"
         ordering = ["-published_date"]
 
     def __str__(self):
@@ -28,6 +29,7 @@ class PolicyAcceptance(AuditMixin, models.Model):
     user_agent = models.TextField(blank=True, null=True)
 
     class Meta:
+        db_table = "policy_acceptance"
         unique_together = ("employee", "policy")
         ordering = ["-created_at"]
 

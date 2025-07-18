@@ -19,6 +19,7 @@ class EmergencyBrigadeMember(AuditMixin, models.Model):
     active = models.BooleanField(default=True)
 
     class Meta:
+        db_table = "emergency_brigade_member"
         ordering = ["employee__first_name"]
 
     def __str__(self):
@@ -41,6 +42,7 @@ class EmergencyEquipment(AuditMixin, models.Model):
     notes = models.TextField(blank=True)
 
     class Meta:
+        db_table = "emergency_equipment"
         ordering = ["type", "location"]
 
     def __str__(self):
@@ -66,6 +68,7 @@ class EmergencyDrill(AuditMixin, models.Model):
     )
 
     class Meta:
+        db_table = "emergency_drill"
         ordering = ["-date"]
 
     def __str__(self):

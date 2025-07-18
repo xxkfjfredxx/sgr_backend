@@ -29,6 +29,7 @@ class Stakeholder(AuditMixin, models.Model):
     active = models.BooleanField(default=True)
 
     class Meta:
+        db_table = "stakeholders"
         ordering = ["name"]
 
     def __str__(self):

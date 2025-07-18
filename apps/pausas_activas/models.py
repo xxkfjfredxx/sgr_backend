@@ -14,6 +14,7 @@ class ActivePauseSession(AuditMixin, models.Model):
     comments = models.TextField(blank=True)
 
     class Meta:
+        db_table = "pausas_activas_session"
         ordering = ["-date"]
 
     def __str__(self):
@@ -29,6 +30,7 @@ class ActivePauseAttendance(AuditMixin, models.Model):
     signature = models.ImageField(upload_to="pausas_firmas/", blank=True, null=True)
 
     class Meta:
+        db_table = "pausas_activas_attendance"
         unique_together = ("session", "employee")
         ordering = ["employee_id"]
 

@@ -33,6 +33,7 @@ class AuditChecklist(AuditMixin, models.Model):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
 
     class Meta:
+        db_table = "audit_checklist"
         ordering = ["-created_at"]
 
     def __str__(self):
@@ -48,6 +49,7 @@ class AuditItem(AuditMixin, models.Model):
     evidence_required = models.BooleanField(default=False)
 
     class Meta:
+        db_table = "audit_item"
         ordering = ["id"]
 
     def __str__(self):
@@ -64,6 +66,7 @@ class AuditExecution(AuditMixin, models.Model):
     comments = models.TextField(blank=True)
 
     class Meta:
+        db_table = "audit_execution"
         ordering = ["-date"]
 
     def __str__(self):
@@ -87,6 +90,7 @@ class AuditResult(AuditMixin, models.Model):
     observation = models.TextField(blank=True)
 
     class Meta:
+        db_table = "audit_result"
         ordering = ["item_id"]
 
     def __str__(self):
@@ -123,6 +127,7 @@ class AuditFinding(AuditMixin, models.Model):
     )
 
     class Meta:
+        db_table = "audit_finding"
         ordering = ["-created_at"]
 
     def __str__(self):

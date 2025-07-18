@@ -14,6 +14,7 @@ class ContractorCompany(AuditMixin, models.Model):
     active = models.BooleanField(default=True)
 
     class Meta:
+        db_table = "contractor_company"
         ordering = ["name"]
 
     def __str__(self):
@@ -30,6 +31,7 @@ class ContractorContact(AuditMixin, models.Model):
     position = models.CharField(max_length=50, blank=True)
 
     class Meta:
+        db_table = "contractor_contact"
         ordering = ["name"]
 
     def __str__(self):

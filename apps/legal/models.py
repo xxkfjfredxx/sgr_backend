@@ -27,6 +27,7 @@ class LegalRequirement(AuditMixin, models.Model):
     active = models.BooleanField(default=True)
 
     class Meta:
+        db_table = "legal_requirements"
         ordering = ["-created_at"]
 
     def __str__(self):

@@ -26,6 +26,7 @@ class ChangeRequest( AuditMixin, models.Model):
 
 
     class Meta:
+        db_table = "change_requests"
         ordering = ["-created_at"]
         indexes = [models.Index(fields=["status"]), models.Index(fields=["is_deleted"])]
 
@@ -46,6 +47,7 @@ class ChangeEvaluation(AuditMixin, models.Model):
     evaluated_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        db_table = "change_evaluations"
         ordering = ["-evaluated_at"]
 
     def __str__(self):
@@ -71,6 +73,7 @@ class ChangeImplementation(AuditMixin, models.Model):
     verification_date = models.DateField(null=True, blank=True)
 
     class Meta:
+        db_table = "change_implementations"
         ordering = ["-implementation_date"]
 
     def __str__(self):

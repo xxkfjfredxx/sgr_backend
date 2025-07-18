@@ -3,7 +3,7 @@ from apps.empleados.models import Employee
 from apps.utils.mixins import AuditMixin
 
 
-class Reintegro(AuditMixin, models.Model):
+class Reimbursements(AuditMixin, models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     start_date = models.DateField(help_text="Inicio del proceso de reintegro")
     end_date = models.DateField(
@@ -16,7 +16,8 @@ class Reintegro(AuditMixin, models.Model):
     successful = models.BooleanField(default=False)
 
     class Meta:
+        db_table = "reimbursements"
         ordering = ["-start_date"]
 
     def __str__(self):
-        return f"Reintegro {self.employee} – {self.start_date}"
+        return f"Reimbursements {self.employee} – {self.start_date}"

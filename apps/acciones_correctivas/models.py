@@ -17,6 +17,7 @@ class ImprovementPlan(AuditMixin, models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="open")
 
     class Meta:
+        db_table = "improvement_plans"
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
@@ -42,6 +43,7 @@ class ActionItem(AuditMixin, models.Model):
     closed_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
+        db_table = "action_items"
         ordering = ["-due_date"]
         indexes = [
             models.Index(fields=["plan", "completed"]),
@@ -69,6 +71,7 @@ class RiskAction(AuditMixin, models.Model):
     closed_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
+        db_table = "risk_actions"
         ordering = ["-created_at"]
 
     def __str__(self) -> str:

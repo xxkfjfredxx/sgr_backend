@@ -21,6 +21,7 @@ class ErgonomicAssessment(AuditMixin, models.Model):
     responsible = models.CharField(max_length=100, blank=True)
 
     class Meta:
+        db_table = "ergonomic_assessment"
         ordering = ["-date"]
 
     def __str__(self):
@@ -42,6 +43,7 @@ class ARO(AuditMixin, models.Model):
     evidence = models.FileField(upload_to="aro/", blank=True, null=True)
 
     class Meta:
+        db_table = "aro"
         ordering = ["-date"]
 
     def __str__(self):
@@ -63,6 +65,7 @@ class ATS(AuditMixin, models.Model):
     evidence = models.FileField(upload_to="ats/", blank=True, null=True)
 
     class Meta:
+        db_table = "ats"
         ordering = ["-date"]
 
     def __str__(self):

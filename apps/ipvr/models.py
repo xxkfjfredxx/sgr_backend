@@ -11,6 +11,7 @@ class Task(AuditMixin, models.Model):
     active = models.BooleanField(default=True)
 
     class Meta:
+        db_table = "tasks"
         ordering = ["name"]
 
     def __str__(self):
@@ -27,6 +28,7 @@ class IPVRMatrix(AuditMixin, models.Model):
     evaluation = models.CharField(max_length=50, blank=True)  # Bajo / Medio / Alto
 
     class Meta:
+        db_table = "ipvr_matrix"
         ordering = ["task__name", "hazard"]
 
     def __str__(self):

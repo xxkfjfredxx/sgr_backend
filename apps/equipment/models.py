@@ -15,6 +15,10 @@ class EquipmentInventory(models.Model):
     )
     estado = models.CharField("Estado", max_length=50, blank=True)
 
+    class Meta:
+        db_table = "equipment_inventory"
+        ordering = ["categoria", "serial"]
+
     def __str__(self):
         if self.cantidad > 1:
             return f"{self.cantidad}× {self.categoria}"
@@ -36,6 +40,10 @@ class EquipmentInspection(models.Model):
         blank=True,
         null=True,
     )
+
+    class Meta:
+        db_table = "equipment_inspections"
+        ordering = ["-fecha"]
 
     def __str__(self):
         return f"Inspección {self.equipment.serial} – {self.fecha}"

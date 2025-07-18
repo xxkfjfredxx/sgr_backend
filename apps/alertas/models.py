@@ -12,6 +12,7 @@ class DocumentAlert(AuditMixin, models.Model):
 
 
     class Meta:
+        db_table = "document_alerts"
         ordering = ["expiration_date"]  # ← ahora la vista no necesita .order_by()
 
     def __str__(self) -> str:

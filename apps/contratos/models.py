@@ -42,6 +42,7 @@ class Contract(AuditMixin, models.Model):
     notes = models.TextField(blank=True)
 
     class Meta:
+        db_table = "contracts"
         ordering = ["-created_at"]
 
     def __str__(self):

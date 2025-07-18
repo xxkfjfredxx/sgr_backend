@@ -19,6 +19,7 @@ class Activity(AuditMixin, models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
 
     class Meta:
+        db_table = "activities"
         ordering = ["start_date"]
 
     def __str__(self) -> str:

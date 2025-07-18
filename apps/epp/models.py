@@ -11,6 +11,7 @@ class EPPItem(AuditMixin, models.Model):
     expiration_date = models.DateField(null=True, blank=True)
 
     class Meta:
+        db_table = "epp_items"
         ordering = ["name"]
 
     def __str__(self):
@@ -41,6 +42,7 @@ class EPPAssignment(AuditMixin, models.Model):
     confirmation_date = models.DateTimeField(null=True, blank=True)
 
     class Meta:
+        db_table = "epp_assignments"
         ordering = ["-assigned_at"]
 
     def __str__(self):

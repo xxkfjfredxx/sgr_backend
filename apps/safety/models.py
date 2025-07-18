@@ -15,6 +15,10 @@ class SignageInventory(models.Model):
     )
     installed_at = models.DateTimeField("Fecha de verificación", auto_now_add=True)
 
+    class Meta:
+        db_table = "signage_inventory"
+        ordering = ["-installed_at"]
+
     def __str__(self):
         return f"{self.company.name} – {self.tipo_senal}"
 
@@ -29,6 +33,9 @@ class VaccinationRecord(models.Model):
     soporte = models.FileField(
         "Soporte (PDF/foto)", upload_to="vaccination_records/", blank=True, null=True
     )
+
+    class Meta:
+        db_table = "vaccination_records"
 
     def __str__(self):
         # Ajusta si tu Employee no tiene full_name

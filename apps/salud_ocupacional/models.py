@@ -77,6 +77,7 @@ class MedicalExam(AuditMixin, models.Model):
     )
 
     class Meta:
+        db_table = "medical_exams"
         ordering = ["-date"]
         verbose_name = "Examen Médico"
         verbose_name_plural = "Exámenes Médicos"

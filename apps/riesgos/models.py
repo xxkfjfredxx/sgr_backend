@@ -16,6 +16,7 @@ class Area(AuditMixin, models.Model):
     )
 
     class Meta:
+        db_table = "areas"
         ordering = ["name"]
 
     def __str__(self):
@@ -29,6 +30,7 @@ class Hazard(AuditMixin, models.Model):
     risk_type = models.CharField(max_length=100, blank=True)  # cortante, inflamable…
 
     class Meta:
+        db_table = "hazards"
         ordering = ["area__name", "description"]
 
     def __str__(self):
@@ -88,6 +90,7 @@ class RiskControl(AuditMixin, models.Model):
     due_date = models.DateField()
 
     class Meta:
+        db_table = "risk_controls"
         ordering = ["-due_date"]
 
     def __str__(self):
@@ -102,6 +105,10 @@ class ControlEvidence(models.Model):
     description = models.TextField(blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        db_table = "control_evidences"
+        ordering = ["-uploaded_at"]
+
 
 class ControlFollowUp(models.Model):
     control = models.ForeignKey(
@@ -113,6 +120,10 @@ class ControlFollowUp(models.Model):
     )
     notes = models.TextField(blank=True)
     is_controlled = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = "control_followups"
+        ordering = ["-date"]
 
 
 class RiskReview(AuditMixin, models.Model):
@@ -127,6 +138,7 @@ class RiskReview(AuditMixin, models.Model):
     risk_level_after_review = models.IntegerField()
 
     class Meta:
+        db_table = "risk_reviews"
         ordering = ["-review_date"]
 
     def __str__(self):

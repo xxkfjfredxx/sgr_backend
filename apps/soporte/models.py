@@ -27,6 +27,7 @@ class SupportTicket( AuditMixin, models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="open")
 
     class Meta:
+        db_table = "support_tickets"
         ordering = ["-created_at"]
 
     def __str__(self):
@@ -44,6 +45,7 @@ class MaintenanceSchedule(AuditMixin, models.Model):
     completed = models.BooleanField(default=False)
 
     class Meta:
+        db_table = "maintenance_schedules"
         ordering = ["scheduled_date"]
 
     def __str__(self):
@@ -61,6 +63,7 @@ class MaintenanceRecord(AuditMixin, models.Model):
     comments = models.TextField(blank=True)
 
     class Meta:
+        db_table = "maintenance_records"
         ordering = ["-performed_date"]
 
     def __str__(self):

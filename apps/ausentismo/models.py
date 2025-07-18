@@ -25,6 +25,7 @@ class Absence(AuditMixin, models.Model):
 
 
     class Meta:
+        db_table = "absences"
         ordering = ["-start_date"]
 
     def __str__(self) -> str:

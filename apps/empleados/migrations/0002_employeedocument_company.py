@@ -10,19 +10,13 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('empresa', '0001_initial'),
-        ('contratos', '0001_initial'),
-        ('contratistas', '0001_initial'),
+        ('empleados', '0001_initial'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='contract',
+            model_name='employeedocument',
             name='company',
             field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='empresa.company'),
-        ),
-        migrations.AddField(
-            model_name='contract',
-            name='contractor',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='contratistas.contractorcompany'),
         ),
     ]

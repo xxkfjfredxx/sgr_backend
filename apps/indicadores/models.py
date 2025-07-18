@@ -15,6 +15,7 @@ class Indicator(AuditMixin, models.Model):
     frequency = models.CharField(max_length=20, choices=FREQUENCY_CHOICES)
 
     class Meta:
+        db_table = "indicators"
         ordering = ["name"]
         unique_together = (("name", "company"),)
 
@@ -31,6 +32,7 @@ class IndicatorResult(AuditMixin, models.Model):
     interpretation = models.TextField(blank=True, null=True)
 
     class Meta:
+        db_table = "indicator_results"
         ordering = ["-period"]
         unique_together = ("indicator", "period")
 

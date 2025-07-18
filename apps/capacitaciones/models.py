@@ -17,6 +17,7 @@ class TrainingSession(AuditMixin, models.Model):
     )
 
     class Meta:
+        db_table = "training_sessions"
         ordering = ["-date"]
 
     def __str__(self):
@@ -32,6 +33,7 @@ class TrainingSessionAttendance(AuditMixin, models.Model):
     attended = models.BooleanField(default=True)
 
     class Meta:
+        db_table = "training_session_attendance"
         ordering = ["-created_at"]
         # ⬇️  NUEVA restricción: aplica solo cuando is_deleted = False
         constraints = [
@@ -57,6 +59,7 @@ class Certification(AuditMixin, models.Model):
     expiration_date = models.DateField(null=True, blank=True)
 
     class Meta:
+        db_table = "certifications"
         ordering = ["-issued_date"]
 
     def __str__(self):

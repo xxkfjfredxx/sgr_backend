@@ -33,6 +33,7 @@ class WorkAccident(AuditMixin, models.Model):
     )
 
     class Meta:
+        db_table = "work_accidents"
         ordering = ["-date"]
         indexes = [
             models.Index(fields=["employee", "incident_type"]),
@@ -54,6 +55,7 @@ class WorkAtHeightPermit(AuditMixin, models.Model):
     evidence_file = models.FileField(upload_to="height_permits/", blank=True, null=True)
 
     class Meta:
+        db_table = "work_at_height_permits"
         ordering = ["-date"]
 
     def __str__(self):

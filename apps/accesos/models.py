@@ -19,6 +19,7 @@ class AccessLog(AuditMixin, models.Model):
     location = models.CharField(max_length=100, blank=True)
 
     class Meta:
+        db_table = "access_logs"
         ordering = ["-timestamp"]  # 👈 ya no tienes que usar .order_by() en la vista
 
     def __str__(self) -> str:
@@ -36,6 +37,7 @@ class RiskAcceptanceForm(AuditMixin, models.Model):
     user_agent = models.TextField(blank=True, null=True)
 
     class Meta:
+        db_table = "risk_acceptance_forms"
         ordering = ["-date"]
 
     def __str__(self) -> str:

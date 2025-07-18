@@ -5,12 +5,12 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from apps.utils.auditlogmimix import AuditLogMixin
 
-from .models import Reintegro
+from .models import Reimbursements
 from .serializers import ReintegroSerializer
 
 
 class ReintegroViewSet(AuditLogMixin, viewsets.ModelViewSet):
-    queryset = Reintegro.objects.filter(is_deleted=False)
+    queryset = Reimbursements.objects.filter(is_deleted=False)
     serializer_class = ReintegroSerializer
     permission_classes = [AllowAny]
 

@@ -23,6 +23,7 @@ class InspectionItem(AuditMixin, models.Model):
     question = models.CharField(max_length=255)
 
     class Meta:
+        db_table = "inspection_items"
         ordering = ["id"]
 
     def __str__(self):
@@ -66,6 +67,7 @@ class InspectionResponse(AuditMixin, models.Model):
     evidence = models.FileField(upload_to="inspection_evidence/", blank=True, null=True)
 
     class Meta:
+        db_table = "inspection_responses"
         ordering = ["item_id"]
 
     def __str__(self):

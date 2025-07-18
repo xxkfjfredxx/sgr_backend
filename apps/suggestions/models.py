@@ -24,6 +24,7 @@ class SuggestionBox(AuditMixin, models.Model):
     responded_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
+        db_table = "suggestion_box"
         ordering = ["-created_at"]
 
     def __str__(self):

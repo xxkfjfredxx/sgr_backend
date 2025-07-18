@@ -81,6 +81,7 @@ class DocumentType(AuditMixin, models.Model):
     )
 
     class Meta:
+        db_table = "document_types"
         ordering = ["name"]
 
     def __str__(self):
@@ -120,6 +121,7 @@ class EmployeeDocument(AuditMixin, models.Model):
     is_global = models.BooleanField(default=False)
 
     class Meta:
+        db_table = "employee_documents"
         ordering = ["-created_at"]
 
     def __str__(self):

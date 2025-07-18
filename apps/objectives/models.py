@@ -22,6 +22,7 @@ class SSTObjective(AuditMixin, models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
 
     class Meta:
+        db_table = "sst_objectives"
         ordering = ["-created_at"]
 
     def __str__(self):
@@ -47,6 +48,7 @@ class SSTGoal(AuditMixin, models.Model):
     due_date = models.DateField(blank=True, null=True)
 
     class Meta:
+        db_table = "sst_goals"
         ordering = ["-id"]
 
     def __str__(self):
