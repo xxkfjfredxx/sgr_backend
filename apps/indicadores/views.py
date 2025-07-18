@@ -85,13 +85,14 @@ def indicator_summary(request):
     # --- AUSENTISMO ---
     absences = Absence.objects.filter(
         start_date__lte=last_day, end_date__gte=from_date
-    ).annotate(
-        days=ExpressionWrapper(
-            Cast(F("end_date"), FloatField()) - Cast(F("start_date"), FloatField()) + 1,
-            output_field=FloatField(),
-        )
     )
-    total_days_absent = absences.aggregate(total=Sum("days"))["total"] or 0
+
+    total_days_absent = 0
+    for a in absences:
+        start = max(a.start_date, from_date)
+        end = min(a.end_date, last_day)
+        total_days_absent += (end - start).days + 1
+
 
     total_employees = Employee.objects.count()
     total_days_worked = total_employees * ((last_day - from_date).days + 1)

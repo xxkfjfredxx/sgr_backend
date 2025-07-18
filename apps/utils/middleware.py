@@ -1,4 +1,5 @@
 from django.utils.deprecation import MiddlewareMixin
+from httpx import request
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 from django.core.exceptions import PermissionDenied
@@ -8,7 +9,9 @@ from django_tenants.utils import tenant_context
 class TenantMiddleware(MiddlewareMixin):
     def process_request(self, request):
         print("Verificando el middleware: Proceso de asignación de compañía activa")
-
+        if not request.path.startswith("/api/"):
+                return
+        
         if request.path.startswith("/api/login/") or request.path.startswith("/api/logout/"):
             return
 
