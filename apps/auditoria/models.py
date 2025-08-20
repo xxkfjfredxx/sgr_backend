@@ -3,7 +3,6 @@ from apps.empresa.models import Company
 from apps.usuarios.models import User
 from apps.acciones_correctivas.models import ActionItem
 from apps.utils.mixins import AuditMixin
-from apps.tenants.models import Tenant
 
 class SystemAudit(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
@@ -30,7 +29,6 @@ class AuditChecklist(AuditMixin, models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
 
     class Meta:
         db_table = "audit_checklist"

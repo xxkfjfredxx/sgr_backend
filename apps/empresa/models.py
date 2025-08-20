@@ -1,9 +1,9 @@
 # apps/empresa/models.py
 from django.db import models
-from apps.tenants.models import Tenant
 from django.db import connection
 from django_tenants.models import TenantMixin
 from django.core.exceptions import ValidationError
+from django_tenants.models import DomainMixin
 import re
 import logging
 from django.conf import settings
@@ -24,6 +24,7 @@ class Company(TenantMixin, models.Model):
     domain_url = models.CharField(max_length=128, unique=True)
     is_deleted = models.BooleanField(default=False)
     auto_create_schema = True  # importante para django-tenants
+    auto_drop_schema = False
 
     class Meta:
         db_table = "companies"
@@ -87,3 +88,13 @@ class UserCompanyIndex(models.Model):
 
     class Meta:
         db_table = "user_company_index"  # Nombre claro en public
+
+
+class Domain(DomainMixin):
+    # opcional: timestamps si quieres
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    # DomainMixin ya define: tenant(FK a Company), domain, is_primary
+    def __str__(self):
+        return self.domain

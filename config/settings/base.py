@@ -71,7 +71,6 @@ TENANT_APPS = [
     "apps.accesos",
     "apps.ergonomia",
     "apps.historial",
-    "apps.tenants",
     "apps.contratos",
     "apps.reintegro",
     "apps.catalogos",
@@ -111,7 +110,6 @@ SHARED_APPS = [
     "rest_framework",
     "corsheaders",
     "django_filters",
-    "tenant",
     "apps.utils", 
     "apps.empresa",
     "apps.usuarios",
@@ -222,5 +220,5 @@ JET_DASHBOARD_SITE_TITLE = "Panel de Administración"
 JET_INDEX_DASHBOARD = "jet.dashboard.dashboard.DefaultIndexDashboard"
 JET_APP_INDEX_DASHBOARD = "jet.dashboard.dashboard.DefaultAppIndexDashboard"
 CORS_ALLOW_ALL_ORIGINS = True
-TENANT_MODEL = "tenant.Tenant"
-TENANT_DOMAIN_MODEL = "tenant.Domain"
+TENANT_MODEL = "empresa.Company"     # app_label = "empresa", NO "apps.empresa"
+TENANT_DOMAIN_MODEL = "empresa.Domain"

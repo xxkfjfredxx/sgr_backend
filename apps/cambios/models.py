@@ -3,7 +3,6 @@ from apps.empresa.models import Company
 from apps.utils.mixins import AuditMixin
 from apps.usuarios.models import User
 from apps.empleados.models import Employee
-from apps.tenants.models import Tenant
 
 
 class ChangeRequest( AuditMixin, models.Model):

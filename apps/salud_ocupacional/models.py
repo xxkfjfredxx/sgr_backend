@@ -52,10 +52,14 @@ class MedicalExam(AuditMixin, models.Model):
     ]
     NEXT_DUE_CHOICES = [(i, f"{i} meses") for i in range(3, 25, 3)]  # 3 a 24 de 3 en 3
     exam_type = models.CharField(max_length=100, choices=EXAM_TYPES)
-
+    appointment = models.ForeignKey(
+        'MedicalAppointment',
+        null=True, blank=True,
+        on_delete=models.SET_NULL,
+        related_name="exams"
+    )
     # Campos del modelo
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     exam_phase = models.CharField(max_length=20, choices=EXAM_PHASES)
     date = models.DateField()
     entity_ips = models.CharField(max_length=100)
@@ -91,3 +95,30 @@ class MedicalExam(AuditMixin, models.Model):
 
     def __str__(self):
         return f"{self.employee} – {self.exam_phase}/{self.exam_type} – {self.date}"
+
+
+class MedicalAppointment(models.Model):
+    """
+    Agenda de citas médicas de salud ocupacional.
+    """
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name="medical_appointments")
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name="medical_appointments")
+    date = models.DateField()
+    time = models.TimeField(null=True, blank=True)
+    reason = models.CharField(max_length=200, help_text="Motivo de la cita (examen de ingreso, control, retiro, etc.)")
+    status_choices = [
+        ('scheduled', "Agendada"),
+        ('completed', "Completada"),
+        ('canceled', "Cancelada"),
+        ('no_show', "No asistió"),
+    ]
+    status = models.CharField(max_length=20, choices=status_choices, default="scheduled")
+    notes = models.TextField(blank=True, help_text="Observaciones adicionales")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "medical_appointments"
+        ordering = ["-date", "-time"]
+
+    def __str__(self):
+        return f"{self.employee} – {self.date} ({self.get_status_display()})"

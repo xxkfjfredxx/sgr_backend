@@ -2,7 +2,6 @@ from django.db import models
 from apps.empleados.models import Employee
 from apps.utils.mixins import AuditMixin
 from apps.empresa.models import Company
-from apps.tenants.models import Tenant
 
 
 class Absence(AuditMixin, models.Model):

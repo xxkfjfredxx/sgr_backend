@@ -1,7 +1,6 @@
 from django.db import models
 from apps.empleados.models import Employee
 from apps.empresa.models import Company
-from apps.tenants.models import Tenant
 from apps.utils.mixins import AuditMixin
 
 
